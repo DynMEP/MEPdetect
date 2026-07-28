@@ -6,7 +6,7 @@
  * 3. Every page loads this file; slots marked data-mep-brand get the logo automatically.
  */
 window.MEP_BRAND = {
-    logoUrl: '/assets/logo.svg',
+    logoUrl: '/assets/logo.svg?v=2',
     logoAlt: 'MEPdetect',
     wordmark: 'MEPdetect',
     homeUrl: '/',
