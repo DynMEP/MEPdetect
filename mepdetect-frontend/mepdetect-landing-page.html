@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MEPdetect counts the symbols on electrical, HVAC and plumbing drawings and traces circuits on vector PDFs. Every detection comes back boxed on the sheet, so you can check the takeoff instead of trusting it.">
+    <meta name="keywords" content="MEP takeoff software, electrical symbol detection, symbol counting, circuit tracing, netlist generation, homerun, HVAC takeoff, plumbing estimating, construction AI">
+    <title>MEPdetect — Symbol detection and circuit tracing for MEP drawings</title>
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="MEPdetect - AI Symbol Detection for MEP Drawings">
+    <meta property="og:description" content="Count MEP symbols and trace circuits straight from a PDF. Every detection boxed on the sheet, so you can check the takeoff.">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="/css/mepdetect.css">
+    <link rel="stylesheet" href="/css/landing.css">
+    <script src="/assets/branding.js"></script>
+    <script src="/js/apply-branding.js" defer></script>
+</head>
+<body class="landing-page">
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            <div data-mep-brand></div>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#demo">Demo</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#faq">FAQ</a>
+                <a href="https://train.mepdetect.com" target="_blank">Training</a>
+                <a href="/login" class="btn-login">Login</a>
+                <a href="/login#register" class="btn-signup">Sign Up</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <span class="eyebrow">MEP takeoff automation</span>
+            <h1>Stop counting symbols by hand.</h1>
+            <p class="subheadline">Get a takeoff you can check against the drawing</p>
+            <p class="description">MEPdetect finds and counts the symbols on electrical, HVAC and plumbing sheets, traces the circuits on vector PDFs, and exports to Excel, CSV or JSON. Every detection comes back boxed and labeled on the sheet — so you verify the count rather than trust it.</p>
+
+            <div class="cta-buttons">
+                <a href="#demo" class="btn btn-primary">Try It on Your Drawing</a>
+                <a href="/login#register" class="btn btn-secondary">Create a Free Account</a>
+            </div>
+
+            <div class="trust-badges">
+                <p>Built by a licensed electrical engineer, for MEP estimators</p>
+                <div class="badge-icons">
+                    <span>✓ Free plan, no card</span>
+                    <span>✓ 14-day Pro trial</span>
+                    <span>✓ Cancel anytime</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Everything You Need for Fast, Accurate Takeoffs</h2>
+                <p>Purpose-built AI for MEP contractors and estimators</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Detection You Can Audit</h3>
+                    <p>YOLO11 object detection picks out outlets, switches, panels, HVAC equipment and plumbing fixtures. Each one comes back with a confidence score and its box drawn on the sheet, so a count you doubt takes a couple of minutes to check.</p>
+                    <p class="feature-benefit">→ Verify the takeoff, don't just trust it</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Fast Enough to Use Mid-Bid</h3>
+                    <p>A sheet goes from upload to counted in seconds. Send up to 50 files in one batch job, processed back to back, and collect the results together.</p>
+                    <p class="feature-benefit">→ Spend the hours pricing, not counting</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔧</div>
+                    <h3>Trained on Your Drawings</h3>
+                    <p>Label examples on your own sheets and the model learns your office's symbols and your clients' standards — specialty equipment, non-standard fixtures, the blocks your library actually uses.</p>
+                    <p class="feature-benefit">→ Fits how your drawings look, not a generic set</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Exports That Land in Your Spreadsheet</h3>
+                    <p>Excel, CSV and JSON: counts per symbol type, coordinates and confidence per detection, plus the annotated sheet. Plain, stable columns your estimating template can read without rework.</p>
+                    <p class="feature-benefit">→ No retyping, no copy-paste</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔌</div>
+                    <h3>Circuit Tracing &amp; Netlists</h3>
+                    <p>On a vector PDF, MEPdetect reads the drawing's own line work: it isolates the pen the conductors are plotted with, follows the runs, marks junction nodes, finds the homerun arrowheads and reads the circuit designation beside them. Sheets that annotate circuits instead of drawing them work too. Out comes a netlist CSV and a traced overlay to check against the sheet.</p>
+                    <p class="feature-benefit">→ Go beyond counting, to connectivity</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📁</div>
+                    <h3>The Formats You Already Send Out</h3>
+                    <p>PDF, including multi-page plan sets, plus JPG, PNG, TIFF and BMP. Vector PDFs give the best results and are the only ones circuit tracing can read. Working from DWG or DXF? Plot to PDF first.</p>
+                    <p class="feature-benefit">→ No conversion step in your way</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2>From Upload to Takeoff in 3 Simple Steps</h2>
+                <p>No technical expertise required. No software installation.</p>
+            </div>
+
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Upload Your Drawings</h3>
+                    <p>Drag and drop PDFs or images of your electrical, HVAC, or plumbing plans. Support for single files or batch processing of entire projects.</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>AI Detects Symbols</h3>
+                    <p>The model scans each sheet and marks the MEP symbols it recognises — outlets, switches, equipment, fixtures — in seconds, scoring every one.</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Export Your Takeoff</h3>
+                    <p>Download the counts in Excel, CSV or JSON with coordinates, the annotated sheet to check them against, and the circuit netlist when tracing is on.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Demo -->
+    <section id="demo" class="demo">
+        <div class="container">
+            <div class="section-header">
+                <h2>See It on Your Own Drawing</h2>
+                <p>No sign-up, no sales call. Upload a sheet and read the output yourself.</p>
+            </div>
+
+            <div class="demo-panel">
+                <div class="demo-upload" data-action="upload">
+                    <div class="demo-upload-icon">📄</div>
+                    <h3>Drop an electrical, HVAC or plumbing sheet here</h3>
+                    <p>PDF, JPG, PNG or TIFF — up to 50 MB. Processed in seconds.</p>
+                    <button class="btn btn-primary" style="pointer-events: none;">Run a Live Detection</button>
+                </div>
+
+                <div class="demo-output">
+                    <h3>What comes back</h3>
+                    <ul class="demo-output-list">
+                        <li><strong>Annotated sheet</strong> — every detection boxed and labeled, so you can check the count against the drawing yourself.</li>
+                        <li><strong>Symbol counts</strong> — one row per symbol type, with the per-detection confidence score.</li>
+                        <li><strong>Coordinates</strong> — bounding box and centroid for each detection, in image pixels.</li>
+                        <li><strong>Circuit netlist</strong> — conductor runs, junction nodes, homerun arrows with their circuit tags, and the devices grouped onto each circuit.</li>
+                        <li><strong>Files</strong> — JSON, CSV and Excel, ready to drop into your estimating spreadsheet.</li>
+                    </ul>
+                    <p class="demo-note">Detection quality depends on the drawing: line weight, scan resolution and how close your symbols are to the ones the model was trained on. Run it on your own sheets before you rely on it for a bid.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2>Simple, Transparent Pricing</h2>
+                <p>Start free. Upgrade when you're ready. No hidden fees.</p>
+            </div>
+
+            <div class="pricing-grid">
+                <!-- Basic Plan -->
+                <div class="pricing-card">
+                    <h3>Basic</h3>
+                    <div class="price">$0</div>
+                    <div class="price-period">Forever free</div>
+                    <ul class="pricing-features">
+                        <li>5 drawings per month</li>
+                        <li>Standard MEP symbols</li>
+                        <li>PDF & image support</li>
+                        <li>CSV export</li>
+                        <li>Email support</li>
+                        <li class="disabled">Batch processing</li>
+                        <li class="disabled">Custom symbol training</li>
+                    </ul>
+                    <a href="/login#register" class="btn btn-secondary">Get Started Free</a>
+                </div>
+
+                <!-- Pro Plan (Featured) -->
+                <div class="pricing-card featured">
+                    <div class="popular-badge">Most Popular</div>
+                    <h3>Professional</h3>
+                    <div class="price">$49</div>
+                    <div class="price-period">per month · 14-day trial</div>
+                    <ul class="pricing-features">
+                        <li>Unlimited drawings</li>
+                        <li>All MEP symbol libraries</li>
+                        <li>Batch processing, up to 50 files</li>
+                        <li>Excel, CSV, JSON export</li>
+                        <li>Custom symbol training</li>
+                        <li>Circuit tracing &amp; netlists</li>
+                        <li>Priority email support</li>
+                    </ul>
+                    <a href="/login#register" class="btn btn-primary">Start 14-Day Free Trial</a>
+                </div>
+
+                <!-- Enterprise Plan -->
+                <div class="pricing-card">
+                    <h3>Enterprise</h3>
+                    <div class="price">Custom</div>
+                    <div class="price-period">Contact us</div>
+                    <ul class="pricing-features">
+                        <li>Everything in Professional</li>
+                        <li>Custom AI model training</li>
+                        <li>REST API access</li>
+                        <li>White-label branding</li>
+                        <li>On-premise deployment</li>
+                        <li>Priority support</li>
+                    </ul>
+                    <a href="mailto:sales@mepdetect.com?subject=MEPdetect%20Enterprise%20enquiry" class="btn btn-secondary">Contact Sales</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="faq">
+        <div class="container">
+            <div class="section-header">
+                <h2>Frequently Asked Questions</h2>
+            </div>
+
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        How accurate is the AI symbol detection?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        It depends on two things: how close your symbols are to the ones the model was trained on, and the state of the sheet. We do not publish a single accuracy figure, because one number averaged across every drawing office would tell you nothing about yours — and we would rather you measured it than believed it. Every detection comes back boxed and scored on the annotated sheet, so checking a page against the drawing takes a couple of minutes. If the stock model misses your symbols, train it on your own drawings.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        What file formats do you support?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        PDF, including multi-page plan sets, plus JPG, PNG, TIFF and BMP. Vector PDFs — plotted straight out of CAD or Revit — give the best results, and they are the only ones circuit tracing can read. Scans work for symbol detection; 300–400 DPI is the useful range. DWG and DXF are not read directly: plot them to PDF first.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Can I train the AI on my company's custom symbols?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Yes. Professional and Enterprise plans include custom symbol training: label examples of your symbols on your own drawings and the model learns them. How many examples you need, and how long training runs, depends on how distinctive the symbol is and how many classes you are adding — a few dozen examples per symbol is a sensible starting point.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        How does MEPdetect integrate with my existing workflow?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Through files and an API, not a plug-in. The Excel and CSV exports are plain tables — symbol, count, coordinates, confidence — so they import into whatever you estimate in. There is no direct plug-in for Accubid, ConEst, McCormick, Revit or AutoCAD today; if you need one, the REST API is documented and open, and that is the way to build it.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        What does circuit tracing actually do?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        On a vector PDF it reads the drawing's own geometry instead of the pixels: it works out which pen the conductors are plotted with, follows each run, marks the junction nodes, finds the homerun arrowheads and reads the panel-circuit designation written beside them. Devices on a run are grouped into a circuit, and circuits carrying the same designation on different sheets are matched up. You get a netlist CSV and a traced overlay image. Sheets that draw no wiring and tag each device with its circuit instead — typical Revit output — are read from those tags. Grouping devices onto a circuit needs the symbols detected first, so that part is only as good as the model is on your drawings.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        What happens when the trial ends?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        The Basic plan is free and needs no card at all. The Professional trial runs for 14 days through Stripe Checkout, which does take a card up front, and the subscription starts automatically at the end of the trial unless you cancel first. Cancel any time during those 14 days from your dashboard and you are not charged.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Is my project data secure and private?
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Traffic is encrypted with TLS, passwords are stored only as hashes, and access to the servers is limited to the people who run the service. You keep full ownership of everything you upload and everything we produce from it, and we never use your drawings to train models for anyone else. Two things we will not overstate: stored files are not encrypted at rest in the current deployment, and we are not SOC 2 audited. If either is a procurement requirement, Enterprise can run on your own infrastructure so the drawings never leave your network — or contact us and we will tell you exactly where we stand. The <a href="/privacy">Privacy Policy</a> has the detail.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Run it on a sheet you already know</h2>
+            <p>Pick a drawing whose counts you can check, and see how close it gets.</p>
+            <div class="cta-buttons">
+                <a href="#demo" class="btn btn-primary">Upload a Sheet</a>
+                <a href="/login#register" class="btn btn-secondary">Create a Free Account</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>MEPdetect</h3>
+                    <p>Symbol detection, takeoffs and circuit tracing for MEP drawings.</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Product</h3>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#demo">Demo</a></li>
+                        <li><a href="#pricing">Pricing</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Developers</h3>
+                    <ul>
+                        <li><a href="https://api.mepdetect.com/api/docs" target="_blank" rel="noopener">API Documentation</a></li>
+                        <li><a href="https://train.mepdetect.com" target="_blank" rel="noopener">Training Platform</a></li>
+                        <li><a href="https://github.com/DynMEP/YOLOplan" target="_blank" rel="noopener">GitHub</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                        <li><a href="/terms">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 MEPdetect. All rights reserved. Detection powered by Ultralytics YOLO11.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Hidden File Input for Upload -->
+    <input type="file" id="file-input" accept=".pdf,.jpg,.jpeg,.png,.bmp,.tiff" style="display: none;">
+
+    <!-- Results Section (Hidden by default) -->
+    <section id="results-section" style="display: none; padding: 60px 0; background: #f3f4f6;">
+        <!-- Results will be injected here by JavaScript -->
+    </section>
+
+    <script>
+        // ========================================
+        // MEPdetect API Integration
+        // ========================================
+        const API_DETECTION = 'https://api.mepdetect.com';
+        const API_TRAINING = 'https://train.mepdetect.com';
+        let currentJobId = null;
+
+        // Main Detection Handler
+        async function handleUpload(file) {
+            // Validate file
+            const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png', 'image/bmp', 'image/tiff'];
+            if (!allowedTypes.includes(file.type)) {
+                showError('Invalid file type. Please upload PDF or image files.');
+                return;
+            }
+
+            // Check file size (50MB)
+            if (file.size > 50 * 1024 * 1024) {
+                showError('File too large. Maximum size is 50MB.');
+                return;
+            }
+
+            showLoading();
+
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                // /api/detect takes the drawing in the body and everything
+                // else as query parameters. Sent in the form body they are
+                // silently dropped and the server's defaults apply instead.
+                const params = new URLSearchParams({
+                    confidence: 0.25,
+                    dpi: 400,
+                    save_annotated: 'true',
+                    trace_circuits: 'true',
+                    export_formats: 'json,csv,excel'
+                });
+
+                updateProgress('Uploading file...', 10);
+                const uploadResponse = await fetch(`${API_DETECTION}/api/detect?${params}`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!uploadResponse.ok) {
+                    throw new Error(`Upload failed: ${uploadResponse.statusText}`);
+                }
+
+                const job = await uploadResponse.json();
+                currentJobId = job.job_id;
+
+                updateProgress('Processing drawing...', 30);
+
+                // Poll for results
+                while (true) {
+                    await new Promise(r => setTimeout(r, 2000));
+
+                    const statusResponse = await fetch(`${API_DETECTION}/api/jobs/${job.job_id}`);
+                    const status = await statusResponse.json();
+
+                    updateProgress(status.message || 'Processing...', status.progress || 50);
+
+                    if (status.status === 'completed') {
+                        showResults(status.result);
+                        break;
+                    } else if (status.status === 'failed') {
+                        throw new Error(status.message || 'Detection failed');
+                    }
+                }
+
+            } catch (error) {
+                console.error('Detection error:', error);
+                showError(error.message);
+            }
+        }
+
+        function showLoading() {
+            const resultsSection = document.getElementById('results-section');
+            resultsSection.innerHTML = `
+                <div style="max-width: 900px; margin: 0 auto; padding: 3rem; background: white; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
+                    <div style="text-align: center; padding: 2rem;">
+                        <div style="width: 60px; height: 60px; border: 5px solid #f3f4f6; border-top: 5px solid #2563eb; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 2rem;"></div>
+                        <p id="status-text" style="font-size: 20px; color: #374151; margin-bottom: 1rem;">Uploading file...</p>
+                        <div style="width: 100%; background: #f3f4f6; border-radius: 12px; overflow: hidden; height: 40px;">
+                            <div id="progress-bar" style="height: 100%; width: 0%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); transition: width 0.3s ease; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 16px;">0%</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            resultsSection.style.display = 'block';
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function updateProgress(message, percent) {
+            const text = document.getElementById('status-text');
+            const bar = document.getElementById('progress-bar');
+            if (text) text.textContent = message;
+            if (bar) {
+                bar.style.width = percent + '%';
+                bar.textContent = percent + '%';
+            }
+        }
+
+        function showResults(result) {
+            const circuits = result.circuit_summary;
+            const circuitsHTML = !circuits ? '' : `
+                    <div style="margin-bottom: 2rem;">
+                        <h3 style="color: #1f2937; margin-bottom: 1rem; font-size: 24px;">Circuit Tracing</h3>
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tbody>
+                                ${[
+                                    ['Circuits traced', circuits.circuits],
+                                    ['Conductor runs (nets)', circuits.nets],
+                                    ['Junction nodes', circuits.nodes],
+                                    ['Homeruns', circuits.homeruns],
+                                    ['Symbols on a circuit', circuits.connected_symbols],
+                                    ['Symbols with no wiring found', circuits.unconnected_symbols]
+                                ].map(([label, value]) => `
+                                    <tr style="border-bottom: 1px solid #e5e7eb;">
+                                        <td style="padding: 1rem;">${label}</td>
+                                        <td style="padding: 1rem;"><strong>${value ?? 0}</strong></td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>`;
+
+            const netlistButtons = !circuits ? '' : `
+                            <button onclick="downloadResult('netlist')" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; transition: transform 0.3s;">🔌 Download Netlist</button>
+                            <button onclick="downloadResult('netlist_overlay')" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #667eea 0%, #059669 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; transition: transform 0.3s;">🗺️ Download Traced Overlay</button>`;
+
+            const symbolsHTML = Object.entries(result.class_counts || {})
+                .map(([name, count]) => `
+                    <tr style="border-bottom: 1px solid #e5e7eb;">
+                        <td style="padding: 1rem;">${name}</td>
+                        <td style="padding: 1rem;"><strong>${count}</strong></td>
+                    </tr>
+                `).join('');
+
+            const resultsSection = document.getElementById('results-section');
+            resultsSection.innerHTML = `
+                <div style="max-width: 900px; margin: 0 auto; padding: 3rem; background: white; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
+                    <h2 style="text-align: center; color: #1f2937; font-size: 36px; margin-bottom: 2rem;">🎉 Detection Complete!</h2>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 12px; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+                            <div style="font-size: 3rem; font-weight: bold; margin-bottom: 0.5rem;">${result.total_detections || 0}</div>
+                            <div style="font-size: 1rem; opacity: 0.95;">Total Symbols</div>
+                        </div>
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 12px; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+                            <div style="font-size: 3rem; font-weight: bold; margin-bottom: 0.5rem;">${((result.confidence_avg || 0) * 100).toFixed(1)}%</div>
+                            <div style="font-size: 1rem; opacity: 0.95;">Confidence</div>
+                        </div>
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 12px; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+                            <div style="font-size: 3rem; font-weight: bold; margin-bottom: 0.5rem;">${(result.processing_time || 0).toFixed(1)}s</div>
+                            <div style="font-size: 1rem; opacity: 0.95;">Time</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 2rem;">
+                        <h3 style="color: #1f2937; margin-bottom: 1rem; font-size: 24px;">Symbol Breakdown</h3>
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead style="background: #f3f4f6;">
+                                <tr>
+                                    <th style="padding: 1rem; text-align: left; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Symbol Type</th>
+                                    <th style="padding: 1rem; text-align: left; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>${symbolsHTML || '<tr><td colspan="2" style="padding: 1rem;">No symbols detected</td></tr>'}</tbody>
+                        </table>
+                    </div>
+
+                    ${circuitsHTML}
+
+                    <div style="margin-bottom: 2rem;">
+                        <h3 style="color: #1f2937; margin-bottom: 1rem; font-size: 24px;">Download Results</h3>
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                            <button onclick="downloadResult('json')" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; transition: transform 0.3s;">📄 Download JSON</button>
+                            <button onclick="downloadResult('csv')" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; transition: transform 0.3s;">📊 Download CSV</button>
+                            <button onclick="downloadResult('excel')" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; transition: transform 0.3s;">📈 Download Excel</button>
+                            <button onclick="downloadResult('annotated')" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #667eea 0%, #059669 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; transition: transform 0.3s;">🖼️ Download Annotated Images</button>${netlistButtons}
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-top: 2rem;">
+                        <button onclick="resetUpload()" style="padding: 0.75rem 1.5rem; background: #f3f4f6; color: #1f2937; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600;">← Process Another Drawing</button>
+                        <a href="https://train.mepdetect.com" target="_blank" style="padding: 0.75rem 1.5rem; background: #f3f4f6; color: #1f2937; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; text-decoration: none; display: inline-block;">🎓 Train Custom Model</a>
+                    </div>
+                </div>
+            `;
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showError(message) {
+            const resultsSection = document.getElementById('results-section');
+            resultsSection.innerHTML = `
+                <div style="max-width: 900px; margin: 0 auto; padding: 3rem; background: white; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
+                    <div style="text-align: center; padding: 2rem;">
+                        <h2 style="color: #dc2626; margin-bottom: 1rem; font-size: 32px;">❌ Error</h2>
+                        <p style="color: #dc2626; font-size: 1.2rem; margin-bottom: 2rem;">${message}</p>
+                        <button onclick="resetUpload()" style="padding: 0.75rem 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: 600;">Try Again</button>
+                    </div>
+                </div>
+            `;
+            resultsSection.style.display = 'block';
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function downloadResult(format) {
+            if (!currentJobId) {
+                alert('No results available to download');
+                return;
+            }
+            window.location.href = `${API_DETECTION}/api/jobs/${currentJobId}/download/${format}`;
+        }
+
+        function resetUpload() {
+            document.getElementById('results-section').style.display = 'none';
+            document.getElementById('file-input').value = '';
+            currentJobId = null;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ========================================
+        // Initialization
+        // ========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('file-input');
+
+            // File input change handler
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) handleUpload(file);
+            });
+
+            // Connect CTA buttons - but NOT registration/login links
+            const ctaSelectors = [
+                '.cta-button',
+                '.btn-primary',
+                '[data-action="upload"]'
+            ];
+
+            ctaSelectors.forEach(selector => {
+                document.querySelectorAll(selector).forEach(btn => {
+                    const href = btn.getAttribute('href');
+                    // Only add file upload listener if:
+                    // - It's not a link (button/div)
+                    // - Or it's a link with href="#" or no href
+                    // - But NOT if it links to /login.html or other pages
+                    if (btn.tagName !== 'A' || href === '#' || href === '') {
+                        btn.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            fileInput.click();
+                        });
+                    }
+                    // Links with actual URLs (like /login.html) will work normally
+                });
+            });
+
+            // Add spinner animation
+            const style = document.createElement('style');
+            style.textContent = '@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }';
+            document.head.appendChild(style);
+
+            console.log('✅ MEPdetect integrated!');
+            console.log('📡 Detection API:', API_DETECTION);
+            console.log('🎓 Training API:', API_TRAINING);
+        });
+
+        // ========================================
+        // Original Scripts
+        // ========================================
+
+        // FAQ toggle functionality
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                const isOpen = answer.style.display === 'block';
+
+                // Close all answers
+                document.querySelectorAll('.faq-answer').forEach(a => a.style.display = 'none');
+                document.querySelectorAll('.faq-question span').forEach(s => s.textContent = '+');
+
+                // Toggle current answer
+                if (!isOpen) {
+                    answer.style.display = 'block';
+                    question.querySelector('span').textContent = '−';
+                }
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href !== '#' && href !== '') {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

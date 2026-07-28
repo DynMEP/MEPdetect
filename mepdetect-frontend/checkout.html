@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" class="auth-pending" data-auth="require">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/js/auth-gate.js"></script>
+    <style>html.auth-pending body { visibility: hidden; }</style>
+    <title>Checkout - MEPdetect</title>
+    <link rel="stylesheet" href="/css/mepdetect.css">
+    <link rel="stylesheet" href="/css/auth.css">
+    <script src="/assets/branding.js"></script>
+    <script src="/js/apply-branding.js" defer></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        .spinner {
+            width: 64px;
+            height: 64px;
+            border: 6px solid #e5e7eb;
+            border-top-color: #00d4ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 24px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        h1 {
+            font-size: 28px;
+            color: #1a1d29;
+            margin-bottom: 16px;
+        }
+        
+        p {
+            font-size: 16px;
+            color: #6b7280;
+            margin-bottom: 24px;
+        }
+        
+        .plan-info {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .plan-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #00d4ff;
+            margin-bottom: 8px;
+        }
+        
+        .plan-price {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1d29;
+        }
+        
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 24px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-top: 16px;
+        }
+        
+        .btn:hover {
+            background: #5568d3;
+        }
+    </style>
+</head>
+<body class="auth-page">
+    <div class="center-card">
+        <div data-mep-brand></div>
+        <div id="loading">
+            <div class="spinner"></div>
+            <h1>Preparing Checkout...</h1>
+            <p>Please wait while we redirect you to secure payment</p>
+            <div id="planInfo" class="plan-info" style="display: none;">
+                <div class="plan-name" id="planName"></div>
+                <div class="plan-price" id="planPrice"></div>
+            </div>
+        </div>
+        
+        <div id="error" style="display: none;">
+            <h1>Checkout Error</h1>
+            <div class="error" id="errorMessage"></div>
+            <a href="/pricing" class="btn btn-primary">Back to Pricing</a>
+        </div>
+    </div>
+    
+    <script>
+        const API_BASE = window.location.origin;
+        
+        async function initiateCheckout() {
+            try {
+                // Get plan from URL parameter
+                const urlParams = new URLSearchParams(window.location.search);
+                const planKey = urlParams.get('plan');
+                
+                if (!planKey) {
+                    throw new Error('No plan selected');
+                }
+                
+                // Check authentication
+                const authToken = localStorage.getItem('authToken') || localStorage.getItem('token');
+                if (!authToken) {
+                    window.location.replace(`/login?plan=${planKey}`);
+                    return;
+                }
+                
+                // Handle enterprise plan (contact sales)
+                if (planKey === 'enterprise') {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('error').style.display = 'block';
+                    document.getElementById('errorMessage').innerHTML = `
+                        <h2 style="color: #1a1d29; margin-bottom: 12px;">Enterprise Plan</h2>
+                        <p style="color: #374151;">
+                            The Enterprise plan requires a custom quote based on your needs.
+                            Please contact our sales team to discuss pricing and features.
+                        </p>
+                        <div style="margin-top: 20px;">
+                            <a href="mailto:sales@mepdetect.com" class="btn" style="display: inline-block; margin: 8px;">
+                                📧 Email Sales
+                            </a>
+                            <a href="/dashboard" class="btn" style="display: inline-block; margin: 8px; background: #6b7280;">
+                                Dashboard
+                            </a>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Load plan details from API
+                const plansResponse = await fetch(API_BASE + '/public/plans');
+                const plansData = await plansResponse.json();
+                const plan = plansData.plans.find(p => p.plan_key === planKey);
+                
+                if (!plan) {
+                    throw new Error('Plan not found');
+                }
+                
+                // Show plan info
+                document.getElementById('planInfo').style.display = 'block';
+                document.getElementById('planName').textContent = plan.display_name + ' Plan';
+                document.getElementById('planPrice').textContent = '$' + plan.price.toFixed(0) + '/month';
+                
+                // Create Stripe checkout session
+                const checkoutResponse = await fetch(API_BASE + '/subscriptions/create-checkout', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + authToken,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        plan_key: planKey,
+                        success_url: window.location.origin + '/dashboard?checkout=success',
+                        cancel_url: window.location.origin + '/pricing?checkout=cancelled'
+                    })
+                });
+                
+                if (!checkoutResponse.ok) {
+                    const error = await checkoutResponse.json();
+                    throw new Error(error.detail || 'Failed to create checkout session');
+                }
+                
+                const checkoutData = await checkoutResponse.json();
+                
+                // Redirect to Stripe checkout
+                if (checkoutData.checkout_url) {
+                    window.location.href = checkoutData.checkout_url;
+                } else {
+                    throw new Error('No checkout URL received');
+                }
+                
+            } catch (error) {
+                console.error('Checkout error:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('errorMessage').innerHTML = `
+                    <p><strong>Error:</strong> ${error.message}</p>
+                    <p style="margin-top: 12px; font-size: 14px;">
+                        If you continue to experience issues, please contact support.
+                    </p>
+                `;
+            }
+        }
+        
+        // Start checkout process on page load
+        initiateCheckout();
+    </script>
+</body>
+</html>

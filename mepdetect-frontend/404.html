@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page not found — MEPdetect</title>
+    <link rel="stylesheet" href="/css/mepdetect.css">
+    <script src="/assets/branding.js"></script>
+    <script src="/js/apply-branding.js" defer></script>
+    <style>
+        body.error-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1.25rem;
+            text-align: center;
+            background: var(--mep-paper);
+            background-image:
+                linear-gradient(rgba(20, 18, 16, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(20, 18, 16, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .error-card {
+            max-width: 520px;
+            width: 100%;
+            background: var(--mep-paper-bright);
+            border: 1px solid var(--mep-border);
+            border-radius: var(--mep-radius-lg);
+            box-shadow: var(--mep-shadow);
+            padding: 2.5rem 2rem;
+        }
+        .error-card [data-mep-brand] {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        .error-code {
+            font-family: var(--mep-display);
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--mep-accent);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+        .error-title {
+            font-family: var(--mep-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--mep-ink);
+            margin-bottom: 0.75rem;
+        }
+        .error-path {
+            font-family: ui-monospace, monospace;
+            font-size: 0.9rem;
+            color: var(--mep-stone);
+            background: var(--mep-paper);
+            border: 1px solid var(--mep-border);
+            border-radius: var(--mep-radius);
+            padding: 0.5rem 0.75rem;
+            margin: 1rem 0 1.25rem;
+            word-break: break-all;
+        }
+        .error-hint {
+            font-size: 0.95rem;
+            color: var(--mep-stone);
+            margin-bottom: 1.5rem;
+        }
+        .error-hint a {
+            color: var(--mep-accent);
+            font-weight: 600;
+        }
+        .error-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+        }
+        .error-actions .btn {
+            min-width: 8rem;
+        }
+    </style>
+</head>
+<body class="error-page">
+    <div class="error-card">
+        <div data-mep-brand data-mep-brand-href="/"></div>
+        <div class="error-code">404</div>
+        <h1 class="error-title">Page not found</h1>
+        <p class="error-hint">We couldn’t find a page at this address. It may have been moved, removed, or the URL might be mistyped.</p>
+        <div class="error-path" id="requestedPath" aria-label="Requested path"></div>
+        <p class="error-hint" id="typoHint" style="display: none;"></p>
+        <div class="error-actions">
+            <a href="/" class="btn btn-primary">Home</a>
+            <a href="/login" class="btn btn-secondary">Login</a>
+            <a href="/dashboard" class="btn btn-ghost">Dashboard</a>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var path = window.location.pathname || '/';
+            document.getElementById('requestedPath').textContent = path;
+
+            var suggestions = {
+                dashboad: '/dashboard',
+                dashbard: '/dashboard',
+                dashbord: '/dashboard',
+                dashbaord: '/dashboard',
+                dasboard: '/dashboard',
+                logn: '/login',
+                logni: '/login',
+                singup: '/login#register',
+                signup: '/login#register',
+                register: '/login#register',
+                pricng: '/pricing',
+                priceing: '/pricing',
+                chekout: '/checkout',
+                checout: '/checkout',
+                admni: '/admin',
+                verfy: '/verify-email',
+                verify: '/verify-email'
+            };
+
+            var segment = path.replace(/^\//, '').split('/')[0].toLowerCase();
+            if (segment && suggestions[segment]) {
+                var target = suggestions[segment];
+                var hint = document.getElementById('typoHint');
+                hint.style.display = 'block';
+                hint.innerHTML = 'Did you mean <a href="' + target + '">' + target + '</a>?';
+            }
+        })();
+    </script>
+</body>
+</html>

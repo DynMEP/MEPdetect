@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# Wrapper de docker compose: genera .compose/postgres.env y, por defecto, fusiona
+# variables en la raíz ./.env para que `docker compose` (sin flags) no muestre WARN
+# de POSTGRES_PASSWORD.
+#
+# Orden de fuente (salvo MEPDETECT_ENV_FILE):
+#   1) mepdetect-user-api/.env  (canónico recomendado)
+#   2) .env en la raíz
+#
+# MEPDETECT_SYNC_ROOT_DOTENV=0  → no toca ./.env; usa --env-file principal + .compose/postgres.env
+#
+# Solo regenerar ./.env sin docker: ./scripts/sync-compose-root-dotenv.sh
+#
+# Uso: ./dcompose ps | ./dcompose logs landing-page | ./dcompose up -d --build
+# Los logs usan el nombre del SERVICIO (landing-page), no el del contenedor.
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+
+ENV_FILE="${MEPDETECT_ENV_FILE:-}"
+if [[ -z "$ENV_FILE" ]]; then
+  if [[ -f "$ROOT/mepdetect-user-api/.env" ]]; then
+    ENV_FILE="$ROOT/mepdetect-user-api/.env"
+  elif [[ -f "$ROOT/.env" ]]; then
+    ENV_FILE="$ROOT/.env"
+  else
+    echo "No se encontró .env. Crea $ROOT/mepdetect-user-api/.env o $ROOT/.env" >&2
+    echo "O exporta MEPDETECT_ENV_FILE=/ruta/al/.env" >&2
+    exit 1
+  fi
+fi
+if [[ ! -f "$ENV_FILE" ]]; then
+  echo "MEPDETECT_ENV_FILE no existe: $ENV_FILE" >&2
+  exit 1
+fi
+
+if ! command -v python3 &>/dev/null; then
+  echo "Se requiere python3 (compose_derive_postgres_env.py)." >&2
+  exit 1
+fi
+
+mkdir -p "$ROOT/.compose"
+DERIVED="$ROOT/.compose/postgres.env"
+python3 "$ROOT/scripts/compose_derive_postgres_env.py" "$ENV_FILE" "$DERIVED"
+
+COMPOSE_FILES=(-f docker-compose.yml)
+if [[ -f docker-compose.prod.yml ]]; then
+  COMPOSE_FILES+=(-f docker-compose.prod.yml)
+fi
+
+if [[ "${MEPDETECT_SYNC_ROOT_DOTENV:-1}" != "0" ]]; then
+  MERGE_TMP="$ROOT/.env.__merge.$$"
+  python3 "$ROOT/scripts/compose_merge_root_env.py" "$ENV_FILE" "$DERIVED" "$MERGE_TMP"
+  mv "$MERGE_TMP" "$ROOT/.env"
+  exec docker compose "${COMPOSE_FILES[@]}" "$@"
+else
+  exec docker compose "${COMPOSE_FILES[@]}" --env-file "$ENV_FILE" --env-file "$DERIVED" "$@"
+fi

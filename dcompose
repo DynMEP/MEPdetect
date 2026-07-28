@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Atajo en la raíz → scripts/dcompose (misma firma que docker compose).
+exec "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/scripts/dcompose" "$@"

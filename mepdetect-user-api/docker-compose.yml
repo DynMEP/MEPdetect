@@ -1,0 +1,58 @@
+# Standalone user-api (external postgres/redis on mepdetect-net).
+# Prefer root stack: ../docker-compose.yml + ../dcompose
+# Requires .env in this directory (see .env.example).
+
+version: '3.8'
+
+services:
+  mepdetect-user-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mepdetect-user-api
+    ports:
+      - "${USER_API_PORT:-8093}:8000"
+    volumes:
+      - ./data/uploads:/app/uploads
+      - ${MODELS_HOST_PATH:-./data/models}:/app/models
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+      - JWT_SECRET_KEY=${SECRET_KEY:-change-me-in-production}
+      - JWT_SECRET=${JWT_SECRET:-${SECRET_KEY:-change-me-in-production}}
+      - SECRET_KEY=${SECRET_KEY:-change-me-in-production}
+      - STRIPE_API_KEY=${STRIPE_API_KEY:-}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET:-}
+      - RECAPTCHA_SECRET_KEY=${RECAPTCHA_SECRET_KEY:-}
+      - RECAPTCHA_MIN_SCORE=${RECAPTCHA_MIN_SCORE:-0.5}
+      - RECAPTCHA_ENABLED=${RECAPTCHA_ENABLED:-true}
+      - EMAIL_HOST=${EMAIL_HOST:-smtp.gmail.com}
+      - EMAIL_PORT=${EMAIL_PORT:-587}
+      - EMAIL_USER=${EMAIL_USER:-}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD:-}
+      - EMAIL_FROM=${EMAIL_FROM:-MEPdetect <noreply@mepdetect.com>}
+      - BASE_URL=${BASE_URL:-http://localhost:8090}
+      - APP_URL=${APP_URL:-http://localhost:8090}
+    restart: unless-stopped
+    networks:
+      - mepdetect-net
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=5)\""]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  mepdetect-net:
+    external: true

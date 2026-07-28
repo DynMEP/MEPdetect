@@ -1,0 +1,52 @@
+# MEPdetect Backend API Requirements
+
+# Web Framework
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+python-multipart==0.0.6
+pydantic==2.5.3
+
+# YOLO & Computer Vision
+ultralytics==8.3.0
+torch==2.2.0
+torchvision==0.17.0
+opencv-python==4.9.0.80
+numpy==1.24.3
+Pillow==10.2.0
+
+# PDF Processing
+PyMuPDF==1.23.8
+
+# Circuit tag OCR, for sheets whose annotation is drawn as curves.
+# Needs the tesseract-ocr binary (installed in the Dockerfile); tag reading
+# degrades to "no tags" if either is missing.
+pytesseract==0.3.10
+
+# Data Export
+pandas==2.2.0
+openpyxl==3.1.2
+
+# DXF input rendering and DXF takeoff export
+ezdxf==1.4.3
+matplotlib==3.10.0
+
+# PDF summary report
+reportlab==4.2.5
+
+# Utilities
+python-dotenv==1.0.0
+aiofiles==23.2.1
+
+# Optional: GPU Support (uncomment if using CUDA)
+# torch==2.2.0+cu118
+# torchvision==0.17.0+cu118
+
+# Development
+pytest==7.4.4
+pytest-asyncio==0.23.3
+httpx==0.26.0
+
+sqlalchemy==2.0.23
+psycopg2-binary==2.9.9
+
+PyJWT==2.8.0

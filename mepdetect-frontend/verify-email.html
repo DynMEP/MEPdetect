@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Email - MEPdetect</title>
+    <link rel="stylesheet" href="/css/mepdetect.css">
+    <link rel="stylesheet" href="/css/auth.css">
+    <script src="/assets/branding.js"></script>
+    <script src="/js/apply-branding.js" defer></script>
+</head>
+<body class="auth-page">
+    <div class="center-card">
+        <div data-mep-brand></div>
+        <div id="content">
+            <div class="icon-status loading">⏳</div>
+            <h1>Verifying your email…</h1>
+            <p>Please wait while we verify your account.</p>
+        </div>
+    </div>
+    <script>
+        const API_BASE = window.location.origin;
+
+        async function verifyEmail() {
+            const token = new URLSearchParams(window.location.search).get('token');
+
+            if (!token) {
+                showError('Invalid or missing verification link. Please check your email and try again.');
+                return;
+            }
+
+            try {
+                const res = await fetch(API_BASE + '/auth/verify-email?token=' + token);
+                const data = await res.json();
+
+                if (res.ok) {
+                    showSuccess(data.message);
+                } else if (res.status === 400 && data.detail && data.detail.includes('expired')) {
+                    showError('This verification link has expired. Please request a new one.');
+                } else {
+                    showError(data.detail || 'Verification failed. Please try again.');
+                }
+            } catch (e) {
+                console.error('Verification error:', e);
+                showError('Unable to verify your email. Please check your connection and try again.');
+            }
+        }
+
+        function showSuccess(message) {
+            document.getElementById('content').innerHTML = `
+                <div class="icon-status success">✓</div>
+                <h1>Email verified</h1>
+                <p>${message || 'Your account has been successfully verified.'}</p>
+                <p>You can now log in and start using MEPdetect.</p>
+                <a href="/login" class="btn btn-primary">Go to login</a>
+                <div class="info-box">
+                    <strong>What's next?</strong><br>
+                    Log in to access your dashboard and start detecting MEP symbols in your drawings.
+                </div>
+            `;
+        }
+
+        function showError(msg) {
+            document.getElementById('content').innerHTML = `
+                <div class="icon-status error">✕</div>
+                <h1>Verification failed</h1>
+                <p>${msg}</p>
+                <a href="/login" class="btn btn-primary">Back to login</a>
+                <div class="info-box">
+                    Need help? Contact support from the login page.
+                </div>
+            `;
+        }
+
+        verifyEmail();
+    </script>
+</body>
+</html>
+
+

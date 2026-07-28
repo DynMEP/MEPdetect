@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<!--
+  DRAFT — REVIEW BEFORE PUBLISHING.
+
+  Written against what the code actually does. Before it goes live:
+
+    1. Fill in every [BRACKETED] placeholder: legal entity, address, and the
+       state whose law governs.
+    2. Have a lawyer read it, particularly clauses 6 (professional
+       responsibility), 10 (warranties) and 11 (liability). A limitation of
+       liability that a court will not enforce is worth nothing.
+    3. Clause 4 describes the billing flow implemented in user_api.py: a
+       14-day Stripe trial that takes a card up front and renews
+       automatically. If you change that flow, change this clause with it —
+       an auto-renewal that the terms do not disclose is a federal problem
+       under ROSCA, not a small one.
+    4. Clause 6 is the one that matters most to you personally. It keeps the
+       service on the side of a drafting aid rather than an engineering
+       deliverable, which is what stops a licensing board from treating
+       output as the practice of engineering.
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    <meta name="description" content="The terms you agree to when you use MEPdetect: what the service does, what it costs, and what it is not.">
+    <title>Terms of Service — MEPdetect</title>
+    <link rel="stylesheet" href="/css/mepdetect.css">
+    <link rel="stylesheet" href="/css/landing.css">
+    <script src="/assets/branding.js"></script>
+    <script src="/js/apply-branding.js" defer></script>
+</head>
+<body class="landing-page">
+    <header>
+        <nav class="container">
+            <div data-mep-brand></div>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/#features">Features</a>
+                <a href="/#pricing">Pricing</a>
+                <a href="/login" class="btn-login">Login</a>
+            </div>
+        </nav>
+    </header>
+
+    <section class="legal">
+        <div class="container legal-body">
+            <h1>Terms of Service</h1>
+            <p class="legal-meta">Last updated: 27 July 2026</p>
+
+            <p class="legal-lead">These terms are the agreement between you and [LEGAL ENTITY NAME], [BUSINESS ADDRESS] ("we", "us"), for the use of MEPdetect. By creating an account or uploading a drawing you accept them. Clause 6 limits what you may rely on the output for; read it before you use MEPdetect on a live bid.</p>
+
+            <h2>1. What the service does</h2>
+            <p>MEPdetect detects and counts symbols on mechanical, electrical and plumbing drawings, and on vector PDFs it traces conductor runs and produces a circuit netlist. It returns counts, coordinates, confidence scores, an annotated copy of the sheet, exports in Excel, CSV and JSON, and where tracing ran, a netlist and a traced overlay.</p>
+            <p>Detection is performed by a machine-learning model. It is probabilistic: it will miss symbols and it will report symbols that are not there, at a rate that depends on your drawings and on the model in use.</p>
+
+            <h2>2. Your account</h2>
+            <p>You must give an accurate email address and keep your credentials secure. You are responsible for what happens under your account. Tell us promptly if you believe it has been compromised. One account is for one person; do not share logins.</p>
+
+            <h2>3. Acceptable use</h2>
+            <p>Upload only drawings you have the right to upload. Do not use MEPdetect to break the law, to infringe anyone's rights, or to attack the service or other users. Do not attempt to circumvent plan limits, extract our models, or resell access to the API unless we have agreed to it in writing.</p>
+
+            <h2>4. Plans, trials and billing</h2>
+            <p>The Basic plan is free, requires no card, and is limited to the allowance shown on the pricing page.</p>
+            <p>Paid plans are billed monthly in advance through Stripe. <strong>The Professional plan starts with a 14-day free trial. Stripe Checkout takes your card details when you start the trial, and at the end of the 14 days the subscription begins and your card is charged automatically at the advertised price, every month, until you cancel.</strong> You can cancel at any time from your dashboard, including during the trial; cancel before the trial ends and you are not charged.</p>
+            <p>Cancellation takes effect at the end of the period you have paid for, and you keep access until then. We do not give refunds for partial months except where the law requires it. If we change our prices we will give account holders at least 30 days' notice by email, and the new price applies from your next renewal.</p>
+
+            <h2>5. Your drawings and your results</h2>
+            <p>You keep all rights in the files you upload and in the results produced from them. You grant us only the licence we need to run the service: to store, render, process and return your files and results, and to look at them if you ask us to investigate a fault. We do not use your drawings to train models made available to anyone else. A custom model you train on your own drawings is yours.</p>
+            <p>Our handling of personal data is set out in the <a href="/privacy">Privacy Policy</a>.</p>
+
+            <h2>6. What MEPdetect is not</h2>
+            <p><strong>MEPdetect is a drafting and estimating aid. It is not a professional engineering service, and its output is not a certified takeoff, an engineering opinion, a code compliance review, or a substitute for the judgement of a licensed professional.</strong></p>
+            <p>We do not offer engineering services, we do not review your design, and nothing we return has been checked by an engineer for your project. Every result is a machine's reading of a drawing and is offered as a starting point for a professional who is competent to check it.</p>
+            <p>You are responsible for verifying every count, quantity, circuit and netlist before you rely on it — for a bid, a purchase order, a submittal, a permit application, an installation, or anything else. The annotated sheet and the traced overlay exist so that verification is practical: use them. Where the work requires a licensed professional, a licensed professional must review and take responsibility for it. Responsibility for the finished work stays with you and with the professional who seals it.</p>
+
+            <h2>7. Availability</h2>
+            <p>We aim to keep MEPdetect running and to give notice of planned maintenance, but we do not offer a guaranteed uptime level on the Basic or Professional plans, and none is promised here. Service levels are available to Enterprise customers only where we have agreed them in a separate written contract.</p>
+
+            <h2>8. Changes to the service</h2>
+            <p>We will keep improving MEPdetect, and features may change. If we remove or materially reduce a feature that your paid plan advertises, we will give you 30 days' notice by email, and you may cancel and receive a pro-rata refund for the unused part of your current period.</p>
+
+            <h2>9. Suspension and termination</h2>
+            <p>You may close your account at any time. We may suspend or close an account that breaches these terms, that does not pay, or that puts the service or other users at risk. Where the circumstances allow it we will warn you first and give you a chance to put it right. On closure you may export your data for 30 days, after which we may delete it.</p>
+
+            <h2>10. Warranties</h2>
+            <p>MEPdetect is provided "as is" and "as available". To the extent the law permits, we disclaim all implied warranties, including merchantability, fitness for a particular purpose and non-infringement. <strong>We do not warrant that detection is complete or accurate, that every symbol on a drawing will be found, that a traced circuit reflects the installed work, or that the service will be uninterrupted or error-free.</strong></p>
+            <p>Nothing in these terms excludes liability that cannot lawfully be excluded, and some jurisdictions do not allow the exclusion of certain warranties, so parts of this clause may not apply to you.</p>
+
+            <h2>11. Limitation of liability</h2>
+            <p>To the extent the law permits, neither party is liable to the other for indirect, incidental, special or consequential loss, or for lost profits, lost bids, lost revenue or lost data, even if the possibility was known.</p>
+            <p>Our total liability arising out of or relating to these terms, on any theory, is limited to the greater of the fees you paid us in the 12 months before the claim arose, or one hundred US dollars.</p>
+            <p>You accept that this limitation reflects the price of the service and the fact that you, not we, control how the output is checked and used.</p>
+
+            <h2>12. Indemnity</h2>
+            <p>You will indemnify us against claims arising from your use of MEPdetect in breach of these terms, from files you had no right to upload, and from your use of the output in work you did not verify.</p>
+
+            <h2>13. Governing law</h2>
+            <p>These terms are governed by the laws of the State of [GOVERNING STATE], without regard to its conflict-of-law rules, and the courts of [VENUE] have exclusive jurisdiction. If you deal with us as a consumer, this does not deprive you of the protection of the mandatory law of the place you live.</p>
+
+            <h2>14. Changes to these terms</h2>
+            <p>We may update these terms. We will change the date at the top, and for material changes we will email account holders at least 30 days before they take effect. Continuing to use MEPdetect after that means you accept them; if you do not, cancel before they take effect.</p>
+
+            <h2>15. Contact</h2>
+            <p><a href="mailto:sales@mepdetect.com">sales@mepdetect.com</a></p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 MEPdetect. All rights reserved. &middot; <a href="/privacy">Privacy Policy</a> &middot; <a href="/terms">Terms of Service</a></p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

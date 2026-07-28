@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="en" class="auth-pending" data-auth="require">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/js/auth-gate.js"></script>
+    <style>html.auth-pending body { visibility: hidden; }</style>
+    <title>User Dashboard - MEPdetect</title>
+    <link rel="stylesheet" href="/css/mepdetect.css">
+    <link rel="stylesheet" href="/css/app.css">
+    <script src="/assets/branding.js"></script>
+    <script src="/js/apply-branding.js" defer></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; }
+        
+        .sidebar { width: 250px; height: 100vh; background: #1a1d29; position: fixed; padding: 20px; color: white; }
+        .logo { font-size: 24px; font-weight: bold; margin-bottom: 40px; color: #00d4ff; }
+        .nav-item { padding: 12px 16px; margin: 8px 0; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .nav-item:hover, .nav-item.active { background: #2a2d3a; }
+        
+        .main { margin-left: 250px; padding: 30px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .header h1 { font-size: 28px; color: #1a1d29; }
+        .user-menu { display: flex; align-items: center; gap: 15px; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; background: #00d4ff; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
+        
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .card { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .card-title { font-size: 14px; color: #6b7280; margin-bottom: 8px; }
+        .card-value { font-size: 32px; font-weight: bold; color: #1a1d29; }
+        .card-subtitle { font-size: 12px; color: #9ca3af; margin-top: 4px; }
+        
+        .section { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .section-title { font-size: 20px; font-weight: 600; margin-bottom: 20px; color: #1a1d29; }
+        
+        .api-key-box { background: #f9fafb; padding: 16px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin: 20px 0; }
+        .api-key { font-family: monospace; font-size: 14px; color: #4b5563; }
+        
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; transition: 0.3s; }
+        .btn-primary { background: #00d4ff; color: white; }
+        .btn-primary:hover { background: #00b8e6; }
+        .btn-secondary { background: #e5e7eb; color: #4b5563; }
+        .btn-secondary:hover { background: #d1d5db; }
+        
+        .table { width: 100%; border-collapse: collapse; }
+        .table th { text-align: left; padding: 12px; background: #f9fafb; font-weight: 500; font-size: 14px; color: #6b7280; }
+        .table td { padding: 12px; border-bottom: 1px solid #f3f4f6; font-size: 14px; }
+        
+        .badge { padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+        .badge-success { background: #d1fae5; color: #065f46; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+        .badge-danger { background: #fee2e2; color: #991b1b; }
+        
+        .progress-bar { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; margin-top: 8px; }
+        .progress-fill { height: 100%; background: #00d4ff; transition: width 0.3s; }
+        
+        .plan-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
+        .plan-card { border: 2px solid #e5e7eb; padding: 24px; border-radius: 12px; transition: 0.3s; }
+        .plan-card:hover { border-color: #00d4ff; transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0,212,255,0.15); }
+        .plan-card.current { border-color: #00d4ff; background: #f0fcff; }
+        .plan-price { font-size: 36px; font-weight: bold; color: #1a1d29; margin: 16px 0; }
+        .plan-features { list-style: none; margin: 20px 0; }
+        .plan-features li { padding: 8px 0; color: #4b5563; }
+        .plan-features li:before { content: "✓ "; color: #10b981; font-weight: bold; margin-right: 8px; }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: #374151; }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; }
+        .form-group input:focus { outline: none; border-color: #00d4ff; }
+        .form-group textarea { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; resize: vertical; }
+        .form-group textarea:focus { outline: none; border-color: #00d4ff; }
+        
+        .alert { padding: 16px; border-radius: 8px; margin-bottom: 20px; }
+        .alert-info { background: #dbeafe; color: #1e40af; border-left: 4px solid #3b82f6; }
+        .alert-success { background: #d1fae5; color: #065f46; border-left: 4px solid #10b981; }
+        .alert-warning { background: #fef3c7; color: #92400e; border-left: 4px solid #f59e0b; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-new,
+        .status-read {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .status-replied {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-closed {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body class="app-page">
+    <div class="sidebar">
+        <div data-mep-brand></div>
+        <div class="nav-item active" onclick="showSection('dashboard')">📊 Dashboard</div>
+        <div class="nav-item" onclick="showSection('usage')">📈 Usage</div>
+        <div class="nav-item" onclick="showSection('billing')">💳 Billing</div>
+        <div class="nav-item" onclick="showSection('api')">🔑 API Keys</div>
+        <div class="nav-item" onclick="showSection('detection')">📊 Detection</div>
+        <div class="nav-item" onclick="showSection('settings')">⚙️ Settings</div>
+        <div class="nav-item" onclick="showSection('support')">📧 Support</div>
+        <div class="nav-item" onclick="logout()">🚪 Logout</div>
+    </div>
+
+    <div class="main">
+        <div class="header">
+            <h1 id="sectionHeader">Dashboard</h1>
+            <div class="user-menu">
+                <span id="userName">Loading...</span>
+                <div class="avatar" id="userAvatar">?</div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="section-dashboard">
+            <div class="cards">
+                <div class="card">
+                    <div class="card-title">Drawings This Month</div>
+                    <div class="card-value" id="dashboardDrawingsCount">-</div>
+                    <div class="card-subtitle">of <span id="dashboardDrawingsLimit">-</span> limit</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="dashboardDrawingsProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Total Detections</div>
+                    <div class="card-value" id="totalDetections">-</div>
+                    <div class="card-subtitle">All time</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Current Plan</div>
+                    <div class="card-value" id="currentPlan">-</div>
+                    <div class="card-subtitle"><a href="#" onclick="showSection('billing')" style="color: #00d4ff;">Upgrade</a></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Recent Activity</div>
+                <table class="table" id="recentActivityTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Model</th>
+                            <th>Files</th>
+                            <th>Symbols Found</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="4" style="text-align: center; color: #9ca3af;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Usage Tab -->
+        <div id="section-usage" style="display: none;">
+            <div class="section">
+                <div class="section-title">Usage Statistics</div>
+                
+                <div class="cards">
+                    <div class="card">
+                        <div class="card-title">Drawings This Month</div>
+                        <div class="card-value" id="usageMonthDrawings">-</div>
+                        <div class="card-subtitle">of <span id="usageMonthLimit">-</span> limit</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Total Usage</div>
+                        <div class="card-value" id="usageTotalCalls">-</div>
+                        <div class="card-subtitle">All time</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Total Files Processed</div>
+                        <div class="card-value" id="usageTotalFiles">-</div>
+                        <div class="card-subtitle">Documents analyzed</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <h3 style="margin-bottom: 15px;">Usage History</h3>
+                    <table class="table" id="usageHistoryTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Model</th>
+                                <th>Files</th>
+                                <th>Symbols Found</th>
+                                <th>Processing Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="5" style="text-align: center; color: #9ca3af;">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Keys Section -->
+        <div id="section-api" style="display: none;">
+            <div class="section">
+                <div class="section-title">API Keys</div>
+                <p style="color: #6b7280; margin-bottom: 20px;">Use this API key to authenticate requests to the MEPdetect API</p>
+                
+                <div class="api-key-box">
+                    <code class="api-key" id="apiKeyDisplay">Loading...</code>
+                    <button class="btn btn-secondary" onclick="copyApiKey()">Copy</button>
+                </div>
+                
+                <button class="btn btn-secondary" onclick="regenerateApiKey()">🔄 Regenerate Key</button>
+                
+                <div class="alert alert-warning" style="margin-top: 30px;">
+                    ⚠️ Keep your API key secure. Do not share it or commit it to version control.
+                </div>
+            </div>
+        </div>
+
+        <!-- Billing Section -->
+        <div id="section-billing" style="display: none;">
+            <div class="section">
+                <div class="section-title">Your Subscription</div>
+                
+                <!-- Current Plan Info -->
+                <div class="card" style="margin-bottom: 30px;">
+                    <div class="card-header">
+                        <h3 style="margin: 0;">Current Plan</h3>
+                    </div>
+                    <div style="padding: 24px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <div>
+                                <h2 id="currentPlanName" style="margin: 0 0 8px 0; color: #1a1d29;">Loading...</h2>
+                                <p id="currentPlanDescription" style="margin: 0; color: #6b7280; font-size: 14px;">Loading plan details...</p>
+                            </div>
+                            <div style="text-align: right;">
+                                <div id="currentPlanPrice" style="font-size: 32px; font-weight: 700; color: #00d4ff;">$0</div>
+                                <div id="currentPlanPeriod" style="font-size: 14px; color: #6b7280;">per month</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Usage Stats -->
+                        <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #e5e7eb;">
+                            <h4 style="margin: 0 0 16px 0; color: #374151;">Usage This Month</h4>
+                            
+                            <!-- Drawing Detections -->
+                            <div style="margin-bottom: 20px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                    <span style="color: #6b7280; font-weight: 500;">Drawing Detections</span>
+                                    <span id="billingDrawingsUsage" style="font-weight: 600; color: #1a1d29;">0 / 0</span>
+                                </div>
+                                <div style="background: #e5e7eb; height: 8px; border-radius: 4px; overflow: hidden;">
+                                    <div id="billingDrawingsBar" style="background: linear-gradient(90deg, #00d4ff, #0099ff); height: 100%; width: 0%; transition: width 0.3s;"></div>
+                                </div>
+                                <div id="billingDrawingsWarning" style="margin-top: 8px; padding: 8px 12px; background: #fef3c7; border-left: 3px solid #f59e0b; border-radius: 4px; display: none;">
+                                    <span style="color: #92400e; font-size: 13px; font-weight: 500;">⚠️ You're approaching your limit</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Total Symbols Detected -->
+                            <div style="padding: 12px; background: #f9fafb; border-radius: 8px; margin-bottom: 12px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="color: #6b7280; font-size: 14px;">Total Symbols Detected</span>
+                                    <span id="billingTotalSymbols" style="font-weight: 700; color: #00d4ff; font-size: 18px;">0</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="showSection('billing-plans')" style="margin-top: 20px; width: 100%;">
+                            View All Plans & Upgrade
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Billing History -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 style="margin: 0;">Billing History</h3>
+                    </div>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="billingHistory">
+                                <tr><td colspan="4" style="text-align: center; color: #9ca3af;">No billing history yet</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- All Plans Section -->
+        <div id="section-billing-plans" style="display: none;">
+            <div class="section">
+                <div class="section-title">
+                    Choose Your Plan
+                    <button class="btn btn-secondary" onclick="showSection('billing')" style="float: right;">← Back to Billing</button>
+                </div>
+                
+                <div class="alert alert-info" id="stripeAlert" style="display: none;">
+                    Stripe is not configured. Contact support to enable payments.
+                </div>
+                
+                <div class="plan-cards" id="allPlansContainer">
+                    <div style="text-align: center; padding: 40px; color: #9ca3af;">Loading plans...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Models Section -->
+        <!-- Detection Section -->
+        <div id="section-detection" style="display: none;">
+            <div class="section">
+                <div class="section-title">Detection Usage</div>
+                
+                <!-- Current Plan Overview -->
+                <div class="cards">
+                    <div class="card">
+                        <div class="card-title">Drawings This Month</div>
+                        <div class="card-value" id="drawingsCount">-</div>
+                        <div class="card-subtitle">of <span id="drawingsLimit">-</span> limit</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="drawingsProgress" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Total Symbols Detected</div>
+                        <div class="card-value" id="symbolsDetected">-</div>
+                        <div class="card-subtitle">All time</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Current Plan</div>
+                        <div class="card-value" id="detectionPlan">-</div>
+                        <div class="card-subtitle"><a href="#" onclick="showSection('billing')" style="color: #00d4ff;">Upgrade Plan</a></div>
+                    </div>
+                </div>
+        
+                <!-- Detection History -->
+                <div style="margin-top: 30px;">
+                    <h3 style="margin-bottom: 15px;">Detection History</h3>
+                    <table class="table" id="detectionHistoryTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>File Name</th>
+                                <th>Symbols Found</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="4" style="text-align: center; color: #9ca3af;">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        
+            <div class="section">
+                <div class="section-title">Test Symbol Detection</div>
+                <p style="color: #6b7280; margin-bottom: 24px;">
+                    Upload drawings to test MEP symbol detection in real-time
+                </p>
+            
+                <!-- File Upload Area -->
+                <div style="border: 2px dashed #d1d5db; border-radius: 12px; padding: 48px; text-align: center; background: #f9fafb; margin-bottom: 24px; cursor: pointer;" 
+                     onclick="document.getElementById('test-detect-file').click()">
+                    <input type="file" id="test-detect-file" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">📄</div>
+                    <h3 style="margin-bottom: 8px; font-size: 18px; color: #1a1d29;">Upload Drawing</h3>
+                    <p style="color: #6b7280; margin-bottom: 20px;">
+                        Drag & drop or click to upload<br>
+                        PDF, JPG, PNG supported
+                    </p>
+                    <button class="btn btn-primary" style="pointer-events: none;">
+                        Choose File
+                    </button>
+                </div>
+            
+                <!-- Detection Settings -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 24px;">
+                    <div class="form-group">
+                        <label>Confidence Threshold</label>
+                        <input type="number" id="test-confidence" value="0.25" min="0" max="1" step="0.05">
+                        <small style="color: #6b7280;">Lower = more detections, higher = more accurate</small>
+                    </div>
+                    <div class="form-group">
+                        <label>PDF Resolution (DPI)</label>
+                        <input type="number" id="test-dpi" value="400" min="72" max="600" step="50">
+                        <small style="color: #6b7280;">Higher = better quality, slower processing</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Circuit Tracing</label>
+                        <label style="display: flex; align-items: center; gap: 8px; font-weight: 400; margin-top: 6px;">
+                            <input type="checkbox" id="test-trace-circuits" style="width: auto;">
+                            Trace connections & build netlist
+                        </label>
+                        <small style="color: #6b7280;">Follows conductor runs, finds nodes and homeruns</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Detection Model</label>
+                        <select id="test-model">
+                            <option value="default">Default YOLO11s</option>
+                        </select>
+                        <button onclick="loadDetectionModels()" style="margin-top: 8px; padding: 6px 12px; background: #e5e7eb; color: #374151; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; width: 100%;">
+                            🔄 Refresh Models
+                        </button>
+                    </div>
+                </div>
+            
+                <!-- Progress Section -->
+                <div id="test-detect-progress" style="display: none; margin-top: 24px;">
+                    <div style="background: #f9fafb; border-radius: 8px; padding: 20px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span id="test-detect-progress-text" style="font-weight: 500;">Processing...</span>
+                            <span id="test-detect-progress-percent" style="font-weight: 600; color: #00d4ff;">0%</span>
+                        </div>
+                        <div style="background: #e5e7eb; height: 8px; border-radius: 4px; overflow: hidden;">
+                            <div id="test-detect-progress-bar" style="background: #00d4ff; height: 100%; width: 0%; transition: width 0.3s;"></div>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Results Section -->
+                <div id="test-detect-results" style="margin-top: 24px;"></div>
+            </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div id="section-settings" style="display: none;">
+            <div class="section">
+                <div class="section-title">Account Settings</div>
+                
+                <form onsubmit="updateProfile(event)">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="settingsName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="settingsEmail" readonly style="background: #f9fafb;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Company</label>
+                        <input type="text" id="settingsCompany">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" id="settingsPhone">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+            
+            <div class="section">
+                <div class="section-title">Change Password</div>
+                
+                <form onsubmit="changePassword(event)">
+                    <div class="form-group">
+                        <label>Current Password</label>
+                        <input type="password" id="currentPassword" autocomplete="current-password" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <input type="password" id="newPassword" autocomplete="new-password" required minlength="8">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Confirm New Password</label>
+                        <input type="password" id="confirmNewPassword" autocomplete="new-password" required minlength="8">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Update Password</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Support Section -->
+        <div id="section-support" style="display: none;">
+            <div class="section">
+                <div class="section-title">Contact Support</div>
+                
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px;">
+                    <!-- Contact Form -->
+                    <div>
+                        <form id="contactForm" onsubmit="submitContact(event)">
+                            <div class="form-group">
+                                <label>Your Name</label>
+                                <input type="text" id="contactName" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Your Email</label>
+                                <input type="email" id="contactEmail" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Subject</label>
+                                <input type="text" id="contactSubject" required placeholder="Brief description of your issue">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Message</label>
+                                <textarea id="contactMessage" rows="8" required placeholder="Please describe your question or issue in detail..."></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                📤 Send Message
+                            </button>
+                        </form>
+                        
+                        <div id="contactSuccess" style="display: none; margin-top: 20px; padding: 15px; background: #d1fae5; border-radius: 8px; color: #065f46;">
+                            ✅ Message sent successfully! We'll get back to you soon.
+                        </div>
+                    </div>
+                    
+                    <!-- Support Info -->
+                    <div>
+                        <div style="background: #f9fafb; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                            <h3 style="margin-bottom: 15px;">💬 Quick Response</h3>
+                            <p style="color: #6b7280; font-size: 14px; line-height: 1.6;">
+                                We typically respond within 24 hours on business days. For urgent issues, please mark them as such in your message.
+                            </p>
+                        </div>
+                        
+                        <div style="background: #f9fafb; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                            <h3 style="margin-bottom: 15px;">📚 Resources</h3>
+                            <ul style="list-style: none; padding: 0;">
+                                <li style="padding: 8px 0;">
+                                    <a href="/docs" style="color: #00d4ff; text-decoration: none;">
+                                        📖 Documentation
+                                    </a>
+                                </li>
+                                <li style="padding: 8px 0;">
+                                    <a href="/faq" style="color: #00d4ff; text-decoration: none;">
+                                        ❓ FAQ
+                                    </a>
+                                </li>
+                                <li style="padding: 8px 0;">
+                                    <a href="/tutorials" style="color: #00d4ff; text-decoration: none;">
+                                        🎥 Video Tutorials
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div style="background: #f9fafb; padding: 20px; border-radius: 12px;">
+                            <h3 style="margin-bottom: 15px;">📧 Email</h3>
+                            <p style="color: #6b7280; font-size: 14px;">
+                                <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="fb888e8b8b94898fbb969e8b9f9e8f9e988fd5989496">[email&#160;protected]</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Message History -->
+            <div class="section" style="margin-top: 30px;">
+                <div class="section-title">Your Messages</div>
+                
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f9fafb; border-bottom: 1px solid #e5e7eb;">
+                            <th style="padding: 12px; text-align: left; font-size: 14px;">Date</th>
+                            <th style="padding: 12px; text-align: left; font-size: 14px;">Subject</th>
+                            <th style="padding: 12px; text-align: left; font-size: 14px;">Status</th>
+                            <th style="padding: 12px; text-align: left; font-size: 14px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userMessagesTable">
+                        <tr><td colspan="4" style="text-align: center; padding: 20px; color: #9ca3af;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Thread Modal -->
+    <div id="messageThreadModal" class="modal">
+        <div class="modal-content" style="max-width: 700px; max-height: 80vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0;">Message Thread</h2>
+                <button onclick="closeMessageThread()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #6b7280;">&times;</button>
+            </div>
+            
+            <div id="threadContent">
+                <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                    <strong style="display: block; margin-bottom: 8px;">Subject:</strong>
+                    <div id="threadSubject" style="font-size: 18px; font-weight: 600;"></div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <strong style="display: block; margin-bottom: 8px;">Your Message:</strong>
+                    <div id="threadMessage" style="background: white; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px; white-space: pre-wrap;"></div>
+                    <div style="font-size: 12px; color: #6b7280; margin-top: 8px;">
+                        Sent on <span id="threadDate"></span>
+                    </div>
+                </div>
+                
+                <div id="threadReplySection" style="display: none;">
+                    <strong style="display: block; margin-bottom: 8px;">Support Reply:</strong>
+                    <div id="threadReply" style="background: #f0f9ff; padding: 20px; border-left: 4px solid #00d4ff; border-radius: 4px; white-space: pre-wrap;"></div>
+                    <div style="font-size: 12px; color: #6b7280; margin-top: 8px;">
+                        Replied on <span id="threadReplyDate"></span>
+                    </div>
+                </div>
+                
+                <div style="text-align: right; margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="closeMessageThread()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Base URL
+        const API_BASE = window.location.origin;
+        let authToken = localStorage.getItem('authToken') || localStorage.getItem('token');
+        let currentUser = null;
+
+        async function loadDashboard() {
+            if (!authToken) {
+                window.location.replace('/login');
+                return;
+            }
+
+            try {
+                // Load profile
+                currentUser = await apiCall('/user/profile');
+                document.getElementById('userName').textContent = currentUser.full_name || 'User';
+                const initials = (currentUser.full_name || 'U').split(' ').map(n => n[0]).join('').substring(0, 2);
+                document.getElementById('userAvatar').textContent = initials;
+                
+                // Update dashboard stats
+                loadDashboardStats();
+                
+                // Load API key
+                document.getElementById('apiKeyDisplay').textContent = currentUser.api_key || 'No API key';
+                
+                // Load usage logs
+                loadUsageLogs();
+                
+            } catch (error) {
+                console.error('Failed to load dashboard:', error);
+                if (error.status === 401 || error.status === 403) {
+                    localStorage.removeItem('authToken');
+                    window.location.replace('/login');
+                }
+            }
+        }
+
+        async function loadDashboardStats() {
+            try {
+                const data = await apiCall('/user/detection-stats');
+                
+                // Update Dashboard Overview section
+                document.getElementById('dashboardDrawingsCount').textContent = data.drawings_this_month || 0;
+                const limit = data.drawings_limit === -1 ? 'Unlimited' : (data.drawings_limit || 5);
+                document.getElementById('dashboardDrawingsLimit').textContent = limit;
+                document.getElementById('totalDetections').textContent = data.total_symbols || 0;
+                document.getElementById('currentPlan').textContent = (data.plan_name || 'Free').charAt(0).toUpperCase() + (data.plan_name || 'Free').slice(1);
+                
+                const percentage = ((data.drawings_this_month || 0) / (data.drawings_limit || 5)) * 100;
+                document.getElementById('dashboardDrawingsProgress').style.width = Math.min(percentage, 100) + '%';
+                
+            } catch (error) {
+                console.error('Failed to load dashboard stats:', error);
+            }
+        }
+
+        async function loadUsageLogs() {
+            try {
+                const stats = await apiCall('/user/detection-stats');
+                document.getElementById('usageMonthDrawings').textContent = stats.drawings_this_month || 0;
+                document.getElementById('usageMonthLimit').textContent = stats.drawings_limit || 5;
+            } catch (error) {
+                console.debug('Could not load usage stats:', error);
+            }
+        
+            try {
+                const data = await apiCall('/user/detection-history?limit=10', 'GET');
+                const history = data.history || [];
+                
+                // Update recent activity table
+                const tbody = document.querySelector('#recentActivityTable tbody');
+                if (history.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #9ca3af;">No activity yet</td></tr>';
+                } else {
+                    tbody.innerHTML = history.map(log => `
+                        <tr>
+                            <td>${new Date(log.created_at).toLocaleString()}</td>
+                            <td>${log.model_name || 'default'}</td>
+                            <td>${log.file_count || 1}</td>
+                            <td>${log.detections_count || 0}</td>
+                        </tr>
+                    `).join('');
+                }
+                
+                // Update usage tab
+                document.getElementById('usageTotalCalls').textContent = history.length;
+                document.getElementById('usageTotalFiles').textContent = history.reduce((sum, log) => sum + (log.file_count || 0), 0);
+                
+                // Update usage history table
+                const usageTable = document.querySelector('#usageHistoryTable tbody');
+                if (history.length === 0) {
+                    usageTable.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #9ca3af;">No usage data yet</td></tr>';
+                } else {
+                    usageTable.innerHTML = history.map(log => `
+                        <tr>
+                            <td>${new Date(log.created_at).toLocaleString()}</td>
+                            <td>${log.model_name || 'default'}</td>
+                            <td>${log.file_count || 1}</td>
+                            <td>${log.detections_count || 0}</td>
+                            <td>${log.processing_time ? log.processing_time.toFixed(2) + 's' : '-'}</td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Failed to load usage logs:', error);
+                document.getElementById('totalDetections').textContent = '0';
+            }
+        }
+
+        async function apiCall(endpoint, method = 'GET', body = null) {
+            // Check if token exists
+            if (!authToken) {
+                console.warn('No auth token available');
+                throw { status: 401, data: { detail: 'Not authenticated' } };
+            }
+            
+            const response = await fetch(API_BASE + endpoint, {
+                method,
+                headers: {
+                    'Authorization': `Bearer ${authToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: body ? JSON.stringify(body) : null
+            });
+            
+            if (!response.ok) {
+                const error = await response.json().catch(() => ({}));
+                
+                // Log 401 errors for debugging
+                if (response.status === 401) {
+                    console.warn(`🔐 Authentication failed for ${endpoint}:`, error);
+                }
+                
+                throw { status: response.status, data: error };
+            }
+            return response.json();
+        }
+
+        async function loadDetectionUsage() {
+            try {
+                const data = await apiCall('/user/detection-stats');
+                
+                // Update cards
+                document.getElementById('drawingsCount').textContent = data.drawings_this_month || 0;
+                document.getElementById('drawingsLimit').textContent = data.drawings_limit || 5;
+                document.getElementById('symbolsDetected').textContent = data.total_symbols || 0;
+                document.getElementById('detectionPlan').textContent = data.plan_name || 'Basic';
+                
+                // Update progress bar
+                const percentage = ((data.drawings_this_month || 0) / (data.drawings_limit || 5)) * 100;
+                document.getElementById('drawingsProgress').style.width = Math.min(percentage, 100) + '%';
+                
+                // Update detection history table
+                const tbody = document.querySelector('#detectionHistoryTable tbody');
+                if (data.history && data.history.length > 0) {
+                    tbody.innerHTML = data.history.map(item => `
+                        <tr>
+                            <td>${new Date(item.created_at).toLocaleString()}</td>
+                            <td>${item.file_name || 'Unknown'}</td>
+                            <td>${item.detections_count || 0}</td>
+                            <td><span class="badge badge-success">Complete</span></td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #9ca3af;">No detections yet. Upload your first drawing!</td></tr>';
+                }
+                
+                // Highlight current plan
+                updateDetectionPlans(data.plan_name);
+                
+            } catch (error) {
+                // Fail silently - detection stats are not critical
+                console.debug('Could not load detection stats:', error.status || error.message);
+                
+                // Set default fallback values
+                document.getElementById('drawingsCount').textContent = '-';
+                document.getElementById('symbolsDetected').textContent = '-';
+                
+                const tbody = document.querySelector('#detectionHistoryTable tbody');
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #9ca3af;">Unable to load detection history</td></tr>';
+            }
+        }
+        
+        function updateDetectionPlans(planName) {
+            const plan = (planName || 'basic').toLowerCase();
+            
+            // Reset all cards
+            document.querySelectorAll('[id^="detection-plan-"]').forEach(card => {
+                card.classList.remove('current');
+                const btn = card.querySelector('button');
+                btn.disabled = false;
+            });
+            
+            // Highlight current plan
+            const currentCard = document.getElementById(`detection-plan-${plan}`);
+            if (currentCard) {
+                currentCard.classList.add('current');
+                const btn = currentCard.querySelector('button');
+                btn.disabled = true;
+                if (btn.textContent.includes('Start') || btn.textContent.includes('Contact')) {
+                    btn.textContent = 'Current Plan';
+                }
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-secondary');
+            }
+        }
+
+        function showSection(section) {
+            // Update header
+            const headers = {
+                'dashboard': 'Dashboard',
+                'usage': 'Usage Statistics',
+                'billing': 'Billing & Plans',
+                'billing-plans': 'All Plans',
+                'api': 'API Keys',
+                'models': 'My Models',
+                'detection': 'Detection',
+                'settings': 'Account Settings',
+                'support': 'Support'
+            };
+            document.getElementById('sectionHeader').textContent = headers[section] || 'Dashboard';
+            
+            // Hide all sections
+            document.querySelectorAll('[id^="section-"]').forEach(el => el.style.display = 'none');
+            
+            // Show selected section
+            document.getElementById(`section-${section}`).style.display = 'block';
+            
+            // Update nav
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+            
+            // Load section-specific data
+            if (section === 'detection') {
+                loadDetectionUsage();
+            } else if (section === 'settings') {
+                loadSettings();
+            } else if (section === 'billing') {
+                loadCurrentPlan();
+            } else if (section === 'billing-plans') {
+                loadAllPlans();
+            } else if (section === 'support') {
+                loadSupportSection();
+            }
+        }
+
+        function loadSupportSection() {
+            if (currentUser) {
+                document.getElementById('contactName').value = currentUser.full_name || '';
+                document.getElementById('contactEmail').value = currentUser.email || '';
+            }
+            loadUserMessages();
+        }
+
+        function loadSettings() {
+            if (currentUser) {
+                document.getElementById('settingsName').value = currentUser.full_name || '';
+                document.getElementById('settingsEmail').value = currentUser.email || '';
+                document.getElementById('settingsCompany').value = currentUser.company || '';
+                document.getElementById('settingsPhone').value = currentUser.phone || '';
+            }
+        }
+
+        // ============= BILLING & PLANS FUNCTIONS =============
+        
+        // ============= BILLING & PLANS FUNCTIONS =============
+        
+        async function loadCurrentPlan() {
+            try {
+                // Load user's current plan info and detection stats
+                const userData = await apiCall('/user/profile', 'GET');
+                const detectionStats = await apiCall('/user/detection-stats', 'GET');
+                
+                currentUser = userData;
+                
+                // Update current plan display
+                const planName = (userData.role || 'free').charAt(0).toUpperCase() + (userData.role || 'free').slice(1);
+                document.getElementById('currentPlanName').textContent = planName + ' Plan';
+                document.getElementById('currentPlanDescription').textContent = getPlanDescription(userData.role);
+                
+                // Set price
+                const price = getPlanPrice(userData.role);
+                if (price === 0) {
+                    document.getElementById('currentPlanPrice').textContent = 'Free';
+                    document.getElementById('currentPlanPeriod').textContent = 'forever';
+                } else {
+                    document.getElementById('currentPlanPrice').textContent = '$' + price;
+                    document.getElementById('currentPlanPeriod').textContent = 'per month';
+                }
+                
+                // Update drawing detection stats
+                const drawingsLimit = detectionStats.drawings_limit || 5;
+                const drawingsUsed = detectionStats.drawings_this_month || 0;
+                const totalSymbols = detectionStats.total_symbols || 0;
+                
+                // Handle unlimited plans (-1 means unlimited)
+                const isUnlimited = drawingsLimit === -1;
+                const displayLimit = isUnlimited ? 'Unlimited' : drawingsLimit.toLocaleString();
+                const usagePercent = isUnlimited ? 0 : Math.min((drawingsUsed / drawingsLimit) * 100, 100);
+                
+                // Update display
+                document.getElementById('billingDrawingsUsage').textContent = 
+                    `${drawingsUsed.toLocaleString()} / ${displayLimit}`;
+                document.getElementById('billingDrawingsBar').style.width = usagePercent + '%';
+                document.getElementById('billingTotalSymbols').textContent = totalSymbols.toLocaleString();
+                
+                // Color code the usage bar
+                const bar = document.getElementById('billingDrawingsBar');
+                const warning = document.getElementById('billingDrawingsWarning');
+                
+                if (isUnlimited) {
+                    // Unlimited plan - always green
+                    bar.style.background = 'linear-gradient(90deg, #10b981, #059669)';
+                    warning.style.display = 'none';
+                } else if (usagePercent >= 90) {
+                    // Critical - red
+                    bar.style.background = 'linear-gradient(90deg, #ef4444, #dc2626)';
+                    warning.style.display = 'block';
+                    warning.querySelector('span').innerHTML = '🚨 You\'ve reached ' + Math.round(usagePercent) + '% of your limit. <a href="#" onclick="showSection(\'billing-plans\'); return false;" style="color: #92400e; text-decoration: underline;">Upgrade now</a>';
+                } else if (usagePercent >= 75) {
+                    // Warning - orange
+                    bar.style.background = 'linear-gradient(90deg, #f59e0b, #d97706)';
+                    warning.style.display = 'block';
+                    warning.querySelector('span').textContent = '⚠️ You\'re approaching your limit (' + Math.round(usagePercent) + '% used)';
+                } else {
+                    // Good - blue
+                    bar.style.background = 'linear-gradient(90deg, #00d4ff, #0099ff)';
+                    warning.style.display = 'none';
+                }
+                
+            } catch (error) {
+                console.error('Error loading current plan:', error);
+                document.getElementById('currentPlanName').textContent = 'Error loading plan';
+            }
+        }
+        function getPlanDescription(role) {
+            const descriptions = {
+                'free': 'Perfect for getting started with basic MEP detection',
+                'pro': 'For professionals who need more power and flexibility',
+                'enterprise': 'For teams and businesses with high-volume needs'
+            };
+            return descriptions[role.toLowerCase()] || 'Subscription plan';
+        }
+        
+        function getPlanPrice(role) {
+            const prices = {
+                'free': 0,
+                'pro': 29.99,
+                'enterprise': 99.99
+            };
+            return prices[role.toLowerCase()] || 0;
+        }
+        
+        async function loadAllPlans() {
+            try {
+                const response = await fetch(API_BASE + '/public/plans');
+                const data = await response.json();
+                
+                if (data.plans && data.plans.length > 0) {
+                    renderAllPlans(data.plans);
+                } else {
+                    document.getElementById('allPlansContainer').innerHTML = '<div style="text-align: center; padding: 40px; color: #9ca3af;">No plans available</div>';
+                }
+            } catch (error) {
+                console.error('Error loading plans:', error);
+                document.getElementById('allPlansContainer').innerHTML = '<div style="text-align: center; padding: 40px; color: #ef4444;">Failed to load plans</div>';
+            }
+        }
+        
+        function renderAllPlans(plans) {
+            const container = document.getElementById('allPlansContainer');
+            const currentPlan = (currentUser?.role || 'free').toLowerCase();
+            
+            // Sort plans by price: Basic (0), Professional (49), Enterprise (0 but custom)
+            const sortedPlans = plans.sort((a, b) => {
+                if (a.plan_key === 'free') return -1;
+                if (b.plan_key === 'free') return 1;
+                if (a.plan_key === 'enterprise') return 1;
+                if (b.plan_key === 'enterprise') return -1;
+                return a.price - b.price;
+            });
+            
+            container.innerHTML = sortedPlans.map(plan => {
+                const features = Array.isArray(plan.features) ? plan.features : 
+                                (plan.features ? plan.features.split(',') : []);
+                const isCurrent = plan.plan_key === currentPlan;
+                const isEnterprise = plan.billing_period === 'custom';
+                const isFree = plan.plan_key === 'free';
+                
+                // Price display
+                let priceHTML = '';
+                if (isEnterprise) {
+                    priceHTML = '<span style="font-size: 56px; font-weight: 700; color: #1a1d29; line-height: 1;">Custom</span>';
+                } else if (isFree) {
+                    priceHTML = '<span style="font-size: 56px; font-weight: 700; color: #1a1d29; line-height: 1;">Free</span>';
+                } else {
+                    priceHTML = `
+                        <span style="font-size: 24px; font-weight: 600; color: #374151;">$</span>
+                        <span style="font-size: 56px; font-weight: 700; color: #1a1d29; line-height: 1;">${Math.floor(plan.price)}</span>
+                        <span style="font-size: 16px; color: #6b7280; margin-left: 8px;">/mo</span>
+                    `;
+                }
+                
+                // Period description
+                let periodDesc = '';
+                if (isEnterprise) {
+                    periodDesc = 'Contact us';
+                } else if (isFree) {
+                    periodDesc = 'Forever free';
+                } else {
+                    periodDesc = 'per month';
+                }
+                
+                // Button text
+                let buttonText = '';
+                let buttonAction = '';
+                if (isCurrent) {
+                    buttonText = 'Current Plan';
+                } else if (isEnterprise) {
+                    buttonText = 'Contact Sales';
+                    buttonAction = 'showSection(\'support\')';
+                } else if (isFree) {
+                    buttonText = 'Get Started Free';
+                } else {
+                    buttonText = 'Start 14-Day Free Trial';
+                }
+                
+                // Format custom models limit
+                let customModelsHTML = '';
+                if (plan.custom_models_limit) {
+                    if (plan.custom_models_limit === -1) {
+                        customModelsHTML = '<li>Unlimited custom models</li>';
+                    } else if (plan.custom_models_limit > 0) {
+                        customModelsHTML = `<li>${plan.custom_models_limit} custom models</li>`;
+                    }
+                }
+                
+                return `
+                    <div class="plan-card ${isCurrent ? 'current' : ''} ${plan.is_featured ? 'featured' : ''}" id="plan-${plan.plan_key}">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
+                            <h3 style="margin: 0;">${plan.display_name}</h3>
+                            ${plan.is_popular ? '<span style="background: #fbbf24; color: #78350f; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 700;">POPULAR</span>' : ''}
+                        </div>
+                        
+                        <div class="plan-price" style="display: flex; align-items: baseline; margin-bottom: 8px;">
+                            ${priceHTML}
+                        </div>
+                        <div style="font-size: 14px; color: #6b7280; margin-bottom: 24px;">${periodDesc}</div>
+                        
+                        <p style="color: #6b7280; font-size: 14px; margin-bottom: 20px;">${plan.description || ''}</p>
+                        
+                        <ul class="plan-features">
+                            ${features.map(f => `<li>${f.trim()}</li>`).join('')}
+                            ${plan.storage_limit_gb ? `<li>${plan.storage_limit_gb} GB storage</li>` : ''}
+                            ${customModelsHTML}
+                        </ul>
+                        
+                        <button class="btn ${isCurrent ? 'btn-secondary' : 'btn-primary'}" 
+                                style="width: 100%;" 
+                                ${isCurrent ? 'disabled' : ''}
+                                onclick="${isCurrent ? '' : (buttonAction || `subscribeToPlan('${plan.plan_key}')`)}">
+                            ${buttonText}
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function copyApiKey() {
+            const key = document.getElementById('apiKeyDisplay').textContent;
+            if (key !== 'Loading...' && key !== 'No API key') {
+                await navigator.clipboard.writeText(key);
+                alert('API key copied to clipboard!');
+            }
+        }
+
+        async function regenerateApiKey() {
+            if (!confirm('Are you sure? This will invalidate your current API key.')) return;
+            
+            try {
+                const data = await apiCall('/user/regenerate-api-key', 'POST');
+                document.getElementById('apiKeyDisplay').textContent = data.api_key;
+                currentUser.api_key = data.api_key;
+                alert('New API key generated!');
+            } catch (error) {
+                alert('Failed to regenerate API key. Please try again.');
+            }
+        }
+
+        async function subscribeToPlan(planKey) {
+            if (planKey === 'free') {
+                //  alert('Downgrade to free plan will be available soon. Please contact support.');
+                return;
+            }
+            
+            try {
+                const data = await apiCall('/user/create-checkout-session?plan_id=' + planKey, 'POST');
+                if (data.checkout_url) {
+                    window.location.href = data.checkout_url;
+                } else {
+                    throw new Error('No checkout URL received');
+                }
+            } catch (error) {
+                console.error('Checkout error:', error);
+                document.getElementById('stripeAlert').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('stripeAlert').style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // Support / Contact Functions
+        async function submitContact(event) {
+            event.preventDefault();
+            
+            const contactData = {
+                name: document.getElementById('contactName').value,
+                email: document.getElementById('contactEmail').value,
+                subject: document.getElementById('contactSubject').value,
+                message: document.getElementById('contactMessage').value
+            };
+            
+            try {
+                await apiCall('/contact/message', 'POST', contactData);
+                
+                document.getElementById('contactForm').reset();
+                document.getElementById('contactSuccess').style.display = 'block';
+                
+                setTimeout(() => {
+                    document.getElementById('contactSuccess').style.display = 'none';
+                }, 5000);
+                
+                loadUserMessages();
+                
+            } catch (error) {
+                alert('Failed to send message: ' + (error.data?.detail || 'Unknown error'));
+            }
+        }
+
+        async function loadUserMessages() {
+            try {
+                const data = await apiCall('/user/messages');
+                renderUserMessages(data.messages);
+            } catch (error) {
+                console.error('Failed to load messages:', error);
+                document.getElementById('userMessagesTable').innerHTML = 
+                    '<tr><td colspan="4" style="text-align: center; color: #ef4444;">Failed to load messages</td></tr>';
+            }
+        }
+
+        function renderUserMessages(messages) {
+            const tbody = document.getElementById('userMessagesTable');
+            
+            if (messages.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px; color: #9ca3af;">No messages yet</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = messages.map(msg => `
+                <tr style="border-bottom: 1px solid #e5e7eb;">
+                    <td style="padding: 12px;">${new Date(msg.created_at).toLocaleDateString()}</td>
+                    <td style="padding: 12px;">${msg.subject}</td>
+                    <td style="padding: 12px;">
+                        <span class="status-badge status-${msg.status}">
+                            ${msg.status.toUpperCase()}
+                        </span>
+                    </td>
+                    <td style="padding: 12px;">
+                        <button class="btn btn-primary btn-sm" data-message-id="${msg.id}">
+                            View
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+            
+            // Add event delegation
+            tbody.addEventListener('click', function(e) {
+                if (e.target.classList.contains('btn-primary')) {
+                    const messageId = e.target.getAttribute('data-message-id');
+                    if (messageId) viewMessageThread(parseInt(messageId));
+                }
+            });
+        }
+
+        function getStatusBadgeColor(status) {
+            const colors = {
+                'new': '#dbeafe',
+                'read': '#dbeafe',
+                'replied': '#d1fae5',
+                'closed': '#fee2e2'
+            };
+            return colors[status] || '#dbeafe';
+        }
+
+        function getStatusTextColor(status) {
+            const colors = {
+                'new': '#1e40af',
+                'read': '#1e40af',
+                'replied': '#065f46',
+                'closed': '#991b1b'
+            };
+            return colors[status] || '#1e40af';
+        }
+
+        async function viewMessageThread(messageId) {
+            try {
+                const data = await apiCall('/user/messages');
+                const msg = data.messages.find(m => m.id === messageId);
+                
+                if (!msg) return;
+                
+                document.getElementById('threadSubject').textContent = msg.subject;
+                document.getElementById('threadMessage').textContent = msg.message;
+                document.getElementById('threadDate').textContent = new Date(msg.created_at).toLocaleString();
+                
+                if (msg.admin_reply) {
+                    document.getElementById('threadReplySection').style.display = 'block';
+                    document.getElementById('threadReply').textContent = msg.admin_reply;
+                    document.getElementById('threadReplyDate').textContent = msg.replied_at ? new Date(msg.replied_at).toLocaleString() : '';
+                } else {
+                    document.getElementById('threadReplySection').style.display = 'none';
+                }
+                
+                document.getElementById('messageThreadModal').style.display = 'flex';
+            } catch (error) {
+                alert('Failed to load message');
+            }
+        }
+
+        function closeMessageThread() {
+            document.getElementById('messageThreadModal').style.display = 'none';
+        }
+
+        async function updateProfile(e) {
+            e.preventDefault();
+            try {
+                const data = {
+                    full_name: document.getElementById('settingsName').value,
+                    company: document.getElementById('settingsCompany').value || null,
+                    phone: document.getElementById('settingsPhone').value || null
+                };
+                
+                await apiCall('/user/profile', 'PUT', data);
+                alert('Profile updated successfully!');
+                loadDashboard();
+            } catch (error) {
+                alert('Failed to update profile. Please try again.');
+            }
+        }
+
+        async function changePassword(e) {
+            e.preventDefault();
+            
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmNewPassword').value;
+            
+            if (newPass !== confirmPass) {
+                alert('New passwords do not match!');
+                return;
+            }
+            
+            try {
+                await apiCall('/user/change-password', 'POST', {
+                    current_password: document.getElementById('currentPassword').value,
+                    new_password: newPass
+                });
+                
+                alert('Password changed successfully!');
+                e.target.reset();
+            } catch (error) {
+                alert(error.data?.detail || 'Failed to change password. Please check your current password.');
+            }
+        }
+
+        function useModel(modelId) {
+            alert('Model selection feature coming soon! Use this model ID in API calls: ' + modelId);
+        }
+
+        function logout() {
+            localStorage.removeItem('authToken');
+            window.location.replace('/login');
+        }
+
+        // Load dashboard on page load
+        loadDashboard();
+        
+ 
+ 
+        const DETECTION_API = 'https://api.mepdetect.com';
+        const TRAINING_API = 'https://train.mepdetect.com';
+        let detectJobId = null;
+        
+        // Initialize detection file input
+        (function initDetection() {
+            const fileInput = document.getElementById('test-detect-file');
+            if (fileInput) {
+                fileInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) handleDetectionFile(file);
+                });
+            }
+        })();
+        
+        async function handleDetectionFile(file) {
+            console.log('🔍 Starting detection:', file.name);
+            
+            // Check plan limits
+            const drawings = parseInt(document.getElementById('drawingsCount').textContent) || 0;
+            const limitText = document.getElementById('drawingsLimit').textContent;
+            
+            // Don't block if unlimited
+            if (limitText !== 'Unlimited' && limitText !== '-1') {
+                const limit = parseInt(limitText) || 5;
+                if (drawings >= limit) {
+                    alert(`You've reached your plan limit of ${limit} drawings per month. Please upgrade to continue.`);
+                    return;
+                }
+            }
+            
+            // Show progress
+            document.getElementById('test-detect-progress').style.display = 'block';
+            document.getElementById('test-detect-results').innerHTML = '';
+            updateDetectProgress('Uploading...', 10);
+            
+            // Get selected model
+            const selectedModel = document.getElementById('test-model').value;
+            
+            const formData = new FormData();
+            formData.append('file', file);
+
+            // /api/detect takes the drawing in the body and everything else as
+            // query parameters. Sent in the form body they are silently
+            // dropped and the server's defaults apply instead, so the settings
+            // above would have no effect.
+            const params = new URLSearchParams({
+                confidence: document.getElementById('test-confidence').value,
+                dpi: document.getElementById('test-dpi').value,
+                save_annotated: 'true',
+                trace_circuits: document.getElementById('test-trace-circuits').checked,
+                export_formats: 'json,csv,excel'
+            });
+
+            // Add model selection if not default
+            if (selectedModel && selectedModel !== 'default') {
+                params.set('model_id', selectedModel);
+                console.log('📦 Using trained model:', selectedModel);
+            } else {
+                console.log('📦 Using default YOLO11s model');
+            }
+            
+            try {
+
+            const token = localStorage.getItem('authToken');  
+            const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+            
+            const response = await fetch(`${DETECTION_API}/api/detect?${params}`, {
+                method: 'POST',
+                headers: headers,  
+                body: formData
+            });
+                
+                
+                
+                
+                if (!response.ok) {
+                    throw new Error('Detection request failed');
+                }
+                
+                const jobStatus = await response.json();
+                detectJobId = jobStatus.job_id;
+                
+                console.log('✅ Job created:', detectJobId);
+                updateDetectProgress('Processing...', 20);
+                
+                pollDetectionStatus(detectJobId);
+                
+            } catch (error) {
+                console.error('❌ Detection error:', error);
+                showDetectError('Upload failed: ' + error.message);
+            }
+        }
+        
+        async function pollDetectionStatus(jobId) {
+            const pollInterval = setInterval(async () => {
+                try {
+                    const response = await fetch(`${DETECTION_API}/api/jobs/${jobId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Failed to get job status');
+                    }
+                    
+                    const status = await response.json();
+                    
+                    console.log('📊 Status:', status.status, status.progress + '%');
+                    
+                    if (status.status === 'completed') {
+                        clearInterval(pollInterval);
+                        updateDetectProgress('Complete!', 100);
+                        showDetectResults(status.result);
+                        
+                        // Reload usage stats (non-critical - fail silently)
+                        try {
+                            await loadDetectionUsage();
+                        } catch (error) {
+                            console.debug('Could not update detection stats:', error.status || error.message);
+                        }
+                        
+                    } else if (status.status === 'failed') {
+                        clearInterval(pollInterval);
+                        showDetectError(status.message || 'Detection failed');
+                    } else {
+                        updateDetectProgress(status.message || 'Processing...', status.progress || 50);
+                    }
+                    
+                } catch (error) {
+                    clearInterval(pollInterval);
+                    showDetectError('Error checking status: ' + error.message);
+                }
+            }, 2000);
+        }
+        
+        function updateDetectProgress(message, percent) {
+            const textEl = document.getElementById('test-detect-progress-text');
+            const percentEl = document.getElementById('test-detect-progress-percent');
+            const barEl = document.getElementById('test-detect-progress-bar');
+            
+            if (textEl) textEl.textContent = message;
+            if (percentEl) percentEl.textContent = percent + '%';
+            if (barEl) barEl.style.width = percent + '%';
+        }
+        
+        function showDetectResults(result) {
+            const symbolsHTML = Object.entries(result.class_counts || {})
+                .map(([name, count]) => `
+                    <tr style="border-bottom: 1px solid #e5e7eb;">
+                        <td style="padding: 12px;">${name}</td>
+                        <td style="padding: 12px; font-weight: 600;">${count}</td>
+                    </tr>
+                `).join('');
+            
+            const circuits = result.circuit_summary;
+            const circuitsHTML = !circuits ? '' : `
+                    <h4 style="margin-bottom: 12px; font-size: 18px;">Circuit Tracing</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-bottom: 24px;">
+                        ${[
+                            ['Circuits', circuits.circuits],
+                            ['Nets', circuits.nets],
+                            ['Nodes', circuits.nodes],
+                            ['Homeruns', circuits.homeruns],
+                            ['Wired symbols', circuits.connected_symbols],
+                            ['Unwired symbols', circuits.unconnected_symbols]
+                        ].map(([label, value]) => `
+                            <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 14px; text-align: center;">
+                                <div style="font-size: 22px; font-weight: bold; color: #1a1d29;">${value ?? 0}</div>
+                                <div style="margin-top: 4px; color: #6b7280; font-size: 13px;">${label}</div>
+                            </div>
+                        `).join('')}
+                    </div>`;
+
+            const netlistButtons = !circuits ? '' : `
+                        <button onclick="downloadDetectResult('netlist')" class="btn btn-primary">🔌 Netlist CSV</button>
+                        <button onclick="downloadDetectResult('netlist_overlay')" class="btn btn-primary">🗺️ Traced Overlay</button>`;
+
+            const resultsDiv = document.getElementById('test-detect-results');
+            resultsDiv.innerHTML = `
+                <div style="background: #f0fcff; border: 1px solid #00d4ff; border-radius: 12px; padding: 24px; margin-top: 24px;">
+                    <h3 style="margin-bottom: 24px; color: #1a1d29; font-size: 24px;">🎉 Detection Complete!</h3>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 24px;">
+                        <div style="background: #00d4ff; color: white; padding: 24px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 32px; font-weight: bold;">${result.total_detections || 0}</div>
+                            <div style="margin-top: 8px;">Symbols</div>
+                        </div>
+                        <div style="background: #10b981; color: white; padding: 24px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 32px; font-weight: bold;">${((result.confidence_avg || 0) * 100).toFixed(1)}%</div>
+                            <div style="margin-top: 8px;">Confidence</div>
+                        </div>
+                        <div style="background: #f59e0b; color: white; padding: 24px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 32px; font-weight: bold;">${(result.processing_time || 0).toFixed(1)}s</div>
+                            <div style="margin-top: 8px;">Time</div>
+                        </div>
+                    </div>
+                    
+                    <h4 style="margin-bottom: 12px; font-size: 18px;">Symbol Breakdown</h4>
+                    <table style="width: 100%; margin-bottom: 24px; background: white; border-radius: 8px; overflow: hidden;">
+                        <thead style="background: #f3f4f6;">
+                            <tr>
+                                <th style="padding: 12px; text-align: left;">Symbol</th>
+                                <th style="padding: 12px; text-align: left;">Count</th>
+                            </tr>
+                        </thead>
+                        <tbody>${symbolsHTML || '<tr><td colspan="2" style="padding: 16px; text-align: center; color: #6b7280;">No symbols detected</td></tr>'}</tbody>
+                    </table>
+                    
+                    ${circuitsHTML}
+
+                    <h4 style="margin-bottom: 12px; font-size: 18px;">Download Results</h4>
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                        <button onclick="downloadDetectResult('json')" class="btn btn-primary">📄 JSON</button>
+                        <button onclick="downloadDetectResult('csv')" class="btn btn-primary">📊 CSV</button>
+                        <button onclick="downloadDetectResult('excel')" class="btn btn-primary">📈 Excel</button>
+                        <button onclick="downloadDetectResult('annotated')" class="btn btn-primary">🖼️ Annotated Images</button>${netlistButtons}
+                    </div>
+                </div>
+            `;
+            
+            // Hide progress
+            setTimeout(() => {
+                document.getElementById('test-detect-progress').style.display = 'none';
+            }, 1000);
+        }
+        
+        function showDetectError(message) {
+            const resultsDiv = document.getElementById('test-detect-results');
+            resultsDiv.innerHTML = `
+                <div style="background: #fee; border: 2px solid #ef4444; border-radius: 12px; padding: 24px; margin-top: 24px; text-align: center;">
+                    <h3 style="color: #ef4444; margin-bottom: 16px; font-size: 20px;">❌ Detection Failed</h3>
+                    <p style="color: #374151; margin-bottom: 16px;">${message}</p>
+                    <button onclick="resetDetection()" class="btn btn-secondary">Try Again</button>
+                </div>
+            `;
+            
+            // Hide progress
+            document.getElementById('test-detect-progress').style.display = 'none';
+        }
+        
+        function resetDetection() {
+            document.getElementById('test-detect-file').value = '';
+            document.getElementById('test-detect-results').innerHTML = '';
+            document.getElementById('test-detect-progress').style.display = 'none';
+        }
+        
+        function downloadDetectResult(format) {
+            if (!detectJobId) {
+                alert('No results available');
+                return;
+            }
+            window.open(`${DETECTION_API}/api/jobs/${detectJobId}/download/${format}`, '_blank');
+        }
+        
+        async function loadDetectionModels() {
+            try {
+                console.log('🔄 Loading trained models...');
+                
+                // Get trained models from Training API
+                const response = await fetch(`${TRAINING_API}/api/models`);
+                const data = await response.json();
+                
+                const modelSelect = document.getElementById('test-model');
+                
+                // Clear existing options except default
+                modelSelect.innerHTML = '<option value="default">Default YOLO11s</option>';
+                
+                // Add trained models
+                if (data.models && data.models.length > 0) {
+                    data.models.forEach(model => {
+                        const option = document.createElement('option');
+                        option.value = model.model_id;
+                        
+                        // Format: ModelName (Classes: X, mAP: XX.X%)
+                        const mAP = model.metrics && model.metrics.mAP50 ? 
+                            (model.metrics.mAP50 * 100).toFixed(1) : '?';
+                        const numClasses = model.num_classes || model.classes.length;
+                        
+                        option.textContent = `${model.name} (${numClasses} classes, mAP: ${mAP}%)`;
+                        modelSelect.appendChild(option);
+                    });
+                    
+                    console.log(`✅ Loaded ${data.models.length} trained model(s)`);
+                } else {
+                    console.log('ℹ️ No trained models available');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error loading models:', error);
+                console.log('ℹ️ Using default model only');
+            }
+        }
+
+        // Load models when detection section is shown  
+        if (document.getElementById('section-detection')) {
+            loadDetectionModels();
+        }
+    </script>
+</body>
+</html>

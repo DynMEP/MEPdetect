@@ -1,0 +1,44 @@
+others/
+
+# Runtime / generated (never push to GitHub — breaks 100MB limit and bloats repo)
+mepdetect-backend/data/
+mepdetect-training/data/
+mepdetect-user-api/data/
+
+# Stack raíz (docker-compose.yml + deploy.sh)
+data/
+.env
+.compose/
+
+# Never commit — dcompose reads mepdetect-user-api/.env (see .env.example)
+mepdetect-user-api/.env
+**/.env
+!**/.env.example
+
+# Python bytecode y caché de pytest (los tests del backend los generan)
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Secretos y datos de clientes — nunca versionar.
+# El historial se purgó el 2026-07-27; que no vuelvan a entrar.
+pass.txt
+**/pass.txt
+*.pem
+*.key
+backup_*.sql
+*_dump.sql
+sql/mepdetect_2*.sql
+
+# Bundles de despliegue: empaquetaban un .env de producción completo.
+*.zip
+
+# Backups de compose heredados: contenían credenciales reales de AWS SES y
+# Stripe que la purga de secretos no alcanzó.
+archive/
+
+# Caché de la herramienta de grafo de código: artefacto generado.
+graphify-out/
+
+# Pesos YOLO: el Dockerfile los descarga en build (mepdetect-backend/Dockerfile).
+*.pt

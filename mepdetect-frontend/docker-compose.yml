@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  mepdetect-landing:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mepdetect-landing
+    restart: unless-stopped
+    ports:
+      - "8090:80"
+    networks:
+      - mepdetect-network
+    volumes:
+      # Optional: Mount HTML files for easy updates without rebuild
+      - ./login.html:/usr/share/nginx/html/login.html:ro
+      - ./dashboard.html:/usr/share/nginx/html/dashboard.html:ro
+      - ./admin.html:/usr/share/nginx/html/admin.html:ro
+      - ./mepdetect-landing-page.html:/usr/share/nginx/html/index.html:ro
+      - ./verify-email.html:/usr/share/nginx/html/verify-email.html:ro  
+      - ./pricing.html:/usr/share/nginx/html/pricing.html:ro  
+      - ./checkout.html:/usr/share/nginx/html/checkout.html:ro  
+      
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    labels:
+      - "com.mepdetect.service=landing-page"
+      - "com.mepdetect.environment=production"
+      - "com.mepdetect.version=2.0"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    environment:
+      - TZ=UTC
+      - RECAPTCHA_SECRET_KEY=${RECAPTCHA_SECRET_KEY}
+      - RECAPTCHA_MIN_SCORE=${RECAPTCHA_MIN_SCORE:-0.5}
+      - RECAPTCHA_ENABLED=${RECAPTCHA_ENABLED:-true}
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+
+networks:
+  mepdetect-network:
+    driver: bridge

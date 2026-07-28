@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - MEPdetect</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; }
+        
+        .sidebar { width: 250px; height: 100vh; background: #1a1d29; position: fixed; padding: 20px; color: white; }
+        .logo { font-size: 24px; font-weight: bold; margin-bottom: 40px; color: #00d4ff; }
+        .nav-item { padding: 12px 16px; margin: 8px 0; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .nav-item:hover, .nav-item.active { background: #2a2d3a; }
+        
+        .main { margin-left: 250px; padding: 30px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .header h1 { font-size: 28px; color: #1a1d29; }
+        .user-menu { display: flex; align-items: center; gap: 15px; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; background: #00d4ff; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
+        
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .card { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .card-title { font-size: 14px; color: #6b7280; margin-bottom: 8px; }
+        .card-value { font-size: 32px; font-weight: bold; color: #1a1d29; }
+        .card-subtitle { font-size: 12px; color: #9ca3af; margin-top: 4px; }
+        
+        .section { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .section-title { font-size: 20px; font-weight: 600; margin-bottom: 20px; color: #1a1d29; }
+        
+        .api-key-box { background: #f9fafb; padding: 16px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin: 20px 0; }
+        .api-key { font-family: monospace; font-size: 14px; color: #4b5563; }
+        
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; transition: 0.3s; }
+        .btn-primary { background: #00d4ff; color: white; }
+        .btn-primary:hover { background: #00b8e6; }
+        .btn-secondary { background: #e5e7eb; color: #4b5563; }
+        .btn-secondary:hover { background: #d1d5db; }
+        
+        .table { width: 100%; border-collapse: collapse; }
+        .table th { text-align: left; padding: 12px; background: #f9fafb; font-weight: 500; font-size: 14px; color: #6b7280; }
+        .table td { padding: 12px; border-bottom: 1px solid #f3f4f6; font-size: 14px; }
+        
+        .badge { padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+        .badge-success { background: #d1fae5; color: #065f46; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+        .badge-danger { background: #fee2e2; color: #991b1b; }
+        
+        .progress-bar { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; margin-top: 8px; }
+        .progress-fill { height: 100%; background: #00d4ff; transition: width 0.3s; }
+        
+        .plan-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
+        .plan-card { border: 2px solid #e5e7eb; padding: 24px; border-radius: 12px; transition: 0.3s; }
+        .plan-card:hover { border-color: #00d4ff; transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0,212,255,0.15); }
+        .plan-card.current { border-color: #00d4ff; background: #f0fcff; }
+        .plan-price { font-size: 36px; font-weight: bold; color: #1a1d29; margin: 16px 0; }
+        .plan-features { list-style: none; margin: 20px 0; }
+        .plan-features li { padding: 8px 0; color: #4b5563; }
+        .plan-features li:before { content: "✓ "; color: #10b981; font-weight: bold; margin-right: 8px; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">MEPdetect</div>
+        <div class="nav-item active" onclick="showSection('dashboard')">📊 Dashboard</div>
+        <div class="nav-item" onclick="showSection('usage')">📈 Usage</div>
+        <div class="nav-item" onclick="showSection('billing')">💳 Billing</div>
+        <div class="nav-item" onclick="showSection('api')">🔑 API Keys</div>
+        <div class="nav-item" onclick="showSection('models')">🤖 My Models</div>
+        <div class="nav-item" onclick="showSection('settings')">⚙️ Settings</div>
+        <div class="nav-item" onclick="logout()">🚪 Logout</div>
+    </div>
+
+    <div class="main">
+        <div class="header">
+            <h1>Dashboard</h1>
+            <div class="user-menu">
+                <span id="userName">John Doe</span>
+                <div class="avatar" id="userAvatar">JD</div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="section-dashboard">
+            <div class="cards">
+                <div class="card">
+                    <div class="card-title">API Calls This Month</div>
+                    <div class="card-value" id="apiCallsCount">0</div>
+                    <div class="card-subtitle">of <span id="apiCallsLimit">100</span> limit</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="apiCallsProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Total Detections</div>
+                    <div class="card-value" id="totalDetections">0</div>
+                    <div class="card-subtitle">All time</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Current Plan</div>
+                    <div class="card-value" id="currentPlan">Free</div>
+                    <div class="card-subtitle"><a href="#" onclick="showSection('billing')" style="color: #00d4ff;">Upgrade</a></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Recent Activity</div>
+                <table class="table" id="recentActivityTable">
+                    <thead>
+                        <tr>
+                            <th>Endpoint</th>
+                            <th>Detections</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="3" style="text-align: center; color: #9ca3af;">No activity yet</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- API Keys Section -->
+        <div id="section-api" style="display: none;">
+            <div class="section">
+                <div class="section-title">API Keys</div>
+                <p style="color: #6b7280; margin-bottom: 20px;">Use this API key to authenticate requests to the MEPdetect API</p>
+                
+                <div class="api-key-box">
+                    <code class="api-key" id="apiKeyDisplay">Loading...</code>
+                    <button class="btn btn-secondary" onclick="copyApiKey()">Copy</button>
+                </div>
+                
+                <button class="btn btn-secondary" onclick="regenerateApiKey()">🔄 Regenerate Key</button>
+                
+                <div style="margin-top: 30px; padding: 16px; background: #fef3c7; border-radius: 8px; color: #92400e;">
+                    ⚠️ Keep your API key secure. Do not share it or commit it to version control.
+                </div>
+            </div>
+        </div>
+
+        <!-- Billing Section -->
+        <div id="section-billing" style="display: none;">
+            <div class="section">
+                <div class="section-title">Subscription Plans</div>
+                
+                <div class="plan-cards">
+                    <div class="plan-card current">
+                        <h3>Free</h3>
+                        <div class="plan-price">$0<span style="font-size: 16px; color: #6b7280;">/mo</span></div>
+                        <ul class="plan-features">
+                            <li>100 API calls/month</li>
+                            <li>1 GB storage</li>
+                            <li>Community support</li>
+                        </ul>
+                        <button class="btn btn-secondary" style="width: 100%;" disabled>Current Plan</button>
+                    </div>
+                    
+                    <div class="plan-card">
+                        <h3>Pro</h3>
+                        <div class="plan-price">$49<span style="font-size: 16px; color: #6b7280;">/mo</span></div>
+                        <ul class="plan-features">
+                            <li>10,000 API calls/month</li>
+                            <li>50 GB storage</li>
+                            <li>5 custom models</li>
+                            <li>Email support</li>
+                        </ul>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="subscribeToPlan('pro')">Upgrade to Pro</button>
+                    </div>
+                    
+                    <div class="plan-card">
+                        <h3>Enterprise</h3>
+                        <div class="plan-price">$299<span style="font-size: 16px; color: #6b7280;">/mo</span></div>
+                        <ul class="plan-features">
+                            <li>Unlimited API calls</li>
+                            <li>500 GB storage</li>
+                            <li>Unlimited custom models</li>
+                            <li>Priority support</li>
+                        </ul>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="subscribeToPlan('enterprise')">Upgrade to Enterprise</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8093';
+        let authToken = localStorage.getItem('authToken');
+
+        async function loadDashboard() {
+            if (!authToken) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            try {
+                // Load profile
+                const profile = await apiCall('/user/profile');
+                document.getElementById('userName').textContent = profile.full_name;
+                document.getElementById('userAvatar').textContent = profile.full_name.split(' ').map(n => n[0]).join('');
+                document.getElementById('apiCallsLimit').textContent = profile.api_calls_limit;
+                
+                // Load usage stats
+                const usage = await apiCall('/user/usage');
+                document.getElementById('apiCallsCount').textContent = usage.current_month_calls;
+                document.getElementById('totalDetections').textContent = usage.total_detections;
+                
+                const percentage = (usage.current_month_calls / profile.api_calls_limit) * 100;
+                document.getElementById('apiCallsProgress').style.width = percentage + '%';
+                
+                // Load API key
+                const keyData = await apiCall('/user/api-key');
+                document.getElementById('apiKeyDisplay').textContent = keyData.api_key;
+                
+                // Load subscription
+                const subscription = await apiCall('/subscriptions/current');
+                document.getElementById('currentPlan').textContent = subscription.plan.charAt(0).toUpperCase() + subscription.plan.slice(1);
+                
+            } catch (error) {
+                console.error('Failed to load dashboard:', error);
+                if (error.status === 401) {
+                    window.location.href = '/login.html';
+                }
+            }
+        }
+
+        async function apiCall(endpoint, method = 'GET', body = null) {
+            const response = await fetch(API_BASE + endpoint, {
+                method,
+                headers: {
+                    'Authorization': `Bearer ${authToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: body ? JSON.stringify(body) : null
+            });
+            
+            if (!response.ok) throw { status: response.status, data: await response.json() };
+            return response.json();
+        }
+
+        function showSection(section) {
+            document.querySelectorAll('[id^="section-"]').forEach(el => el.style.display = 'none');
+            document.getElementById(`section-${section}`).style.display = 'block';
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        async function copyApiKey() {
+            const key = document.getElementById('apiKeyDisplay').textContent;
+            await navigator.clipboard.writeText(key);
+            alert('API key copied to clipboard!');
+        }
+
+        async function regenerateApiKey() {
+            if (!confirm('Are you sure? This will invalidate your current API key.')) return;
+            
+            const data = await apiCall('/user/regenerate-api-key', 'POST');
+            document.getElementById('apiKeyDisplay').textContent = data.api_key;
+            alert('New API key generated!');
+        }
+
+        async function subscribeToPlan(plan) {
+            try {
+                const data = await apiCall('/subscriptions/create-checkout-session', 'POST', { plan_name: plan });
+                window.location.href = data.checkout_url;
+            } catch (error) {
+                alert('Failed to start checkout. Please try again.');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('authToken');
+            window.location.href = '/login.html';
+        }
+
+        loadDashboard();
+    </script>
+</body>
+</html>

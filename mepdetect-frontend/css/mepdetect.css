@@ -1,0 +1,196 @@
+/* MEPdetect design system — warm industrial / blueprint, not generic SaaS */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap');
+
+:root {
+    --mep-ink: #141210;
+    --mep-ink-soft: #2c2824;
+    --mep-paper: #f5f0e8;
+    --mep-paper-bright: #fcf9f4;
+    --mep-stone: #6b635a;
+    --mep-stone-light: #9a9288;
+    --mep-border: #ddd5c8;
+    --mep-border-strong: #c4b9a8;
+    --mep-accent: #c44b1a;
+    --mep-accent-hover: #a33d14;
+    --mep-accent-soft: #f3e6dc;
+    --mep-teal: #1a5c56;
+    --mep-teal-soft: #d4ebe8;
+    --mep-success: #2d6a4f;
+    --mep-danger: #9b2c2c;
+    --mep-warning: #b45309;
+    --mep-radius: 6px;
+    --mep-radius-lg: 10px;
+    --mep-shadow: 0 1px 0 var(--mep-border), 0 12px 32px rgba(20, 18, 16, 0.08);
+    --mep-font: 'DM Sans', system-ui, sans-serif;
+    --mep-display: 'Fraunces', Georgia, serif;
+    --mep-max: 1160px;
+    --mep-sidebar: 248px;
+}
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--mep-font);
+    line-height: 1.6;
+    color: var(--mep-ink-soft);
+    background: var(--mep-paper);
+    -webkit-font-smoothing: antialiased;
+}
+
+.container {
+    max-width: var(--mep-max);
+    margin: 0 auto;
+    padding: 0 1.25rem;
+}
+
+/* Branding (filled by apply-branding.js) */
+.mep-brand-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    text-decoration: none;
+    color: inherit;
+}
+
+.mep-brand-img {
+    display: block;
+    width: auto;
+    flex-shrink: 0;
+}
+
+.mep-brand-wordmark {
+    font-family: var(--mep-display);
+    font-weight: 700;
+    font-size: 1.25rem;
+    letter-spacing: -0.02em;
+    color: var(--mep-ink);
+}
+
+.mep-brand-link:hover .mep-brand-wordmark {
+    color: var(--mep-accent);
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-family: var(--mep-font);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: var(--mep-radius);
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s;
+}
+
+.btn-primary {
+    background: var(--mep-accent);
+    color: #fff;
+    border-color: var(--mep-accent);
+}
+
+.btn-primary:hover {
+    background: var(--mep-accent-hover);
+    border-color: var(--mep-accent-hover);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--mep-ink);
+    border-color: var(--mep-border-strong);
+}
+
+.btn-secondary:hover {
+    border-color: var(--mep-ink);
+    background: var(--mep-paper-bright);
+}
+
+.btn-ghost {
+    background: transparent;
+    color: var(--mep-ink-soft);
+    border-color: transparent;
+}
+
+.btn-ghost:hover {
+    color: var(--mep-accent);
+}
+
+/* Forms */
+.label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--mep-ink-soft);
+    margin-bottom: 0.35rem;
+    letter-spacing: 0.02em;
+}
+
+.input,
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 0.65rem 0.85rem;
+    font-family: var(--mep-font);
+    font-size: 0.9375rem;
+    border: 1px solid var(--mep-border);
+    border-radius: var(--mep-radius);
+    background: var(--mep-paper-bright);
+    color: var(--mep-ink);
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.input:focus,
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--mep-teal);
+    box-shadow: 0 0 0 3px var(--mep-teal-soft);
+}
+
+.form-group {
+    margin-bottom: 1.1rem;
+}
+
+.error,
+.alert-danger {
+    background: #fce8e8;
+    color: var(--mep-danger);
+    padding: 0.75rem 1rem;
+    border-radius: var(--mep-radius);
+    border: 1px solid #e8b4b4;
+    font-size: 0.875rem;
+}
+
+.success,
+.alert-success {
+    background: #e8f5ee;
+    color: var(--mep-success);
+    padding: 0.75rem 1rem;
+    border-radius: var(--mep-radius);
+    border: 1px solid #a7d4bc;
+    font-size: 0.875rem;
+}
+
+.link {
+    color: var(--mep-accent);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.link:hover {
+    text-decoration: underline;
+}

@@ -1,0 +1,596 @@
+/* Marketing / landing page */
+
+body.landing-page {
+    background: var(--mep-paper-bright);
+}
+
+/* Blueprint grid texture */
+.landing-page .hero,
+.landing-page .cta-section {
+    background-color: var(--mep-ink);
+    background-image:
+        linear-gradient(rgba(196, 75, 26, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(196, 75, 26, 0.07) 1px, transparent 1px),
+        linear-gradient(165deg, #1a1816 0%, #141210 45%, #1a2e2c 100%);
+    background-size: 24px 24px, 24px 24px, 100% 100%;
+    color: #f5f0e8;
+}
+
+.landing-page header {
+    background: rgba(252, 249, 244, 0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--mep-border);
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.landing-page nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.landing-page .nav-links {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.5rem;
+}
+
+.landing-page .nav-links a {
+    text-decoration: none;
+    color: var(--mep-ink-soft);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.landing-page .nav-links a:hover {
+    color: var(--mep-accent);
+}
+
+.landing-page .nav-links .btn-login {
+    padding: 0.45rem 1rem;
+    border: 2px solid var(--mep-ink);
+    border-radius: var(--mep-radius);
+    color: var(--mep-ink);
+}
+
+.landing-page .nav-links .btn-login:hover {
+    background: var(--mep-ink);
+    color: #fff;
+}
+
+.landing-page .nav-links .btn-signup {
+    padding: 0.45rem 1rem;
+    background: var(--mep-accent);
+    color: #fff;
+    border-radius: var(--mep-radius);
+    border: 2px solid var(--mep-accent);
+}
+
+.landing-page .nav-links .btn-signup:hover {
+    background: var(--mep-accent-hover);
+    border-color: var(--mep-accent-hover);
+}
+
+.landing-page .hero {
+    padding: 5rem 0 4.5rem;
+    text-align: left;
+}
+
+.landing-page .hero .container {
+    max-width: 720px;
+}
+
+.landing-page .hero .eyebrow {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mep-accent);
+    margin-bottom: 1.25rem;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid rgba(196, 75, 26, 0.4);
+    border-radius: 2px;
+}
+
+.landing-page .hero h1 {
+    font-family: var(--mep-display);
+    font-size: clamp(2.25rem, 5vw, 3.25rem);
+    font-weight: 700;
+    line-height: 1.12;
+    margin-bottom: 1rem;
+    color: #fff;
+    letter-spacing: -0.02em;
+}
+
+.landing-page .hero .subheadline {
+    font-size: 1.2rem;
+    color: rgba(245, 240, 232, 0.85);
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+}
+
+.landing-page .hero .description {
+    font-size: 1.05rem;
+    color: rgba(245, 240, 232, 0.72);
+    margin-bottom: 2rem;
+    max-width: 540px;
+    line-height: 1.65;
+}
+
+.landing-page .cta-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+}
+
+.landing-page .hero .btn-primary {
+    background: var(--mep-accent);
+    color: #fff;
+    border-color: var(--mep-accent);
+}
+
+.landing-page .hero .btn-secondary {
+    color: #f5f0e8;
+    border-color: rgba(245, 240, 232, 0.45);
+}
+
+.landing-page .hero .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+}
+
+.landing-page .trust-badges {
+    padding-top: 1.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.landing-page .trust-badges p {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(245, 240, 232, 0.5);
+    margin-bottom: 0.75rem;
+}
+
+.landing-page .badge-icons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem 2rem;
+}
+
+.landing-page .badge-icons span {
+    font-size: 0.875rem;
+    color: rgba(245, 240, 232, 0.8);
+}
+
+.landing-page .badge-icons span::before {
+    content: '— ';
+    color: var(--mep-accent);
+}
+
+.landing-page .section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.landing-page .section-header h2 {
+    font-family: var(--mep-display);
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    font-weight: 700;
+    color: var(--mep-ink);
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+}
+
+.landing-page .section-header p {
+    font-size: 1.05rem;
+    color: var(--mep-stone);
+    max-width: 36rem;
+    margin: 0 auto;
+}
+
+.landing-page .features,
+.landing-page .pricing,
+.landing-page .faq {
+    padding: 5rem 0;
+    background: var(--mep-paper-bright);
+}
+
+.landing-page .how-it-works,
+.landing-page .demo {
+    padding: 5rem 0;
+    background: var(--mep-paper);
+}
+
+.landing-page .features-grid,
+.landing-page .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.landing-page .feature-card {
+    padding: 1.75rem;
+    background: var(--mep-paper-bright);
+    border: 1px solid var(--mep-border);
+    border-radius: var(--mep-radius-lg);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.landing-page .feature-card:hover {
+    border-color: var(--mep-border-strong);
+    box-shadow: var(--mep-shadow);
+}
+
+.landing-page .feature-icon {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+    line-height: 1;
+}
+
+.landing-page .feature-card h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--mep-ink);
+    margin-bottom: 0.65rem;
+}
+
+.landing-page .feature-card p {
+    color: var(--mep-stone);
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    margin-bottom: 0.75rem;
+}
+
+.landing-page .feature-benefit {
+    color: var(--mep-teal);
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.landing-page .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.landing-page .step-number {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: var(--mep-ink);
+    color: var(--mep-paper);
+    font-family: var(--mep-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.25rem;
+    border-radius: var(--mep-radius);
+}
+
+.landing-page .step {
+    text-align: center;
+}
+
+.landing-page .step h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--mep-ink);
+    margin-bottom: 0.5rem;
+}
+
+.landing-page .step p {
+    color: var(--mep-stone);
+    font-size: 0.9375rem;
+}
+
+.landing-page .pricing-card {
+    border: 1px solid var(--mep-border);
+    border-radius: var(--mep-radius-lg);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    background: var(--mep-paper-bright);
+    position: relative;
+    transition: box-shadow 0.2s;
+}
+
+.landing-page .pricing-card.featured {
+    border-color: var(--mep-accent);
+    box-shadow: var(--mep-shadow);
+}
+
+.landing-page .popular-badge {
+    position: absolute;
+    top: -0.65rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--mep-accent);
+    color: #fff;
+    padding: 0.2rem 0.85rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    border-radius: 2px;
+}
+
+.landing-page .pricing-features {
+    list-style: none;
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.landing-page .pricing-features li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid var(--mep-border);
+}
+
+.landing-page .pricing-features li.disabled {
+    opacity: 0.45;
+}
+
+.landing-page .price-period {
+    color: var(--mep-stone);
+    margin-bottom: 1.25rem;
+}
+
+.landing-page .price {
+    font-family: var(--mep-display);
+    font-size: 2.75rem;
+    font-weight: 700;
+    color: var(--mep-ink);
+}
+
+.landing-page .pricing-features li::before {
+    color: var(--mep-teal);
+}
+
+.landing-page .demo-panel {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    align-items: stretch;
+}
+
+.landing-page .demo-upload {
+    background: var(--mep-paper-bright);
+    border: 2px dashed var(--mep-border-strong);
+    border-radius: var(--mep-radius-lg);
+    padding: 2.5rem 1.75rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.landing-page .demo-upload:hover {
+    border-color: var(--mep-teal);
+    background: var(--mep-accent-soft);
+}
+
+.landing-page .demo-upload-icon {
+    font-size: 2.5rem;
+    line-height: 1;
+    margin-bottom: 1rem;
+}
+
+.landing-page .demo-upload h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--mep-ink);
+    margin-bottom: 0.65rem;
+}
+
+.landing-page .demo-upload p {
+    color: var(--mep-stone);
+    font-size: 0.9375rem;
+    margin-bottom: 1.5rem;
+}
+
+.landing-page .demo-output {
+    background: var(--mep-paper-bright);
+    border: 1px solid var(--mep-border);
+    border-radius: var(--mep-radius-lg);
+    padding: 1.75rem;
+}
+
+.landing-page .demo-output h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--mep-ink);
+    margin-bottom: 1rem;
+}
+
+.landing-page .demo-output-list {
+    list-style: none;
+    margin: 0 0 1.25rem;
+    padding: 0;
+}
+
+.landing-page .demo-output-list li {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--mep-stone);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+}
+
+.landing-page .demo-output-list li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--mep-teal);
+}
+
+.landing-page .demo-output-list strong {
+    color: var(--mep-ink);
+}
+
+.landing-page .demo-note {
+    font-size: 0.875rem;
+    color: var(--mep-stone);
+    line-height: 1.6;
+    border-top: 1px solid var(--mep-border);
+    padding-top: 1rem;
+}
+
+.landing-page .faq-item {
+    border: 1px solid var(--mep-border);
+    border-radius: var(--mep-radius);
+    margin-bottom: 0.65rem;
+    overflow: hidden;
+}
+
+.landing-page .faq-question {
+    padding: 1.1rem 1.25rem;
+    font-weight: 600;
+    background: var(--mep-paper);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.landing-page .faq-question:hover {
+    background: var(--mep-accent-soft);
+}
+
+.landing-page .faq-answer {
+    padding: 1.1rem 1.25rem;
+    display: none;
+    background: var(--mep-paper-bright);
+    font-size: 0.9375rem;
+}
+
+.landing-page .cta-section {
+    padding: 4.5rem 0;
+    text-align: center;
+}
+
+.landing-page .cta-section h2 {
+    font-family: var(--mep-display);
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    margin-bottom: 0.75rem;
+    color: #fff;
+}
+
+.landing-page .cta-section p {
+    margin-bottom: 1.75rem;
+    opacity: 0.85;
+}
+
+.landing-page footer {
+    background: var(--mep-ink);
+    color: rgba(245, 240, 232, 0.75);
+    padding: 3.5rem 0 1.75rem;
+}
+
+.landing-page .footer-section h3 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #fff;
+    margin-bottom: 1rem;
+}
+
+.landing-page .footer-section a:hover {
+    color: var(--mep-accent);
+}
+
+.landing-page .footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1.5rem;
+    margin-top: 2rem;
+    text-align: center;
+    font-size: 0.85rem;
+}
+
+@media (max-width: 768px) {
+    .landing-page .nav-links {
+        display: none;
+    }
+
+    .landing-page .hero {
+        padding: 3rem 0;
+    }
+
+    .landing-page .pricing-card.featured {
+        transform: none;
+    }
+}
+
+/* Legal pages (privacy, terms) */
+.landing-page .legal {
+    padding: 4rem 0 5rem;
+    background: var(--mep-paper-bright);
+}
+
+.landing-page .legal-body {
+    max-width: 46rem;
+}
+
+.landing-page .legal-body h1 {
+    font-family: var(--mep-display);
+    font-size: 2.25rem;
+    color: var(--mep-ink);
+    margin-bottom: 0.5rem;
+}
+
+.landing-page .legal-meta {
+    color: var(--mep-stone-light);
+    font-size: 0.875rem;
+    margin-bottom: 2rem;
+}
+
+.landing-page .legal-lead {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--mep-ink-soft);
+    border-left: 3px solid var(--mep-teal);
+    padding-left: 1.25rem;
+    margin-bottom: 2.5rem;
+}
+
+.landing-page .legal-body h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--mep-ink);
+    margin: 2.5rem 0 0.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--mep-border);
+}
+
+.landing-page .legal-body h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--mep-ink);
+    margin: 1.5rem 0 0.5rem;
+}
+
+.landing-page .legal-body p,
+.landing-page .legal-body li {
+    color: var(--mep-stone);
+    line-height: 1.75;
+    margin-bottom: 1rem;
+}
+
+.landing-page .legal-body strong {
+    color: var(--mep-ink);
+}
+
+.landing-page .legal-body ul {
+    margin: 0 0 1rem 1.25rem;
+}
+
+.landing-page .legal-body a {
+    color: var(--mep-teal);
+    text-decoration: underline;
+}

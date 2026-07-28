@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  mepdetect-backend:
+    build: .
+    container_name: mepdetect-backend
+    restart: unless-stopped
+    
+    ports:
+      - "8091:8000"  # External:Internal (avoiding 8090 used by frontend)
+    
+    volumes:
+      # Persist uploaded files and results
+      - ./data/uploads:/app/uploads
+      - ./data/results:/app/results
+      - /opt/mepdetect-shared/models:/app/models
+    
+    environment:
+      # API Configuration
+      - API_TITLE=MEPdetect API
+      - API_VERSION=1.0.0
+      - LOG_LEVEL=info
+      
+      # Detection Settings (defaults)
+      - DEFAULT_CONFIDENCE=0.25
+      - DEFAULT_DPI=400
+      - MAX_UPLOAD_SIZE=50MB
+      - MAX_BATCH_SIZE=50
+      
+      # Performance
+      - WORKERS=4
+      - TIMEOUT=300
+      
+      # ⭐ NEW: Database Configuration (for logging detections)
+      - DATABASE_URL=postgresql://mepdetect:CHANGE_ME@mepdetect-postgres:5432/mepdetect
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-your-secret-key-here-change-in-production}
+      
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+    
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=5)\""]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    
+    networks:
+      - mepdetect-network
+      - mepdetect-net  # ⭐ NEW: Connect to postgres network
+
+networks:
+  mepdetect-network:
+    driver: bridge
+  mepdetect-net:  # ⭐ NEW: External network for postgres access
+    external: true
+
+volumes:
+  uploads:
+  results:
+  models:

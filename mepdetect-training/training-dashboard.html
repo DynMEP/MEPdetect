@@ -1,0 +1,2236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEPdetect Training - AI Model Training Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            color: var(--gray-900);
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: var(--gray-700);
+            font-size: 16px;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            border-radius: 10px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--gray-700);
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            background: var(--gray-100);
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            font-size: 24px;
+            color: var(--gray-900);
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            font-size: 18px;
+            color: var(--gray-800);
+            margin-bottom: 16px;
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 3px dashed var(--gray-300);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: var(--gray-50);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--primary);
+            background: var(--primary);
+            background-opacity: 0.1;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-card.success {
+            background: linear-gradient(135deg, var(--success), #059669);
+        }
+
+        .stat-card.warning {
+            background: linear-gradient(135deg, var(--warning), #d97706);
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: var(--gray-200);
+            border-radius: 8px;
+            height: 8px;
+            overflow: hidden;
+            margin: 16px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            transition: width 0.5s;
+            border-radius: 8px;
+        }
+
+        /* Dataset List */
+        .dataset-item {
+            background: var(--gray-50);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dataset-info h4 {
+            font-size: 18px;
+            color: var(--gray-900);
+            margin-bottom: 8px;
+        }
+
+        .dataset-info p {
+            color: var(--gray-700);
+            font-size: 14px;
+        }
+
+        .dataset-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Training Progress */
+        .training-status {
+            background: var(--gray-50);
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .metric-box {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .metric-label {
+            font-size: 13px;
+            color: var(--gray-700);
+        }
+
+        /* Model Card */
+        .model-card {
+            background: var(--gray-50);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .model-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .model-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .model-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .model-metric {
+            text-align: center;
+        }
+
+        .model-metric-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .model-metric-label {
+            font-size: 12px;
+            color: var(--gray-700);
+            margin-top: 4px;
+        }
+
+        /* Tags */
+        .tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-right: 8px;
+        }
+
+        .tag-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .tag-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .tag-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        /* Spinner */
+        .spinner {
+            border: 3px solid var(--gray-200);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.85; }
+        }
+        
+        code {
+            font-family: 'Courier New', monospace;
+            background: var(--gray-100);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .tabs {
+                gap: 5px;
+                padding: 5px;
+            }
+
+            .tab {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Alert */
+        .alert {
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #6ee7b7;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎓 MEPdetect Training Platform</h1>
+            <p>Train custom AI models for your MEP symbols with YOLO11</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" data-tab="datasets">📂 Datasets</button>
+            <button class="tab" data-tab="training">🏋️ Training</button>
+            <button class="tab" data-tab="models">💾 Models</button>
+            <button class="tab" data-tab="detection">🔍 Detection</button>
+            <button class="tab" data-tab="tools">🛠️ Tools</button>
+        </div>
+
+        <!-- Tab Content: Datasets -->
+        <div class="tab-content active" id="datasets">
+
+            <!-- Upload ZIP Dataset -->
+            <div class="card" style="margin-bottom: 30px;">
+                <h2>📦 Upload Complete Dataset (ZIP)</h2>
+                <p style="color: var(--gray-700); margin-bottom: 20px;">
+                    Upload a ZIP file containing your labeled dataset. Supports YOLO format.
+                </p>
+                
+                <!-- Upload Form -->
+                <form id="uploadZipForm">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div class="form-group">
+                            <label>Dataset Name</label>
+                            <input type="text" id="zipDatasetName" placeholder="e.g., My Symbols Dataset" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Classes (comma-separated)</label>
+                            <input type="text" id="zipClasses" placeholder="outlet, switch, light, panel" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Description (optional)</label>
+                        <input type="text" id="zipDescription" placeholder="Describe your dataset...">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="zipAutoSplit" checked style="width: auto; margin-right: 8px;">
+                            Auto-split if flat structure (70% train, 20% val, 10% test)
+                        </label>
+                    </div>
+                    
+                    <!-- File Upload Area -->
+                    <div style="border: 2px dashed var(--gray-300); border-radius: 8px; padding: 2rem; text-align: center; background: var(--gray-50); margin-bottom: 1rem;">
+                        <input type="file" id="zipFileInput" accept=".zip" style="display: none;">
+                        <div id="zipFileStatus">
+                            <div style="font-size: 48px; margin-bottom: 1rem;">📁</div>
+                            <p style="font-weight: 600; margin-bottom: 0.5rem;">Click to select ZIP file</p>
+                            <p style="color: var(--gray-700); font-size: 14px;">
+                                Supported: YOLO format (images + .txt labels)<br>
+                                Max size: 500MB
+                            </p>
+                        </div>
+                        <button type="button" onclick="document.getElementById('zipFileInput').click()" style="margin-top: 1rem; padding: 10px 24px; background: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                            Choose ZIP File
+                        </button>
+                    </div>
+                    
+                    <!-- Progress -->
+                    <div id="zipUploadProgress" style="display: none; margin-bottom: 1rem;">
+                        <div style="background: var(--gray-100); border-radius: 8px; padding: 1rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span id="zipProgressText">Uploading...</span>
+                                <span id="zipProgressPercent">0%</span>
+                            </div>
+                            <div style="background: var(--gray-300); height: 8px; border-radius: 4px; overflow: hidden;">
+                                <div id="zipProgressBar" style="background: var(--primary); height: 100%; width: 0%; transition: width 0.3s;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Validation Results -->
+                    <div id="zipValidationResults" style="display: none; margin-bottom: 1rem;">
+                        <!-- Will be populated with validation info -->
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" id="zipUploadBtn" disabled>
+                        📤 Upload & Process Dataset
+                    </button>
+                </form>
+                
+                <!-- Info -->
+                <details style="margin-top: 1.5rem; padding: 1rem; background: var(--gray-50); border-radius: 8px;">
+                    <summary style="cursor: pointer; font-weight: 600; color: var(--primary);">
+                        ℹ️ Supported ZIP Structures
+                    </summary>
+                    <div style="margin-top: 1rem; font-size: 14px; color: var(--gray-700);">
+                        <p style="margin-bottom: 0.5rem;"><strong>Option 1: Split Structure (Recommended)</strong></p>
+                        <pre style="background: white; padding: 0.5rem; border-radius: 4px; overflow-x: auto;">dataset.zip/
+  images/
+    train/
+      img1.jpg, img2.jpg, ...
+    val/
+      img10.jpg, ...
+  labels/
+    train/
+      img1.txt, img2.txt, ...
+    val/
+      img10.txt, ...
+  classes.txt (optional)</pre>
+                        
+                        <p style="margin: 1rem 0 0.5rem;"><strong>Option 2: Flat Structure (Auto-Split)</strong></p>
+                        <pre style="background: white; padding: 0.5rem; border-radius: 4px; overflow-x: auto;">dataset.zip/
+  img1.jpg, img1.txt
+  img2.jpg, img2.txt
+  ...
+  classes.txt (optional)</pre>
+                        
+                        <p style="margin-top: 1rem;"><strong>Label Format:</strong> YOLO format (.txt files)</p>
+                        <pre style="background: white; padding: 0.5rem; border-radius: 4px;">class_id x_center y_center width height
+0 0.5 0.5 0.2 0.3
+1 0.7 0.4 0.15 0.25</pre>
+                    </div>
+                </details>
+            </div>
+
+            <div class="grid grid-2">
+                <!-- Create Dataset -->
+                <div class="card">
+                    <h2>Create New Dataset</h2>
+                    <form id="createDatasetForm">
+                        <div class="form-group">
+                            <label>Dataset Name</label>
+                            <input type="text" id="datasetName" placeholder="e.g., MEP Symbols v1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea id="datasetDescription" placeholder="Describe your dataset..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Classes (one per line)</label>
+                            <textarea id="datasetClasses" placeholder="outlet&#10;switch&#10;light&#10;panel" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">✨ Create Dataset</button>
+                    </form>
+                </div>
+
+                <!-- Dataset Stats -->
+                <div class="card">
+                    <h2>Dataset Statistics</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalDatasets">0</div>
+                            <div class="stat-label">Total Datasets</div>
+                        </div>
+                        <div class="stat-card success">
+                            <div class="stat-value" id="totalImages">0</div>
+                            <div class="stat-label">Total Images</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" onclick="loadDatasets()" style="width: 100%; margin-top: 16px;">
+                        🔄 Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- Datasets List -->
+            <div class="card">
+                <h2>Your Datasets</h2>
+                <div id="datasetsList">
+                    <p style="text-align: center; color: var(--gray-700); padding: 40px;">
+                        No datasets yet. Create one above to get started!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Training -->
+        <div class="tab-content" id="training">
+            <div class="grid grid-2">
+                <!-- Start Training -->
+                <div class="card">
+                    <h2>Start Training</h2>
+                    <form id="startTrainingForm">
+                        <div class="form-group">
+                            <label>Select Dataset</label>
+                            <select id="trainingDataset" required>
+                                <option value="">Choose a dataset...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Model Size</label>
+                            <select id="modelSize">
+                                <option value="n">Nano (fastest)</option>
+                                <option value="s" selected>Small (recommended)</option>
+                                <option value="m">Medium</option>
+                                <option value="l">Large</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-2">
+                            <div class="form-group">
+                                <label>Epochs</label>
+                                <input type="number" id="epochs" value="100" min="10" max="500">
+                            </div>
+                            <div class="form-group">
+                                <label>Batch Size</label>
+                                <input type="number" id="batchSize" value="16" min="1" max="64">
+                            </div>
+                        </div>
+                        <div class="grid grid-2">
+                            <div class="form-group">
+                                <label>Image Size</label>
+                                <input type="number" id="imageSize" value="640" step="32" min="320" max="1280">
+                            </div>
+                            <div class="form-group">
+                                <label>Learning Rate</label>
+                                <input type="number" id="learningRate" value="0.01" step="0.001" min="0.0001" max="0.1">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            🚀 Start Training
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Training Progress -->
+                <div class="card">
+                    <h2>Training Progress</h2>
+                    <div id="trainingProgress" class="hidden">
+                        <div class="training-status">
+                            <h3>Training Job: <span id="currentJobId"></span></h3>
+                            <div class="progress-container">
+                                <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                            </div>
+                            <p style="text-align: center; margin-top: 8px;">
+                                <strong>Epoch <span id="currentEpoch">0</span> / <span id="totalEpochs">0</span></strong>
+                                (<span id="progressPercent">0</span>%)
+                            </p>
+                            <div class="metrics-grid">
+                                <div class="metric-box">
+                                    <div class="metric-value" id="metricPrecision">0.000</div>
+                                    <div class="metric-label">Precision</div>
+                                </div>
+                                <div class="metric-box">
+                                    <div class="metric-value" id="metricRecall">0.000</div>
+                                    <div class="metric-label">Recall</div>
+                                </div>
+                                <div class="metric-box">
+                                    <div class="metric-value" id="metricMAP50">0.000</div>
+                                    <div class="metric-label">mAP50</div>
+                                </div>
+                                <div class="metric-box">
+                                    <div class="metric-value" id="metricMAP5095">0.000</div>
+                                    <div class="metric-label">mAP50-95</div>
+                                </div>
+                            </div>
+                            <button class="btn btn-danger" onclick="stopTraining()" style="width: 100%; margin-top: 16px;">
+                                ⏸️ Stop Training
+                            </button>
+                        </div>
+                    </div>
+                    <div id="noTraining" style="text-align: center; padding: 40px; color: var(--gray-700);">
+                        <p>No active training</p>
+                        <p style="font-size: 14px; margin-top: 8px;">Start a training job to see progress here</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Training History -->
+            <div class="card">
+                <h2>Training History</h2>
+                <div id="trainingHistory">
+                    <p style="text-align: center; color: var(--gray-700); padding: 40px;">
+                        No training history yet
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Models -->
+        <div class="tab-content" id="models">
+            <div class="card">
+                <h2>Trained Models</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalModels">0</div>
+                        <div class="stat-label">Total Models</div>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="stat-value" id="bestMAP">0.000</div>
+                        <div class="stat-label">Best mAP50</div>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" onclick="loadModels()" style="width: 100%; margin-top: 16px;">
+                    🔄 Refresh Models
+                </button>
+            </div>
+
+            <!-- Upload Model Card -->
+            <div class="card" style="margin-bottom: 30px;">
+                <h2>📤 Upload Pre-trained Model</h2>
+                <p style="color: var(--gray-700); margin-bottom: 20px;">
+                    Upload your own trained YOLO model (.pt file)
+                </p>
+                
+                <form id="uploadModelForm">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div class="form-group">
+                            <label>Model Name</label>
+                            <input type="text" id="modelName" placeholder="e.g., My Custom Model" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Classes (comma-separated)</label>
+                            <input type="text" id="modelClasses" placeholder="outlet, switch, light" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Description (optional)</label>
+                        <input type="text" id="modelDescription" placeholder="Describe this model...">
+                    </div>
+                    
+                    <!-- File Upload Area -->
+                    <div style="border: 2px dashed var(--gray-300); border-radius: 8px; padding: 2rem; text-align: center; background: var(--gray-50); margin-bottom: 1rem;">
+                        <input type="file" id="modelFileInput" accept=".pt" style="display: none;">
+                        <div id="modelFileStatus">
+                            <div style="font-size: 48px; margin-bottom: 1rem;">🤖</div>
+                            <p style="font-weight: 600; margin-bottom: 0.5rem;">Select YOLO Model File</p>
+                            <p style="color: var(--gray-700); font-size: 14px;">
+                                .pt file (PyTorch model)<br>
+                                Max size: 500MB
+                            </p>
+                        </div>
+                        <button type="button" onclick="document.getElementById('modelFileInput').click()" style="margin-top: 1rem; padding: 10px 24px; background: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                            Choose Model File
+                        </button>
+                    </div>
+                    
+                    <!-- Progress -->
+                    <div id="modelUploadProgress" style="display: none; margin-bottom: 1rem;">
+                        <div style="background: var(--gray-100); border-radius: 8px; padding: 1rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span id="modelProgressText">Uploading...</span>
+                                <span id="modelProgressPercent">0%</span>
+                            </div>
+                            <div style="background: var(--gray-300); height: 8px; border-radius: 4px; overflow: hidden;">
+                                <div id="modelProgressBar" style="background: var(--primary); height: 100%; width: 0%; transition: width 0.3s;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Upload Results -->
+                    <div id="modelUploadResults" style="display: none; margin-bottom: 1rem;">
+                        <!-- Will be populated with upload results -->
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" id="modelUploadBtn" disabled>
+                        📤 Upload Model
+                    </button>
+                </form>
+                
+                <!-- Info -->
+                <details style="margin-top: 1.5rem; padding: 1rem; background: var(--gray-50); border-radius: 8px;">
+                    <summary style="cursor: pointer; font-weight: 600; color: var(--primary);">
+                        ℹ️ Model Requirements
+                    </summary>
+                    <div style="margin-top: 1rem; font-size: 14px; color: var(--gray-700);">
+                        <p><strong>File Format:</strong> PyTorch model (.pt)</p>
+                        <p><strong>Model Type:</strong> YOLO (v8, v11, etc.)</p>
+                        <p><strong>Max Size:</strong> 500 MB</p>
+                        <p style="margin-top: 1rem;"><strong>What to upload:</strong></p>
+                        <ul style="margin-left: 1.5rem;">
+                            <li>Trained model from Ultralytics</li>
+                            <li>Fine-tuned YOLO models</li>
+                            <li>Custom trained detection models</li>
+                        </ul>
+                        <p style="margin-top: 1rem;"><strong>After upload:</strong></p>
+                        <ul style="margin-left: 1.5rem;">
+                            <li>Model appears in registry below</li>
+                            <li>Available in Detection tab dropdown</li>
+                            <li>Ready for immediate use</li>
+                        </ul>
+                    </div>
+                </details>
+            </div>
+
+
+            <div class="card">
+                <h2>Model Registry</h2>
+                <div id="modelsList">
+                    <p style="text-align: center; color: var(--gray-700); padding: 40px;">
+                        No trained models yet. Start training to see your models here!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Tab Content: Detection -->
+        <div class="tab-content" id="detection">
+            <div class="card">
+                <h2 style="margin-bottom: 1.5rem;">🔍 Test Symbol Detection</h2>
+                <p style="color: var(--gray-700); margin-bottom: 2rem;">
+                    Upload drawings to test your trained models or use default detection
+                </p>
+
+                <!-- File Upload -->
+                <div style="border: 2px dashed var(--gray-300); border-radius: 12px; padding: 3rem; text-align: center; background: var(--gray-50); margin-bottom: 2rem;">
+                    <input type="file" id="detect-file-input" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+                    <div style="font-size: 48px; margin-bottom: 1rem;">📄</div>
+                    <h3 style="margin-bottom: 0.5rem;">Upload Drawing</h3>
+                    <p style="color: var(--gray-700); margin-bottom: 1.5rem;">
+                        Drag & drop or click to upload<br>
+                        PDF, JPG, PNG supported
+                    </p>
+                    <button onclick="document.getElementById('detect-file-input').click()" 
+                            style="padding: 12px 32px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer;">
+                        Choose File
+                    </button>
+                </div>
+
+                <!-- Detection Settings -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Confidence Threshold</label>
+                        <input type="number" id="detect-confidence" value="0.25" min="0" max="1" step="0.05" 
+                               style="width: 100%; padding: 8px; border: 1px solid var(--gray-300); border-radius: 6px;">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">DPI (PDF Resolution)</label>
+                        <input type="number" id="detect-dpi" value="400" min="72" max="600" step="50" 
+                               style="width: 100%; padding: 8px; border: 1px solid var(--gray-300); border-radius: 6px;">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Detection Model</label>
+                        <select id="detect-model" style="width: 100%; padding: 8px; border: 1px solid var(--gray-300); border-radius: 6px; background: white;">
+                            <option value="default">Default YOLO11s</option>
+                        </select>
+                        <button onclick="loadDetectionModels()" style="margin-top: 0.5rem; padding: 6px 12px; background: var(--gray-200); color: var(--gray-700); border: none; border-radius: 4px; cursor: pointer; font-size: 14px; width: 100%;">
+                            🔄 Refresh Models
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Progress Section -->
+                <div id="detect-progress" style="display: none; margin-bottom: 2rem;">
+                    <div style="background: var(--gray-100); border-radius: 8px; padding: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span id="detect-progress-text">Processing...</span>
+                            <span id="detect-progress-percent">0%</span>
+                        </div>
+                        <div style="background: var(--gray-300); height: 8px; border-radius: 4px; overflow: hidden;">
+                            <div id="detect-progress-bar" style="background: var(--primary); height: 100%; width: 0%; transition: width 0.3s;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Section -->
+                <div id="detect-results"></div>
+            </div>
+        </div>
+        <!-- Tab Content: Tools -->
+        <div class="tab-content" id="tools">
+            <div class="card">
+                <h2>Annotation Tools</h2>
+                <p style="margin-bottom: 24px; color: var(--gray-700);">
+                    Use these tools to annotate your images in YOLO format before uploading to datasets.
+                </p>
+                <div class="grid grid-3">
+                    <div style="background: var(--gray-50); padding: 24px; border-radius: 12px;">
+                        <h3>Roboflow</h3>
+                        <p style="color: var(--gray-700); margin: 12px 0;">Web-based annotation with auto-labeling</p>
+                        <span class="tag tag-success">Recommended</span>
+                        <br><br>
+                        <a href="https://roboflow.com" target="_blank" class="btn btn-primary" style="text-decoration: none;">
+                            Visit Website
+                        </a>
+                    </div>
+                    <div style="background: var(--gray-50); padding: 24px; border-radius: 12px;">
+                        <h3>LabelImg</h3>
+                        <p style="color: var(--gray-700); margin: 12px 0;">Desktop app for quick annotation</p>
+                        <span class="tag tag-primary">Desktop</span>
+                        <br><br>
+                        <a href="https://github.com/heartexlabs/labelImg" target="_blank" class="btn btn-primary" style="text-decoration: none;">
+                            GitHub
+                        </a>
+                    </div>
+                    <div style="background: var(--gray-50); padding: 24px; border-radius: 12px;">
+                        <h3>CVAT</h3>
+                        <p style="color: var(--gray-700); margin: 12px 0;">Professional annotation platform</p>
+                        <span class="tag tag-primary">Advanced</span>
+                        <br><br>
+                        <a href="https://www.cvat.ai" target="_blank" class="btn btn-primary" style="text-decoration: none;">
+                            Visit Website
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Upload Data to Dataset</h2>
+                <div class="form-group">
+                    <label>Select Dataset</label>
+                    <select id="uploadDataset">
+                        <option value="">Choose a dataset...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Split</label>
+                    <select id="uploadSplit">
+                        <option value="train">Training</option>
+                        <option value="val">Validation</option>
+                        <option value="test">Testing</option>
+                    </select>
+                </div>
+                <div class="grid grid-2">
+                    <div>
+                        <h3>Upload Images</h3>
+                        <div class="upload-area" id="imageUploadArea">
+                            <div class="upload-icon">🖼️</div>
+                            <p><strong>Drag & drop images</strong></p>
+                            <p style="font-size: 14px; color: var(--gray-700); margin-top: 8px;">or click to browse</p>
+                            <input type="file" id="imageFiles" multiple accept="image/*" style="display: none;">
+                        </div>
+                        <button class="btn btn-primary" onclick="uploadImages()" style="width: 100%; margin-top: 16px;">
+                            📤 Upload Images
+                        </button>
+                    </div>
+                    <div>
+                        <h3>Upload Labels</h3>
+                        <div class="upload-area" id="labelUploadArea">
+                            <div class="upload-icon">🏷️</div>
+                            <p><strong>Drag & drop labels</strong></p>
+                            <p style="font-size: 14px; color: var(--gray-700); margin-top: 8px;">YOLO .txt format</p>
+                            <input type="file" id="labelFiles" multiple accept=".txt" style="display: none;">
+                        </div>
+                        <button class="btn btn-primary" onclick="uploadLabels()" style="width: 100%; margin-top: 16px;">
+                            📤 Upload Labels
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_BASE = 'https://train.mepdetect.com';
+        
+        // State
+        let currentTrainingJob = null;
+        let trainingInterval = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initTabs();
+            initUploadAreas();
+            loadDatasets();
+            loadModels();
+            checkActiveTraining();
+        });
+
+        // Tab Navigation
+        function initTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const targetTab = tab.dataset.tab;
+                    
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Update active content
+                    contents.forEach(c => c.classList.remove('active'));
+                    document.getElementById(targetTab).classList.add('active');
+
+                    // Refresh data when switching tabs
+                    if (targetTab === 'datasets') loadDatasets();
+                    if (targetTab === 'models') loadModels();
+                    if (targetTab === 'training') {
+                        loadTrainingDatasets();
+                        checkActiveTraining();
+                    }
+                    if (targetTab === 'detection') loadDetectionModels();
+                    if (targetTab === 'tools') loadUploadDatasets();
+                });
+            });
+        }
+
+        // Upload Areas
+        function initUploadAreas() {
+            setupUploadArea('imageUploadArea', 'imageFiles');
+            setupUploadArea('labelUploadArea', 'labelFiles');
+        }
+
+        function setupUploadArea(areaId, inputId) {
+            const area = document.getElementById(areaId);
+            const input = document.getElementById(inputId);
+
+            area.addEventListener('click', () => input.click());
+            
+            area.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                area.classList.add('dragover');
+            });
+
+            area.addEventListener('dragleave', () => {
+                area.classList.remove('dragover');
+            });
+
+            area.addEventListener('drop', (e) => {
+                e.preventDefault();
+                area.classList.remove('dragover');
+                input.files = e.dataTransfer.files;
+                updateUploadText(areaId, input.files.length);
+            });
+
+            input.addEventListener('change', () => {
+                updateUploadText(areaId, input.files.length);
+            });
+        }
+
+        function updateUploadText(areaId, count) {
+            const area = document.getElementById(areaId);
+            if (count > 0) {
+                area.querySelector('p').innerHTML = `<strong>${count} file(s) selected</strong>`;
+            }
+        }
+
+        // Create Dataset
+        document.getElementById('createDatasetForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('datasetName').value;
+            const description = document.getElementById('datasetDescription').value;
+            const classes = document.getElementById('datasetClasses').value
+                .split('\n')
+                .map(c => c.trim())
+                .filter(c => c);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/datasets`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, description, classes })
+                });
+
+                if (response.ok) {
+                    showAlert('Dataset created successfully!', 'success');
+                    document.getElementById('createDatasetForm').reset();
+                    loadDatasets();
+                } else {
+                    showAlert('Failed to create dataset', 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        });
+
+        // Load Datasets
+        async function loadDatasets() {
+            try {
+                const response = await fetch(`${API_BASE}/api/datasets`);
+                const data = await response.json();
+                
+                const datasets = data.datasets || [];
+                document.getElementById('totalDatasets').textContent = datasets.length;
+                
+                const totalImages = datasets.reduce((sum, d) => sum + (d.image_count || 0), 0);
+                document.getElementById('totalImages').textContent = totalImages;
+
+                const listEl = document.getElementById('datasetsList');
+                if (datasets.length === 0) {
+                    listEl.innerHTML = '<p style="text-align: center; color: var(--gray-700); padding: 40px;">No datasets yet</p>';
+                } else {
+                    listEl.innerHTML = datasets.map(d => `
+                        <div class="dataset-item">
+                            <div class="dataset-info">
+                                <h4>${d.name}</h4>
+                                <p>${d.description || 'No description'}</p>
+                                <p style="font-size: 13px; margin-top: 8px;">
+                                    <span class="tag tag-primary">${d.classes.length} classes</span>
+                                    <span class="tag tag-success">${d.image_count || 0} images</span>
+                                </p>
+                            </div>
+                            <div class="dataset-actions">
+                                <button class="btn btn-secondary" onclick="viewDataset('${d.dataset_id}')">📊 Stats</button>
+                                <button class="btn btn-danger" onclick="deleteDataset('${d.dataset_id}')">🗑️</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error loading datasets:', error);
+            }
+        }
+
+        async function viewDataset(id) {
+            try {
+                const response = await fetch(`${API_BASE}/api/datasets/${id}`);
+                const data = await response.json();
+                
+                alert(`Dataset: ${data.name}\n\nClasses: ${data.classes.join(', ')}\n\nStats:\n` +
+                    `Train: ${data.stats.splits.train.images} images, ${data.stats.splits.train.labels} labels\n` +
+                    `Val: ${data.stats.splits.val.images} images, ${data.stats.splits.val.labels} labels\n` +
+                    `Test: ${data.stats.splits.test.images} images, ${data.stats.splits.test.labels} labels\n\n` +
+                    `Ready for training: ${data.stats.ready_for_training ? 'Yes ✅' : 'No ❌'}`);
+            } catch (error) {
+                showAlert('Error loading dataset stats', 'error');
+            }
+        }
+
+        async function deleteDataset(id) {
+            if (!confirm('Are you sure you want to delete this dataset?')) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/datasets/${id}`, { method: 'DELETE' });
+                if (response.ok) {
+                    showAlert('Dataset deleted', 'success');
+                    loadDatasets();
+                }
+            } catch (error) {
+                showAlert('Error deleting dataset', 'error');
+            }
+        }
+
+        // Upload Images/Labels
+        async function uploadImages() {
+            const datasetId = document.getElementById('uploadDataset').value;
+            const split = document.getElementById('uploadSplit').value;
+            const files = document.getElementById('imageFiles').files;
+
+            if (!datasetId || files.length === 0) {
+                showAlert('Please select dataset and files', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('split', split);
+            for (let file of files) {
+                formData.append('files', file);
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/datasets/${datasetId}/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showAlert(`Uploaded ${data.uploaded.length} images`, 'success');
+                    document.getElementById('imageFiles').value = '';
+                    updateUploadText('imageUploadArea', 0);
+                }
+            } catch (error) {
+                showAlert('Error uploading images', 'error');
+            }
+        }
+
+        async function uploadLabels() {
+            const datasetId = document.getElementById('uploadDataset').value;
+            const split = document.getElementById('uploadSplit').value;
+            const files = document.getElementById('labelFiles').files;
+
+            if (!datasetId || files.length === 0) {
+                showAlert('Please select dataset and files', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('split', split);
+            for (let file of files) {
+                formData.append('files', file);
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/datasets/${datasetId}/labels`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showAlert(`Uploaded ${data.uploaded.length} labels`, 'success');
+                    document.getElementById('labelFiles').value = '';
+                    updateUploadText('labelUploadArea', 0);
+                }
+            } catch (error) {
+                showAlert('Error uploading labels', 'error');
+            }
+        }
+
+        // Training
+        async function loadTrainingDatasets() {
+            try {
+                const response = await fetch(`${API_BASE}/api/datasets`);
+                const data = await response.json();
+                const select = document.getElementById('trainingDataset');
+                
+                select.innerHTML = '<option value="">Choose a dataset...</option>' +
+                    (data.datasets || []).map(d => 
+                        `<option value="${d.dataset_id}">${d.name} (${d.image_count || 0} images)</option>`
+                    ).join('');
+            } catch (error) {
+                console.error('Error loading datasets:', error);
+            }
+        }
+
+        async function loadUploadDatasets() {
+            try {
+                const response = await fetch(`${API_BASE}/api/datasets`);
+                const data = await response.json();
+                const select = document.getElementById('uploadDataset');
+                
+                select.innerHTML = '<option value="">Choose a dataset...</option>' +
+                    (data.datasets || []).map(d => 
+                        `<option value="${d.dataset_id}">${d.name}</option>`
+                    ).join('');
+            } catch (error) {
+                console.error('Error loading datasets:', error);
+            }
+        }
+
+        document.getElementById('startTrainingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const config = {
+                dataset_id: document.getElementById('trainingDataset').value,
+                model_size: document.getElementById('modelSize').value,
+                epochs: parseInt(document.getElementById('epochs').value),
+                batch_size: parseInt(document.getElementById('batchSize').value),
+                image_size: parseInt(document.getElementById('imageSize').value),
+                learning_rate: parseFloat(document.getElementById('learningRate').value),
+                augment: true,
+                patience: 50,
+                save_period: 10
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/api/train`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(config)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showAlert('Training started!', 'success');
+                    currentTrainingJob = data.job_id;
+                    startMonitoring(data.job_id);
+                } else {
+                    showAlert('Failed to start training', 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        });
+
+        function startMonitoring(jobId) {
+            document.getElementById('noTraining').classList.add('hidden');
+            document.getElementById('trainingProgress').classList.remove('hidden');
+            document.getElementById('currentJobId').textContent = jobId;
+            
+            if (trainingInterval) clearInterval(trainingInterval);
+            
+            trainingInterval = setInterval(() => monitorTraining(jobId), 2000);
+            monitorTraining(jobId);
+        }
+
+        async function monitorTraining(jobId) {
+            try {
+                const response = await fetch(`${API_BASE}/api/training/${jobId}`);
+                const data = await response.json();
+
+                if (data.status === 'training') {
+                    const progress = data.progress || 0;
+                    document.getElementById('progressBar').style.width = progress + '%';
+                    document.getElementById('progressPercent').textContent = progress;
+                    document.getElementById('currentEpoch').textContent = data.current_epoch || 0;
+                    document.getElementById('totalEpochs').textContent = data.config?.epochs || 0;
+
+                    if (data.metrics) {
+                        document.getElementById('metricPrecision').textContent = (data.metrics.precision || 0).toFixed(3);
+                        document.getElementById('metricRecall').textContent = (data.metrics.recall || 0).toFixed(3);
+                        document.getElementById('metricMAP50').textContent = (data.metrics.mAP50 || 0).toFixed(3);
+                        document.getElementById('metricMAP5095').textContent = (data.metrics['mAP50-95'] || 0).toFixed(3);
+                    }
+                } else if (data.status === 'completed') {
+                    clearInterval(trainingInterval);
+                    showAlert('Training completed successfully!', 'success');
+                    document.getElementById('progressBar').style.width = '100%';
+                    loadModels();
+                } else if (data.status === 'failed') {
+                    clearInterval(trainingInterval);
+                    showAlert('Training failed: ' + data.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error monitoring training:', error);
+            }
+        }
+
+        async function stopTraining() {
+            if (!currentTrainingJob) return;
+            
+            if (!confirm('Are you sure you want to stop training?')) return;
+
+            try {
+                await fetch(`${API_BASE}/api/training/${currentTrainingJob}/stop`, { method: 'POST' });
+                clearInterval(trainingInterval);
+                showAlert('Training stopped', 'info');
+            } catch (error) {
+                showAlert('Error stopping training', 'error');
+            }
+        }
+
+        async function checkActiveTraining() {
+            try {
+                const response = await fetch(`${API_BASE}/api/training`);
+                const data = await response.json();
+                
+                const activeJobs = (data.jobs || []).filter(j => j.status === 'training');
+                
+                if (activeJobs.length > 0) {
+                    currentTrainingJob = activeJobs[0].job_id;
+                    startMonitoring(currentTrainingJob);
+                }
+            } catch (error) {
+                console.error('Error checking active training:', error);
+            }
+        }
+
+        // Models
+        async function loadModels() {
+            try {
+                const response = await fetch(`${API_BASE}/api/models`);
+                const data = await response.json();
+                
+                const models = data.models || [];
+                document.getElementById('totalModels').textContent = models.length;
+                
+                const bestModel = models.reduce((best, m) => 
+                    (m.metrics?.mAP50 || 0) > (best?.metrics?.mAP50 || 0) ? m : best, null);
+                
+                document.getElementById('bestMAP').textContent = 
+                    (bestModel?.metrics?.mAP50 || 0).toFixed(3);
+        
+                // Check deployment status
+                let deploymentStatus = null;
+                try {
+                    const deployResponse = await fetch(`${API_BASE}/api/deployment/status`);
+                    deploymentStatus = await deployResponse.json();
+                } catch (error) {
+                    console.log('Could not fetch deployment status:', error);
+                }
+        
+                const listEl = document.getElementById('modelsList');
+                if (models.length === 0) {
+                    listEl.innerHTML = '<p style="text-align: center; color: var(--gray-700); padding: 40px;">No models yet</p>';
+                } else {
+                    listEl.innerHTML = models.map(m => {
+                        const isActive = deploymentStatus?.deployed && 
+                            deploymentStatus.deployed_model?.model_id === m.model_id;
+                        
+                        return `
+                            <div class="model-card" style="position: relative;">
+                                ${isActive ? '<div class="tag tag-success" style="position: absolute; top: 16px; right: 16px; animation: pulse 2s infinite;">🚀 ACTIVE</div>' : ''}
+                                <div class="model-header">
+                                    <div>
+                                        <div class="model-name">${m.name}</div>
+                                        <p style="color: var(--gray-700); font-size: 12px; margin-top: 4px;">
+                                            ID: <code style="background: var(--gray-100); padding: 2px 6px; border-radius: 4px;">${m.model_id}</code>
+                                        </p>
+                                    </div>
+                                    <div style="display: flex; gap: 8px;">
+                                        ${!isActive ? `
+                                            <button class="btn btn-success" onclick="deployModel('${m.model_id}')" title="Deploy to detection API">
+                                                🚀 Deploy
+                                            </button>
+                                        ` : `
+                                            <span class="tag tag-success">✓ Deployed</span>
+                                        `}
+                                        <button class="btn btn-primary" onclick="downloadModel('${m.model_id}')">
+                                            💾 Download
+                                        </button>
+                                        <button class="btn btn-danger" onclick="deleteModel('${m.model_id}')">
+                                            🗑️
+                                        </button>
+                                    </div>
+                                </div>
+                                <p style="color: var(--gray-700); font-size: 14px; margin: 12px 0;">
+                                    Dataset: ${m.dataset_name} | ${m.num_classes} classes | ${m.size_mb.toFixed(1)} MB
+                                </p>
+                                <div class="model-metrics">
+                                    <div class="model-metric">
+                                        <div class="model-metric-value" style="color: ${(m.metrics.precision || 0) > 0.8 ? 'var(--success)' : (m.metrics.precision || 0) > 0.6 ? 'var(--warning)' : 'var(--danger)'}">${(m.metrics.precision || 0).toFixed(3)}</div>
+                                        <div class="model-metric-label">Precision</div>
+                                    </div>
+                                    <div class="model-metric">
+                                        <div class="model-metric-value" style="color: ${(m.metrics.recall || 0) > 0.8 ? 'var(--success)' : (m.metrics.recall || 0) > 0.6 ? 'var(--warning)' : 'var(--danger)'}">${(m.metrics.recall || 0).toFixed(3)}</div>
+                                        <div class="model-metric-label">Recall</div>
+                                    </div>
+                                    <div class="model-metric">
+                                        <div class="model-metric-value" style="color: ${(m.metrics.mAP50 || 0) > 0.8 ? 'var(--success)' : (m.metrics.mAP50 || 0) > 0.6 ? 'var(--warning)' : 'var(--danger)'}">${(m.metrics.mAP50 || 0).toFixed(3)}</div>
+                                        <div class="model-metric-label">mAP50</div>
+                                    </div>
+                                    <div class="model-metric">
+                                        <div class="model-metric-value" style="color: ${(m.metrics['mAP50-95'] || 0) > 0.7 ? 'var(--success)' : (m.metrics['mAP50-95'] || 0) > 0.5 ? 'var(--warning)' : 'var(--danger)'}">${(m.metrics['mAP50-95'] || 0).toFixed(3)}</div>
+                                        <div class="model-metric-label">mAP50-95</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            } catch (error) {
+                console.error('Error loading models:', error);
+            }
+        }
+
+        function downloadModel(id) {
+            window.open(`${API_BASE}/api/models/${id}/download`, '_blank');
+        }
+
+        async function deployModel(modelId) {
+            if (!confirm('Deploy this model to detection API?\n\nThis will replace the current active model and all new detections will use this model.')) {
+                return;
+            }
+        
+            try {
+                showAlert('Deploying model...', 'info');
+                
+                const response = await fetch(`${API_BASE}/api/models/${modelId}/deploy`, {
+                    method: 'POST'
+                });
+        
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Deployment failed');
+                }
+        
+                const data = await response.json();
+                
+                showAlert('✅ Model deployed successfully! Detection API is now using this model.', 'success');
+                
+                // Reload models to show updated status
+                setTimeout(() => loadModels(), 1000);
+                
+            } catch (error) {
+                console.error('Deployment error:', error);
+                showAlert('❌ Deployment failed: ' + error.message, 'error');
+            }
+        }
+
+        async function deleteModel(id) {
+            if (!confirm('Are you sure you want to delete this model?')) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/models/${id}`, { method: 'DELETE' });
+                if (response.ok) {
+                    showAlert('Model deleted', 'success');
+                    loadModels();
+                }
+            } catch (error) {
+                showAlert('Error deleting model', 'error');
+            }
+        }
+
+        // Utilities
+        function showAlert(message, type) {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alert.style.position = 'fixed';
+            alert.style.top = '20px';
+            alert.style.right = '20px';
+            alert.style.zIndex = '9999';
+            alert.style.minWidth = '300px';
+            alert.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+            
+            document.body.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.style.transition = 'opacity 0.3s';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 300);
+            }, 3000);
+        }
+
+        console.log('🎓 MEPdetect Training Dashboard loaded!');
+        console.log('📡 API: ' + API_BASE);
+
+        // ========================================
+
+        // ========================================
+        // ZIP Dataset Upload Functions
+        // ========================================
+        
+        let selectedZipFile = null;
+        
+        // Initialize ZIP upload handlers
+        document.addEventListener('DOMContentLoaded', function() {
+            const zipFileInput = document.getElementById('zipFileInput');
+            const uploadZipForm = document.getElementById('uploadZipForm');
+            
+            if (zipFileInput) {
+                zipFileInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        selectedZipFile = file;
+                        updateZipFileStatus(file);
+                        document.getElementById('zipUploadBtn').disabled = false;
+                    }
+                });
+            }
+            
+            if (uploadZipForm) {
+                uploadZipForm.addEventListener('submit', handleZipUpload);
+            }
+        });
+        
+        function updateZipFileStatus(file) {
+            const statusDiv = document.getElementById('zipFileStatus');
+            const sizeMB = (file.size / 1024 / 1024).toFixed(1);
+            
+            statusDiv.innerHTML = `
+                <div style="font-size: 48px; margin-bottom: 1rem;">✅</div>
+                <p style="font-weight: 600; margin-bottom: 0.5rem;">${file.name}</p>
+                <p style="color: var(--gray-700); font-size: 14px;">
+                    Size: ${sizeMB} MB<br>
+                    Ready to upload
+                </p>
+            `;
+        }
+        
+        async function handleZipUpload(e) {
+            e.preventDefault();
+            
+            if (!selectedZipFile) {
+                alert('Please select a ZIP file first');
+                return;
+            }
+            
+            const name = document.getElementById('zipDatasetName').value;
+            const classes = document.getElementById('zipClasses').value;
+            const description = document.getElementById('zipDescription').value;
+            const autoSplit = document.getElementById('zipAutoSplit').checked;
+            
+            if (!name || !classes) {
+                alert('Please fill in dataset name and classes');
+                return;
+            }
+            
+            // Show progress
+            document.getElementById('zipUploadProgress').style.display = 'block';
+            document.getElementById('zipUploadBtn').disabled = true;
+            updateZipProgress('Uploading ZIP file...', 10);
+
+        // ========================================
+        // Model Upload Functions
+        // ========================================
+        
+        let selectedModelFile = null;
+        
+        // Initialize model upload handlers
+        document.addEventListener('DOMContentLoaded', function() {
+            const modelFileInput = document.getElementById('modelFileInput');
+            const uploadModelForm = document.getElementById('uploadModelForm');
+            
+            if (modelFileInput) {
+                modelFileInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        selectedModelFile = file;
+                        updateModelFileStatus(file);
+                        document.getElementById('modelUploadBtn').disabled = false;
+                    }
+                });
+            }
+            
+            if (uploadModelForm) {
+                uploadModelForm.addEventListener('submit', handleModelUpload);
+            }
+        });
+        
+        function updateModelFileStatus(file) {
+            const statusDiv = document.getElementById('modelFileStatus');
+            const sizeMB = (file.size / 1024 / 1024).toFixed(1);
+            
+            statusDiv.innerHTML = `
+                <div style="font-size: 48px; margin-bottom: 1rem;">✅</div>
+                <p style="font-weight: 600; margin-bottom: 0.5rem;">${file.name}</p>
+                <p style="color: var(--gray-700); font-size: 14px;">
+                    Size: ${sizeMB} MB<br>
+                    Ready to upload
+                </p>
+            `;
+        }
+        
+        async function handleModelUpload(e) {
+            e.preventDefault();
+            
+            if (!selectedModelFile) {
+                alert('Please select a model file first');
+                return;
+            }
+            
+            const name = document.getElementById('modelName').value;
+            const classes = document.getElementById('modelClasses').value;
+            const description = document.getElementById('modelDescription').value;
+            
+            if (!name || !classes) {
+                alert('Please fill in model name and classes');
+                return;
+            }
+            
+            // Show progress
+            document.getElementById('modelUploadProgress').style.display = 'block';
+            document.getElementById('modelUploadBtn').disabled = true;
+            updateModelProgress('Uploading model file...', 10);
+            
+            // Prepare form data
+            const formData = new FormData();
+            formData.append('file', selectedModelFile);
+            formData.append('name', name);
+            formData.append('classes', classes);
+            formData.append('description', description);
+            formData.append('model_type', 'yolo11');
+            
+            try {
+                console.log('📤 Uploading model:', selectedModelFile.name);
+                
+                const response = await fetch(`${API_BASE}/api/models/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Upload failed');
+                }
+                
+                updateModelProgress('Validating model...', 50);
+                
+                const result = await response.json();
+                
+                console.log('✅ Upload successful:', result);
+                updateModelProgress('Complete!', 100);
+                
+                // Show success results
+                showModelUploadResults(result);
+                
+                // Reload models list
+                setTimeout(() => {
+                    loadModels();
+                }, 1000);
+                
+                // Reset form after delay
+                setTimeout(() => {
+                    resetModelUploadForm();
+                }, 3000);
+                
+            } catch (error) {
+                console.error('❌ Upload error:', error);
+                updateModelProgress('Error: ' + error.message, 0);
+                document.getElementById('modelUploadBtn').disabled = false;
+                
+                showModelUploadError(error.message);
+            }
+        }
+        
+        function updateModelProgress(message, percent) {
+            const textEl = document.getElementById('modelProgressText');
+            const percentEl = document.getElementById('modelProgressPercent');
+            const barEl = document.getElementById('modelProgressBar');
+            
+            if (textEl) textEl.textContent = message;
+            if (percentEl) percentEl.textContent = percent + '%';
+            if (barEl) barEl.style.width = percent + '%';
+        }
+        
+        function showModelUploadResults(result) {
+            const model = result.model_info;
+            
+            const resultsDiv = document.getElementById('modelUploadResults');
+            resultsDiv.style.display = 'block';
+            resultsDiv.innerHTML = `
+                <div style="padding: 1.5rem; background: white; border-radius: 8px; border: 2px solid var(--success);">
+                    <h3 style="color: var(--success); margin-bottom: 1rem;">
+                        ✅ Model Uploaded Successfully
+                    </h3>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                        <div style="text-align: center; padding: 1rem; background: var(--gray-50); border-radius: 6px;">
+                            <div style="font-size: 2rem; font-weight: bold; color: var(--primary);">${model.num_classes}</div>
+                            <div style="font-size: 0.9rem; color: var(--gray-700);">Classes</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: var(--gray-50); border-radius: 6px;">
+                            <div style="font-size: 2rem; font-weight: bold; color: var(--success);">${model.size_mb.toFixed(1)} MB</div>
+                            <div style="font-size: 0.9rem; color: var(--gray-700);">File Size</div>
+                        </div>
+                    </div>
+                    
+                    <div style="font-size: 0.9rem; color: var(--gray-700);">
+                        <strong>Model ID:</strong> ${model.model_id}<br>
+                        <strong>Name:</strong> ${model.name}<br>
+                        <strong>Status:</strong> Ready to use in Detection tab
+                    </div>
+                </div>
+            `;
+        }
+        
+        function showModelUploadError(message) {
+            const resultsDiv = document.getElementById('modelUploadResults');
+            resultsDiv.style.display = 'block';
+            resultsDiv.innerHTML = `
+                <div style="padding: 1.5rem; background: #fee; border-radius: 8px; border: 2px solid var(--danger);">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem;">❌ Upload Failed</h3>
+                    <p style="color: var(--danger);">${message}</p>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;">
+                        <strong>Troubleshooting:</strong><br>
+                        • Ensure file is a .pt YOLO model<br>
+                        • Check file size is under 500MB<br>
+                        • Verify model is not corrupted
+                    </p>
+                </div>
+            `;
+        }
+        
+        function resetModelUploadForm() {
+            document.getElementById('uploadModelForm').reset();
+            selectedModelFile = null;
+            document.getElementById('modelUploadBtn').disabled = true;
+            document.getElementById('modelUploadProgress').style.display = 'none';
+            document.getElementById('modelUploadResults').style.display = 'none';
+            
+            document.getElementById('modelFileStatus').innerHTML = `
+                <div style="font-size: 48px; margin-bottom: 1rem;">🤖</div>
+                <p style="font-weight: 600; margin-bottom: 0.5rem;">Select YOLO Model File</p>
+                <p style="color: var(--gray-700); font-size: 14px;">
+                    .pt file (PyTorch model)<br>
+                    Max size: 500MB
+                </p>
+            `;
+        }
+
+            
+            // Prepare form data
+            const formData = new FormData();
+            formData.append('file', selectedZipFile);
+            formData.append('dataset_name', name);
+            formData.append('classes', classes);
+            formData.append('description', description);
+            formData.append('auto_split', autoSplit);
+            
+            try {
+                console.log('📦 Uploading dataset ZIP:', selectedZipFile.name);
+                
+                const response = await fetch(`${API_BASE}/api/datasets/upload-zip`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Upload failed');
+                }
+                
+                updateZipProgress('Extracting and validating...', 50);
+                
+                const result = await response.json();
+                
+                console.log('✅ Upload successful:', result);
+                updateZipProgress('Complete!', 100);
+                
+                // Show validation results
+                showZipValidationResults(result);
+                
+                // Reload datasets
+                setTimeout(() => {
+                    loadDatasets();
+                }, 1000);
+                
+                // Reset form after delay
+                setTimeout(() => {
+                    resetZipUploadForm();
+                }, 3000);
+                
+            } catch (error) {
+                console.error('❌ Upload error:', error);
+                updateZipProgress('Error: ' + error.message, 0);
+                document.getElementById('zipUploadBtn').disabled = false;
+                
+                showZipError(error.message);
+            }
+        }
+        
+        function updateZipProgress(message, percent) {
+            const textEl = document.getElementById('zipProgressText');
+            const percentEl = document.getElementById('zipProgressPercent');
+            const barEl = document.getElementById('zipProgressBar');
+            
+            if (textEl) textEl.textContent = message;
+            if (percentEl) percentEl.textContent = percent + '%';
+            if (barEl) barEl.style.width = percent + '%';
+        }
+        
+        function showZipValidationResults(result) {
+            const validation = result.extraction.validation;
+            const stats = result.statistics;
+            
+            let statusColor = validation.valid ? 'var(--success)' : 'var(--danger)';
+            let statusIcon = validation.valid ? '✅' : '❌';
+            let statusText = validation.valid ? 'Valid Dataset' : 'Invalid Dataset';
+            
+            let errorsHTML = '';
+            if (validation.errors && validation.errors.length > 0) {
+                errorsHTML = `
+                    <div style="margin-top: 1rem; padding: 0.75rem; background: #fee; border-left: 4px solid var(--danger); border-radius: 4px;">
+                        <strong style="color: var(--danger);">Errors:</strong>
+                        <ul style="margin: 0.5rem 0 0 1.5rem; color: var(--danger);">
+                            ${validation.errors.map(e => `<li>${e}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            let warningsHTML = '';
+            if (validation.warnings && validation.warnings.length > 0) {
+                warningsHTML = `
+                    <div style="margin-top: 1rem; padding: 0.75rem; background: #fef3cd; border-left: 4px solid var(--warning); border-radius: 4px;">
+                        <strong style="color: var(--warning);">Warnings:</strong>
+                        <ul style="margin: 0.5rem 0 0 1.5rem; color: #856404;">
+                            ${validation.warnings.map(w => `<li>${w}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            const resultsDiv = document.getElementById('zipValidationResults');
+            resultsDiv.style.display = 'block';
+            resultsDiv.innerHTML = `
+                <div style="padding: 1.5rem; background: white; border-radius: 8px; border: 2px solid ${statusColor};">
+                    <h3 style="color: ${statusColor}; margin-bottom: 1rem;">
+                        ${statusIcon} ${statusText}
+                    </h3>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                        <div style="text-align: center; padding: 1rem; background: var(--gray-50); border-radius: 6px;">
+                            <div style="font-size: 2rem; font-weight: bold; color: var(--primary);">${stats.total_images}</div>
+                            <div style="font-size: 0.9rem; color: var(--gray-700);">Total Images</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: var(--gray-50); border-radius: 6px;">
+                            <div style="font-size: 2rem; font-weight: bold; color: var(--success);">${stats.total_labels}</div>
+                            <div style="font-size: 0.9rem; color: var(--gray-700);">Labeled</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: var(--gray-50); border-radius: 6px;">
+                            <div style="font-size: 2rem; font-weight: bold; color: var(--primary);">${validation.stats.num_classes || 0}</div>
+                            <div style="font-size: 0.9rem; color: var(--gray-700);">Classes</div>
+                        </div>
+                    </div>
+                    
+                    <div style="font-size: 0.9rem; color: var(--gray-700);">
+                        <strong>Dataset ID:</strong> ${result.dataset_id}<br>
+                        <strong>Structure:</strong> ${result.extraction.structure}<br>
+                        <strong>Status:</strong> ${validation.valid ? 'Ready for training' : 'Needs fixes'}
+                    </div>
+                    
+                    ${errorsHTML}
+                    ${warningsHTML}
+                </div>
+            `;
+        }
+        
+        function showZipError(message) {
+            const resultsDiv = document.getElementById('zipValidationResults');
+            resultsDiv.style.display = 'block';
+            resultsDiv.innerHTML = `
+                <div style="padding: 1.5rem; background: #fee; border-radius: 8px; border: 2px solid var(--danger);">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem;">❌ Upload Failed</h3>
+                    <p style="color: var(--danger);">${message}</p>
+                </div>
+            `;
+        }
+        
+        function resetZipUploadForm() {
+            document.getElementById('uploadZipForm').reset();
+            selectedZipFile = null;
+            document.getElementById('zipUploadBtn').disabled = true;
+            document.getElementById('zipUploadProgress').style.display = 'none';
+            document.getElementById('zipValidationResults').style.display = 'none';
+            
+            document.getElementById('zipFileStatus').innerHTML = `
+                <div style="font-size: 48px; margin-bottom: 1rem;">📁</div>
+                <p style="font-weight: 600; margin-bottom: 0.5rem;">Click to select ZIP file</p>
+                <p style="color: var(--gray-700); font-size: 14px;">
+                    Supported: YOLO format (images + .txt labels)<br>
+                    Max size: 500MB
+                </p>
+            `;
+        }
+
+        // Detection Tab Functions
+        // ========================================
+        
+        const DETECTION_API = 'https://api.mepdetect.com';
+        let detectJobId = null;
+        
+        // Initialize detection file input
+        (function initDetection() {
+            const fileInput = document.getElementById('detect-file-input');
+            if (fileInput) {
+                fileInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) handleDetection(file);
+                });
+            }
+        })();
+        
+        async function handleDetection(file) {
+            console.log('🔍 Starting detection:', file.name);
+            
+            document.getElementById('detect-progress').style.display = 'block';
+            document.getElementById('detect-results').innerHTML = '';
+            updateDetectProgress('Uploading...', 10);
+            
+            // Get selected model
+            const selectedModel = document.getElementById('detect-model').value;
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('confidence', document.getElementById('detect-confidence').value);
+            formData.append('dpi', document.getElementById('detect-dpi').value);
+            formData.append('save_annotated', 'true');
+            formData.append('export_formats', 'json,csv,excel');
+            
+            // Add model selection if not default
+            if (selectedModel && selectedModel !== 'default') {
+                formData.append('model_id', selectedModel);
+                console.log('📦 Using trained model:', selectedModel);
+            } else {
+                console.log('📦 Using default YOLO11s model');
+            }
+            
+            try {
+                const response = await fetch(`${DETECTION_API}/api/detect`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const jobStatus = await response.json();
+                detectJobId = jobStatus.job_id;
+                
+                console.log('✅ Job created:', detectJobId);
+                updateDetectProgress('Processing...', 20);
+                
+                pollDetectionStatus(detectJobId);
+                
+            } catch (error) {
+                console.error('❌ Detection error:', error);
+                showDetectError('Upload failed: ' + error.message);
+            }
+        }
+        
+        async function pollDetectionStatus(jobId) {
+            const pollInterval = setInterval(async () => {
+                try {
+                    const response = await fetch(`${DETECTION_API}/api/jobs/${jobId}`);
+                    const status = await response.json();
+                    
+                    console.log('📊 Status:', status.status, status.progress + '%');
+                    
+                    if (status.status === 'completed') {
+                        clearInterval(pollInterval);
+                        updateDetectProgress('Complete!', 100);
+                        showDetectResults(status.result);
+                    } else if (status.status === 'failed') {
+                        clearInterval(pollInterval);
+                        showDetectError(status.message);
+                    } else {
+                        updateDetectProgress(status.message, status.progress);
+                    }
+                    
+                } catch (error) {
+                    clearInterval(pollInterval);
+                    showDetectError('Error checking status: ' + error.message);
+                }
+            }, 2000);
+        }
+        
+        function updateDetectProgress(message, percent) {
+            const textEl = document.getElementById('detect-progress-text');
+            const percentEl = document.getElementById('detect-progress-percent');
+            const barEl = document.getElementById('detect-progress-bar');
+            
+            if (textEl) textEl.textContent = message;
+            if (percentEl) percentEl.textContent = percent + '%';
+            if (barEl) barEl.style.width = percent + '%';
+        }
+        
+        function showDetectResults(result) {
+            const symbolsHTML = Object.entries(result.class_counts || {})
+                .map(([name, count]) => `
+                    <tr style="border-bottom: 1px solid var(--gray-200);">
+                        <td style="padding: 0.75rem;">${name}</td>
+                        <td style="padding: 0.75rem; font-weight: 600;">${count}</td>
+                    </tr>
+                `).join('');
+            
+            const resultsDiv = document.getElementById('detect-results');
+            resultsDiv.innerHTML = `
+                <div style="background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    <h3 style="margin-bottom: 1.5rem; color: var(--success); font-size: 24px;">🎉 Detection Complete!</h3>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                        <div style="background: var(--primary); color: white; padding: 1.5rem; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 2rem; font-weight: bold;">${result.total_detections || 0}</div>
+                            <div>Symbols</div>
+                        </div>
+                        <div style="background: var(--success); color: white; padding: 1.5rem; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 2rem; font-weight: bold;">${((result.confidence_avg || 0) * 100).toFixed(1)}%</div>
+                            <div>Confidence</div>
+                        </div>
+                        <div style="background: var(--warning); color: white; padding: 1.5rem; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 2rem; font-weight: bold;">${(result.processing_time || 0).toFixed(1)}s</div>
+                            <div>Time</div>
+                        </div>
+                    </div>
+                    
+                    <h4 style="margin-bottom: 1rem;">Symbol Breakdown</h4>
+                    <table style="width: 100%; margin-bottom: 2rem;">
+                        <thead style="background: var(--gray-100);">
+                            <tr>
+                                <th style="padding: 0.75rem; text-align: left;">Symbol</th>
+                                <th style="padding: 0.75rem; text-align: left;">Count</th>
+                            </tr>
+                        </thead>
+                        <tbody>${symbolsHTML || '<tr><td colspan="2" style="padding: 1rem;">No symbols detected</td></tr>'}</tbody>
+                    </table>
+                    
+                    <h4 style="margin-bottom: 1rem;">Download Results</h4>
+                    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                        <button onclick="downloadDetectResult('json')" style="padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer;">📄 JSON</button>
+                        <button onclick="downloadDetectResult('csv')" style="padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer;">📊 CSV</button>
+                        <button onclick="downloadDetectResult('excel')" style="padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer;">📈 Excel</button>
+                        <button onclick="downloadDetectResult('annotated')" style="padding: 10px 20px; background: var(--success); color: white; border: none; border-radius: 6px; cursor: pointer;">🖼️ Annotated Images</button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function showDetectError(message) {
+            const resultsDiv = document.getElementById('detect-results');
+            resultsDiv.innerHTML = `
+                <div style="background: white; border-radius: 12px; padding: 2rem; text-align: center;">
+                    <h3 style="color: var(--danger); margin-bottom: 1rem;">❌ Error</h3>
+                    <p style="color: var(--gray-700);">${message}</p>
+                </div>
+            `;
+            document.getElementById('detect-progress').style.display = 'none';
+        }
+        
+        
+        // Load available models for detection
+        async function loadDetectionModels() {
+            try {
+                console.log('🔄 Loading trained models...');
+                
+                // Get trained models from Training API
+                const response = await fetch(`${API_BASE}/api/models`);
+                const data = await response.json();
+                
+                const modelSelect = document.getElementById('detect-model');
+                
+                // Clear existing options except default
+                modelSelect.innerHTML = '<option value="default">Default YOLO11s</option>';
+                
+                // Add trained models
+                if (data.models && data.models.length > 0) {
+                    data.models.forEach(model => {
+                        const option = document.createElement('option');
+                        option.value = model.model_id;
+                        
+                        // Format: ModelName (Classes: X, mAP: XX.X%)
+                        const mAP = model.metrics && model.metrics.mAP50 ? 
+                            (model.metrics.mAP50 * 100).toFixed(1) : '?';
+                        const numClasses = model.num_classes || model.classes.length;
+                        
+                        option.textContent = `${model.name} (${numClasses} classes, mAP: ${mAP}%)`;
+                        modelSelect.appendChild(option);
+                    });
+                    
+                    console.log(`✅ Loaded ${data.models.length} trained model(s)`);
+                } else {
+                    console.log('ℹ️ No trained models available - train a model first!');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error loading models:', error);
+                console.log('💡 Make sure you have trained at least one model in the Training tab');
+            }
+        }
+        
+        function downloadDetectResult(format) {
+            if (!detectJobId) {
+                alert('No results available');
+                return;
+            }
+            window.location.href = `${DETECTION_API}/api/jobs/${detectJobId}/download/${format}`;
+        }
+    </script>
+</body>
+</html>

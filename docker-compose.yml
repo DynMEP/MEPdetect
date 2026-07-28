@@ -1,0 +1,210 @@
+# MEPdetect — stack completo desde la raíz del monorepo.
+# ./dcompose y ./deploy.sh generan .compose/postgres.env y, por defecto, fusionan en ./.env
+# (gitignored) para que `docker compose logs …` sin flags no muestre WARN de POSTGRES_PASSWORD.
+# Orden de lectura de secretos: mepdetect-user-api/.env primero, si no existe → ./.env
+# Desactivar la fusión a ./.env: MEPDETECT_SYNC_ROOT_DOTENV=0 ./dcompose …
+# Logs: nombre del servicio (p. ej. landing-page), no el del contenedor.
+# Puertos 8090-8093: si el stack antiguo mepdetect-* sigue en el host, define LANDING_PORT, etc. en .env.
+# Datos persistentes bajo ./data/ (ver .gitignore).
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-mepdetect}
+      POSTGRES_USER: ${POSTGRES_USER:-mepdetect}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - mepdetect-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-mepdetect}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --maxmemory 200mb --maxmemory-policy allkeys-lru --appendonly yes
+    networks:
+      - mepdetect-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+
+  user-api:
+    build:
+      context: ./mepdetect-user-api
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "${USER_API_PORT:-8093}:8000"
+    volumes:
+      - ./data/uploads:/app/uploads
+      - ${MODELS_HOST_PATH:-./data/models}:/app/models
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-mepdetect}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-mepdetect}
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET_KEY=${SECRET_KEY:-change-me-in-production}
+      - JWT_SECRET=${JWT_SECRET:-${SECRET_KEY:-change-me-in-production}}
+      - SECRET_KEY=${SECRET_KEY:-change-me-in-production}
+      - STRIPE_API_KEY=${STRIPE_API_KEY:-}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET:-}
+      - RECAPTCHA_SECRET_KEY=${RECAPTCHA_SECRET_KEY:-}
+      - RECAPTCHA_MIN_SCORE=${RECAPTCHA_MIN_SCORE:-0.5}
+      - RECAPTCHA_ENABLED=${RECAPTCHA_ENABLED:-true}
+      - EMAIL_HOST=${EMAIL_HOST:-smtp.gmail.com}
+      - EMAIL_PORT=${EMAIL_PORT:-587}
+      - EMAIL_USER=${EMAIL_USER:-}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD:-}
+      - EMAIL_FROM=${EMAIL_FROM:-MEPdetect <noreply@mepdetect.com>}
+      - BASE_URL=${BASE_URL:-http://localhost:8090}
+      - APP_URL=${APP_URL:-http://localhost:8090}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      - CORS_ORIGINS=${CORS_ORIGINS:-https://mepdetect.com,http://localhost:8090,http://127.0.0.1:8090}
+    networks:
+      - mepdetect-network
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=5)\""]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+
+  detection-api:
+    build:
+      context: ./mepdetect-backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "${DETECTION_API_PORT:-8091}:8000"
+    volumes:
+      - ./data/uploads:/app/uploads
+      - ./data/results:/app/results
+      - ${MODELS_HOST_PATH:-./data/models}:/app/models
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-mepdetect}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-mepdetect}
+      - JWT_SECRET_KEY=${SECRET_KEY:-change-me-in-production}
+      - API_TITLE=MEPdetect Detection API
+      - API_VERSION=1.0.0
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - DEFAULT_CONFIDENCE=${DEFAULT_CONFIDENCE:-0.25}
+      - DEFAULT_DPI=${DEFAULT_DPI:-400}
+      - MAX_UPLOAD_SIZE=${MAX_UPLOAD_SIZE:-50MB}
+      - MAX_BATCH_SIZE=${MAX_BATCH_SIZE:-50}
+      - WORKERS=${DETECTION_WORKERS:-4}
+      - TIMEOUT=${DETECTION_TIMEOUT:-300}
+    networks:
+      - mepdetect-network
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=5)\""]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 4G
+
+  training-api:
+    build:
+      context: ./mepdetect-training
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "${TRAINING_API_PORT:-8092}:8000"
+    volumes:
+      - ./data/datasets:/app/datasets
+      - ${MODELS_HOST_PATH:-./data/models}:/app/models
+      - ./data/training:/app/training
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-mepdetect}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-mepdetect}
+      - API_TITLE=MEPdetect Training API
+      - API_VERSION=1.0.0
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - DEFAULT_EPOCHS=${DEFAULT_EPOCHS:-100}
+      - DEFAULT_BATCH_SIZE=${TRAINING_BATCH_SIZE:-16}
+      - DEFAULT_IMAGE_SIZE=${DEFAULT_IMAGE_SIZE:-640}
+      - MAX_DATASET_SIZE=${MAX_DATASET_SIZE:-1000}
+      - WORKERS=${TRAINING_WORKERS:-4}
+      - TIMEOUT=${TRAINING_TIMEOUT:-3600}
+    networks:
+      - mepdetect-network
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=5)\""]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 3G
+
+  landing-page:
+    build:
+      context: ./mepdetect-frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${LANDING_PORT:-8090}:80"
+    networks:
+      - mepdetect-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    environment:
+      - TZ=UTC
+      - RECAPTCHA_SECRET_KEY=${RECAPTCHA_SECRET_KEY:-}
+      - RECAPTCHA_MIN_SCORE=${RECAPTCHA_MIN_SCORE:-0.5}
+      - RECAPTCHA_ENABLED=${RECAPTCHA_ENABLED:-true}
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+
+networks:
+  mepdetect-network:
+    driver: bridge
+
+volumes:
+  postgres-data:

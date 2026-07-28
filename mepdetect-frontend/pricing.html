@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - MEPdetect</title>
+    <link rel="stylesheet" href="/css/mepdetect.css">
+    <link rel="stylesheet" href="/css/auth.css">
+    <script src="/assets/branding.js"></script>
+    <script src="/js/apply-branding.js" defer></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .plan-card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .plan-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+        }
+        
+        .plan-card.featured {
+            border: 3px solid #00d4ff;
+            transform: scale(1.05);
+        }
+        
+        .plan-card.featured::before {
+            content: 'FEATURED';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            color: white;
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .plan-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #fbbf24;
+            color: #78350f;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        
+        .plan-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1d29;
+            margin-bottom: 8px;
+        }
+        
+        .plan-description {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 24px;
+            min-height: 40px;
+        }
+        
+        .plan-price {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 8px;
+        }
+        
+        .price-currency {
+            font-size: 24px;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .price-amount {
+            font-size: 56px;
+            font-weight: 700;
+            color: #1a1d29;
+            line-height: 1;
+        }
+        
+        .price-period {
+            font-size: 16px;
+            color: #6b7280;
+            margin-left: 8px;
+        }
+        
+        .plan-period {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 24px;
+        }
+        
+        .plan-features {
+            list-style: none;
+            margin-bottom: 32px;
+        }
+        
+        .plan-features li {
+            padding: 12px 0;
+            border-bottom: 1px solid #f3f4f6;
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+            color: #374151;
+        }
+        
+        .plan-features li:last-child {
+            border-bottom: none;
+        }
+        
+        .plan-features li::before {
+            content: '✓';
+            color: #10b981;
+            font-weight: 700;
+            font-size: 18px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .plan-button {
+            width: 100%;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .plan-button.primary {
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            color: white;
+        }
+        
+        .plan-button.primary:hover {
+            background: linear-gradient(135deg, #00b8e6, #0088e6);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.4);
+        }
+        
+        .plan-button.secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .plan-button.secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .loading {
+            text-align: center;
+            color: white;
+            padding: 60px 20px;
+            font-size: 18px;
+        }
+        
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 40px auto;
+            max-width: 600px;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 { font-size: 36px; }
+            .header p { font-size: 16px; }
+            .pricing-grid { grid-template-columns: 1fr; gap: 20px; }
+            .plan-card.featured { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="auth-page pricing-standalone">
+    <div class="container">
+        <div data-mep-brand style="margin-bottom:1.5rem;"></div>
+        <div class="pricing-header">
+            <h1>Choose Your Plan</h1>
+            <p>Start detecting MEP symbols in your technical drawings today</p>
+        </div>
+        
+        <div id="loading" class="loading">⏳ Loading pricing plans...</div>
+        <div id="error" class="error" style="display: none;"></div>
+        <div id="pricing-grid" class="pricing-grid" style="display: none;"></div>
+    </div>
+    
+    <script>
+        const API_BASE = window.location.origin;
+        
+        async function loadPlans() {
+            try {
+                const response = await fetch(API_BASE + '/public/plans');
+                const data = await response.json();
+                
+                if (data.plans && data.plans.length > 0) {
+                    renderPlans(data.plans);
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('pricing-grid').style.display = 'grid';
+                } else {
+                    showError('No plans available at the moment.');
+                }
+            } catch (error) {
+                console.error('Error loading plans:', error);
+                showError('Failed to load pricing plans. Please try again later.');
+            }
+        }
+        
+        function renderPlans(plans) {
+            const grid = document.getElementById('pricing-grid');
+            
+            // Sort plans: Basic, Pro, Enterprise
+            const sortedPlans = plans.sort((a, b) => {
+                if (a.plan_key === 'free') return -1;
+                if (b.plan_key === 'free') return 1;
+                if (a.plan_key === 'enterprise') return 1;
+                if (b.plan_key === 'enterprise') return -1;
+                return a.price - b.price;
+            });
+            
+            grid.innerHTML = sortedPlans.map(plan => {
+                const features = Array.isArray(plan.features) ? plan.features : 
+                                (plan.features ? plan.features.split(',') : []);
+                
+                // ⭐ FILTER OUT drawing-related features to avoid duplication
+                const filteredFeatures = features.filter(f => {
+                    const lowerFeature = f.toLowerCase().trim();
+                    return !lowerFeature.includes('drawing') && 
+                           !lowerFeature.includes('detection');
+                });
+                
+                const isEnterprise = plan.billing_period === 'custom';
+                const isFree = plan.plan_key === 'free';
+                const buttonClass = plan.is_popular ? 'primary' : 'secondary';
+                
+                // Price display
+                let priceHTML = '';
+                if (isEnterprise) {
+                    priceHTML = '<span class="price-amount">Custom</span>';
+                } else if (isFree) {
+                    priceHTML = '<span class="price-amount">Free</span>';
+                } else {
+                    priceHTML = `
+                        <span class="price-currency">$</span>
+                        <span class="price-amount">${Math.floor(plan.price)}</span>
+                        <span class="price-period">/mo</span>
+                    `;
+                }
+                
+                // Period description
+                let periodDesc = '';
+                if (isEnterprise) {
+                    periodDesc = 'Contact us for pricing';
+                } else if (isFree) {
+                    periodDesc = 'Forever free';
+                } else {
+                    periodDesc = 'Billed monthly';
+                }
+                
+                // Button text
+                let buttonText = '';
+                if (isEnterprise) {
+                    buttonText = 'Contact Sales';
+                } else if (isFree) {
+                    buttonText = 'Get Started Free';
+                } else {
+                    buttonText = 'Start 14-Day Free Trial';
+                }
+                
+                // Format drawings limit - add programmatically
+                let drawingsHTML = '';
+                if (plan.drawings_limit !== undefined && plan.drawings_limit !== null) {
+                    if (plan.drawings_limit === -1) {
+                        drawingsHTML = '<li>Unlimited drawings per month</li>';
+                    } else if (plan.drawings_limit > 0) {
+                        const plural = plan.drawings_limit !== 1 ? 's' : '';
+                        drawingsHTML = `<li>${plan.drawings_limit} drawing${plural} per month</li>`;
+                    }
+                }
+                
+                // Format custom models
+                let customModelsHTML = '';
+                if (plan.custom_models_limit !== undefined && plan.custom_models_limit !== null) {
+                    if (plan.custom_models_limit === -1) {
+                        customModelsHTML = '<li>Unlimited custom models</li>';
+                    } else if (plan.custom_models_limit > 0) {
+                        const plural = plan.custom_models_limit !== 1 ? 's' : '';
+                        customModelsHTML = `<li>${plan.custom_models_limit} custom model${plural}</li>`;
+                    }
+                }
+                
+                // Format storage
+                let storageHTML = '';
+                if (plan.storage_limit_gb && plan.storage_limit_gb > 0) {
+                    storageHTML = `<li>${plan.storage_limit_gb} GB storage</li>`;
+                }
+                
+                return `
+                    <div class="plan-card ${plan.is_featured ? 'featured' : ''}">
+                        ${plan.is_popular ? '<div class="plan-badge">MOST POPULAR</div>' : ''}
+                        
+                        <div class="plan-name">${plan.display_name}</div>
+                        <div class="plan-description">${plan.description || ''}</div>
+                        
+                        <div class="plan-price">
+                            ${priceHTML}
+                        </div>
+                        <div class="plan-period">${periodDesc}</div>
+                        
+                        <ul class="plan-features">
+                            ${drawingsHTML}
+                            ${filteredFeatures.map(f => `<li>${f.trim()}</li>`).join('')}
+                            ${storageHTML}
+                            ${customModelsHTML}
+                        </ul>
+                        
+                        <button class="plan-button ${buttonClass}" onclick="selectPlan('${plan.plan_key}', '${plan.name}')">
+                            ${buttonText}
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function selectPlan(planKey, planName) {
+            const authToken = localStorage.getItem('authToken');
+            
+            if (!authToken) {
+                window.location.replace(`/login?plan=${planKey}`);
+                return;
+            }
+            
+            if (planKey === 'free') {
+                alert('Free plan activated! Redirecting to dashboard...');
+                window.location.replace('/dashboard');
+                return;
+            }
+            
+            // Redirect to Stripe checkout or internal checkout page
+            window.location.replace(`/checkout?plan=${planKey}`);
+        }
+        
+        function showError(message) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').textContent = message;
+            document.getElementById('error').style.display = 'block';
+        }
+        
+        // Load plans on page load
+        loadPlans();
+    </script>
+</body>
+</html>

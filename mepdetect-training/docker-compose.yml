@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  mepdetect-training:
+    build: .
+    container_name: mepdetect-training
+    restart: unless-stopped
+    
+    ports:
+      - "8092:8000"  # External:Internal (8091 for detection, 8092 for training)
+    
+    volumes:
+      # Persist datasets, models, and training results
+      - ./data/datasets:/app/datasets
+      - /opt/mepdetect-shared/models:/app/models
+      - ./data/training:/app/training
+    
+    environment:
+      # API Configuration
+      - API_TITLE=MEPdetect Training API
+      - API_VERSION=1.0.0
+      - LOG_LEVEL=info
+      
+      # Training Settings (defaults)
+      - DEFAULT_EPOCHS=100
+      - DEFAULT_BATCH_SIZE=16
+      - DEFAULT_IMAGE_SIZE=640
+      - MAX_DATASET_SIZE=1000
+      
+      # Performance
+      - WORKERS=4
+      - TIMEOUT=3600  # 1 hour for long training jobs
+      
+    # Resource limits (training needs more resources)
+    deploy:
+      resources:
+        limits:
+          cpus: '8.0'
+          memory: 3G
+        reservations:
+          cpus: '4.0'
+          memory: 2G
+    
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=5)\""]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    
+    networks:
+      - mepdetect-network
+
+networks:
+  mepdetect-network:
+    driver: bridge
+
+volumes:
+  datasets:
+  models:
+  training:

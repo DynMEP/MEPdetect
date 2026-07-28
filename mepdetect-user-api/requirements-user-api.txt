@@ -1,0 +1,47 @@
+# User Management API Dependencies
+
+# FastAPI and web framework
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+python-multipart==0.0.6
+
+# Database
+sqlalchemy==2.0.25
+psycopg2-binary==2.9.9
+alembic==1.13.1
+
+# Authentication
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+# bcrypt>=4.1 rompe passlib 1.7.4 (__about__); mantener 4.0.x
+bcrypt==4.0.1
+
+# Pydantic for validation
+pydantic==2.5.3
+pydantic-settings==2.1.0
+email-validator==2.1.0
+
+# Payment processing
+stripe==7.11.0
+
+# Redis for caching
+redis==5.0.1
+
+# HTTP requests
+httpx==0.26.0
+requests==2.31.0
+
+# Google OAuth (Sign in with Google)
+google-auth==2.27.0
+
+# Environment variables
+python-dotenv==1.0.0
+
+# CORS middleware (included in FastAPI but explicit)
+# starlette is a dependency of FastAPI
+
+# Utilities
+python-dateutil==2.8.2
+
+# Production server
+gunicorn==21.2.0

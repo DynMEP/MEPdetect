@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<!--
+  DRAFT — REVIEW BEFORE PUBLISHING.
+
+  This policy was written against what the code actually does, not from a
+  template. Before it goes live you must:
+
+    1. Fill in every [BRACKETED] placeholder: legal entity, address, and the
+       privacy contact address.
+    2. Have a lawyer read it. You take card payments and process customers'
+       drawings, and California's CCPA/CPRA applies to you.
+    3. Decide the retention period in "How long we keep it". The code does
+       not delete uploads or results today, and the policy says so. Either
+       implement deletion or leave the statement as it is — but do not claim
+       a retention period you do not enforce.
+    4. Re-check the security section if you enable disk encryption; it
+       deliberately does not claim encryption at rest, because nothing in the
+       stack does that today.
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    <meta name="description" content="How MEPdetect handles your account details, the drawings you upload, and the results we produce from them.">
+    <title>Privacy Policy — MEPdetect</title>
+    <link rel="stylesheet" href="/css/mepdetect.css">
+    <link rel="stylesheet" href="/css/landing.css">
+    <script src="/assets/branding.js"></script>
+    <script src="/js/apply-branding.js" defer></script>
+</head>
+<body class="landing-page">
+    <header>
+        <nav class="container">
+            <div data-mep-brand></div>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/#features">Features</a>
+                <a href="/#pricing">Pricing</a>
+                <a href="/login" class="btn-login">Login</a>
+            </div>
+        </nav>
+    </header>
+
+    <section class="legal">
+        <div class="container legal-body">
+            <h1>Privacy Policy</h1>
+            <p class="legal-meta">Last updated: 27 July 2026</p>
+
+            <p class="legal-lead">This policy covers MEPdetect: the website, the dashboard, the detection and training APIs, and anything you upload to them. It says what we collect, why, who else sees it, and what you can make us do about it. Where something is not yet true of our systems, it says that too.</p>
+
+            <h2>1. Who we are</h2>
+            <p>MEPdetect is operated by [LEGAL ENTITY NAME], [BUSINESS ADDRESS]. For anything in this policy, including requests about your data, write to <a href="mailto:[PRIVACY EMAIL]">[PRIVACY EMAIL]</a>.</p>
+
+            <h2>2. What we collect</h2>
+
+            <h3>Account details</h3>
+            <p>Your email address, and your name, company and phone number if you give them. If you sign in with a password we store a one-way hash of it, never the password itself. If you sign in with Google we store the Google account identifier and the email address Google confirms, and we never see your Google password.</p>
+
+            <h3>The drawings you upload, and what we make from them</h3>
+            <p>Your drawing files, the images we render from them, and every output we produce: symbol counts, detection coordinates, annotated sheets, circuit netlists and traced overlays. These are stored on our servers under a job identifier so you can download the results.</p>
+
+            <h3>How you use the service</h3>
+            <p>For each job we record which endpoint was called, how many files it had, how many detections came back, how long it took, which model ran, and when. We use this to enforce plan limits, to bill correctly and to find faults.</p>
+
+            <h3>Billing</h3>
+            <p>Payments are processed by Stripe. Your card details go to Stripe directly and never reach our servers. We store the Stripe customer identifier, which plan you are on and the state of your subscription.</p>
+
+            <h3>Messages you send us</h3>
+            <p>If you use a contact or support form we keep the message, the address you sent it from and our reply.</p>
+
+            <h3>Technical logs</h3>
+            <p>Our web servers keep standard access logs: IP address, timestamp, the page or endpoint requested, and the browser's user-agent string.</p>
+
+            <h2>3. Why we are allowed to hold it</h2>
+            <p>We process your account details, uploads and usage records because we cannot provide the service you asked for without them. We process billing data to perform the contract and to meet tax and accounting obligations. We use technical logs and bot protection on the legitimate interest of keeping the service up and unabused. Where we rely on consent — for example, optional marketing email — you can withdraw it at any time.</p>
+
+            <h2>4. Who else sees your data</h2>
+            <p>We do not sell your personal information, and we do not share it for cross-context behavioural advertising. We do not use your drawings to train models for other customers. The only third parties involved in running the service are:</p>
+            <ul>
+                <li><strong>Stripe</strong> — payment processing and subscription billing.</li>
+                <li><strong>Google</strong> — "Sign in with Google", if you use it, and reCAPTCHA, which analyses request signals including your IP address to tell people from bots.</li>
+                <li><strong>Our email provider</strong> — delivery of account email such as verification and password resets. The message content is your address and the text of that email.</li>
+                <li><strong>Our hosting provider</strong> — the servers the application and database run on.</li>
+            </ul>
+            <p>We will also disclose data if the law requires it, and we will tell you when we are permitted to.</p>
+
+            <h2>5. Your drawings stay yours</h2>
+            <p>You keep every right you had in the files you upload and in the results we produce from them. We use them to run the job you asked for, to show you the results, and to investigate a fault if you report one. We do not use your drawings to train the shared detection models. If you train a custom model on your own drawings, that model is yours and is not made available to other customers.</p>
+
+            <h2>6. How long we keep it</h2>
+            <p>Account records last as long as your account does. Usage and billing records are kept for as long as tax and accounting rules require.</p>
+            <p><strong>Uploaded drawings and their results are currently kept until you ask us to delete them.</strong> There is no automatic expiry today. If that matters to you — and on live project drawings it usually should — email us and we will delete a job, or all of them, and confirm when it is done.</p>
+
+            <h2>7. Your rights</h2>
+            <p>Wherever you are, you can ask us to show you the personal data we hold about you, correct it, delete it, or send you a copy in a portable format. Write to <a href="mailto:[PRIVACY EMAIL]">[PRIVACY EMAIL]</a> and we will answer within 30 days.</p>
+            <p>If you are in California, the CCPA as amended by the CPRA gives you the rights to know, to delete, to correct, to opt out of sale or sharing, and not to be discriminated against for exercising them. We do not sell or share personal information as those terms are defined, so there is nothing to opt out of, but the other rights apply and the address above is how to use them.</p>
+            <p>If you are in the UK or the EU, you have the equivalent rights under the UK GDPR and the GDPR, including the right to object to processing and the right to complain to your supervisory authority.</p>
+
+            <h2>8. How we protect it</h2>
+            <p>Traffic between your browser and our servers is encrypted with TLS. Passwords are stored only as one-way hashes. Access to the production servers and the database is restricted to the people who operate the service. Each customer's jobs are separated by account, and downloads require your session.</p>
+            <p>We do not claim that stored files are encrypted at rest, because the current deployment does not do that. Enterprise customers who need drawings never to leave their own network can run MEPdetect on their own infrastructure.</p>
+            <p>No service is immune. If a breach affects your personal data we will tell you and the relevant regulator within the time limits the law sets.</p>
+
+            <h2>9. International transfers</h2>
+            <p>Our servers are located in [HOSTING REGION]. Our processors, including Stripe and Google, may handle data in other countries under the safeguards their own terms provide.</p>
+
+            <h2>10. Children</h2>
+            <p>MEPdetect is a tool for construction professionals. It is not intended for anyone under 18, and we do not knowingly collect their data.</p>
+
+            <h2>11. Changes</h2>
+            <p>If we change this policy we will update the date at the top, and for any change that materially affects your rights we will email account holders before it takes effect.</p>
+
+            <h2>12. Contact</h2>
+            <p>Privacy questions and data requests: <a href="mailto:[PRIVACY EMAIL]">[PRIVACY EMAIL]</a>. Anything else: <a href="mailto:sales@mepdetect.com">sales@mepdetect.com</a>.</p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 MEPdetect. All rights reserved. &middot; <a href="/privacy">Privacy Policy</a> &middot; <a href="/terms">Terms of Service</a></p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

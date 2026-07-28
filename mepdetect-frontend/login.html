@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en" data-auth="guest">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/js/auth-gate.js"></script>
+    <title>Login - MEPdetect</title>
+    
+    <!-- Google reCAPTCHA v3 -->
+    <script src="https://www.google.com/recaptcha/api.js?render=YOUR_RECAPTCHA_SITE_KEY"></script>
+    <!-- Google Identity Services (Sign in with Google) -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link rel="stylesheet" href="/css/mepdetect.css">
+    <link rel="stylesheet" href="/css/auth.css">
+    <script src="/assets/branding.js"></script>
+    <script src="/js/apply-branding.js" defer></script>
+    <style>
+        .auth-page .btn { width: 100%; }
+        .auth-page .divider { text-align: center; margin: 1.25rem 0; color: var(--mep-stone-light); }
+        .auth-page .google-signin-wrap { display: flex; justify-content: center; min-height: 44px; margin-bottom: 8px; }
+        .auth-page .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .auth-page .modal-close { background: none; border: none; font-size: 1.5rem; color: var(--mep-stone); cursor: pointer; }
+    </style>
+</head>
+<body class="auth-page">
+    <div class="auth-shell">
+        <aside class="auth-aside">
+            <div data-mep-brand data-mep-brand-size="lg"></div>
+            <p>AI-powered symbol detection for electrical, HVAC, and plumbing technical drawings.</p>
+            <p style="margin-top: 1.25rem; font-size: 0.95rem; opacity: 0.8;">Upload plans, get counts in under a minute.</p>
+        </aside>
+        
+        <main class="auth-main">
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('login')">Login</div>
+                <div class="tab" onclick="switchTab('register')">Register</div>
+            </div>
+            
+            <div class="error" id="error"></div>
+            <div class="success" id="success"></div>
+
+            <div class="google-signin-wrap" id="googleSignInWrap"></div>
+            <p class="google-unavailable" id="googleUnavailable">
+                Google sign-in is not configured on this server.
+            </p>
+            <div class="divider-or">or continue with email</div>
+            
+            <!-- Login Form -->
+            <form class="form active" id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="label">Email</label>
+                    <input type="email" class="input" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="label">Password</label>
+                    <input type="password" class="input" name="password" required>
+                </div>
+                
+                <button type="submit" class="btn">Sign In</button>
+                
+                <div class="divider">
+                    <a href="#" class="link" onclick="openForgotPasswordModal(event)">Forgot password?</a>
+                </div>
+            </form>
+            
+            <!-- Register Form -->
+            <form class="form" id="registerForm" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label class="label">Full Name</label>
+                    <input type="text" class="input" name="full_name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="label">Email</label>
+                    <input type="email" class="input" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="label">Company (optional)</label>
+                    <input type="text" class="input" name="company">
+                </div>
+                
+                <div class="form-group">
+                    <label class="label">Password</label>
+                    <input type="password" class="input" name="password" required minlength="8">
+                </div>
+                
+                <button type="submit" class="btn">Create Account</button>
+                
+                <div class="divider" style="font-size: 12px; color: #6b7280;">
+                    By signing up, you agree to our Terms of Service and Privacy Policy
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div class="modal" id="forgotPasswordModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Reset Password</h2>
+                <button class="modal-close" onclick="closeForgotPasswordModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Enter your email address and we'll send you instructions to reset your password.</p>
+                
+                <div class="error" id="modalError"></div>
+                <div class="success" id="modalSuccess"></div>
+                
+                <form id="forgotPasswordForm" onsubmit="handleForgotPassword(event)">
+                    <div class="form-group">
+                        <label class="label">Email Address</label>
+                        <input type="email" class="input" name="email" id="resetEmail" required>
+                    </div>
+                    
+                    <button type="submit" class="btn">Send Reset Link</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const USER_API_PORT = '8093';
+
+        function resolveApiBase() {
+            const { protocol, hostname, port } = window.location;
+            if (port === USER_API_PORT) {
+                return window.location.origin;
+            }
+            // Docker dev: landing :8090 without nginx /auth proxy → call user-api directly
+            if (port === '8090') {
+                return `${protocol}//${hostname}:${USER_API_PORT}`;
+            }
+            // Production (or nginx): same origin, /auth/ proxied to user-api
+            return window.location.origin;
+        }
+
+        const API_BASE = resolveApiBase();
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.form').forEach(f => f.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tab + 'Form').classList.add('active');
+            
+            hideMessages();
+        }
+
+        async function completeGoogleSignIn(credential) {
+            hideMessages();
+            try {
+                const response = await fetch(API_BASE + '/auth/google', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ credential })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    showError(error.detail || 'Google sign-in failed');
+                    return;
+                }
+
+                const result = await response.json();
+                localStorage.setItem('authToken', result.access_token);
+                if (result.refresh_token) {
+                    localStorage.setItem('refreshToken', result.refresh_token);
+                }
+                window.location.replace('/dashboard');
+            } catch (err) {
+                showError('Network error during Google sign-in. Please try again.');
+            }
+        }
+
+        function renderGoogleButton(clientId) {
+            const wrap = document.getElementById('googleSignInWrap');
+            wrap.innerHTML = '';
+            google.accounts.id.initialize({
+                client_id: clientId,
+                callback: (response) => {
+                    if (response.credential) {
+                        completeGoogleSignIn(response.credential);
+                    }
+                },
+                auto_select: false,
+                cancel_on_tap_outside: true
+            });
+            google.accounts.id.renderButton(wrap, {
+                type: 'standard',
+                theme: 'outline',
+                size: 'large',
+                text: 'continue_with',
+                width: 320
+            });
+        }
+
+        async function initGoogleSignIn() {
+            try {
+                const res = await fetch(API_BASE + '/auth/google/config');
+                if (!res.ok) {
+                    document.getElementById('googleUnavailable').style.display = 'block';
+                    return;
+                }
+                const config = await res.json();
+                if (!config.enabled || !config.client_id) {
+                    document.getElementById('googleUnavailable').style.display = 'block';
+                    return;
+                }
+                const waitForGsi = () => new Promise((resolve) => {
+                    if (window.google && google.accounts && google.accounts.id) {
+                        resolve();
+                        return;
+                    }
+                    const interval = setInterval(() => {
+                        if (window.google && google.accounts && google.accounts.id) {
+                            clearInterval(interval);
+                            resolve();
+                        }
+                    }, 100);
+                    setTimeout(() => {
+                        clearInterval(interval);
+                        resolve();
+                    }, 8000);
+                });
+                await waitForGsi();
+                if (!window.google || !google.accounts || !google.accounts.id) {
+                    document.getElementById('googleUnavailable').textContent =
+                        'Could not load Google sign-in. Check your connection or ad blocker.';
+                    document.getElementById('googleUnavailable').style.display = 'block';
+                    return;
+                }
+                renderGoogleButton(config.client_id);
+            } catch (e) {
+                document.getElementById('googleUnavailable').style.display = 'block';
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            hideMessages();
+            
+            const formData = new FormData(e.target);
+            
+            try {
+                // Get reCAPTCHA token
+                const recaptchaToken = await grecaptcha.execute('YOUR_RECAPTCHA_SITE_KEY', {action: 'login'});
+                
+                const data = {
+                    email: formData.get('email'),
+                    password: formData.get('password'),
+                    recaptcha_token: recaptchaToken
+                };
+                
+                const response = await fetch(API_BASE + '/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    
+                    // Special handling for unverified email
+                    if (response.status === 403 && error.detail && error.detail.includes('Email not verified')) {
+                        showError('📧 Email not verified. Please check your inbox for the verification link we sent you.');
+                    } else {
+                        showError(error.detail || 'Login failed');
+                    }
+                    return;
+                }
+                
+                const result = await response.json();
+                localStorage.setItem('authToken', result.access_token);
+                
+                // Redirect to dashboard
+                window.location.replace('/dashboard');
+                
+            } catch (error) {
+                showError('Network error. Please try again.');
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            hideMessages();
+            
+            const formData = new FormData(e.target);
+            
+            try {
+                // Get reCAPTCHA token
+                const recaptchaToken = await grecaptcha.execute('YOUR_RECAPTCHA_SITE_KEY', {action: 'register'});
+                
+                const data = {
+                    email: formData.get('email'),
+                    password: formData.get('password'),
+                    full_name: formData.get('full_name'),
+                    company: formData.get('company') || null,
+                    recaptcha_token: recaptchaToken
+                };
+                
+                const response = await fetch(API_BASE + '/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    showError(error.detail || 'Registration failed');
+                    return;
+                }
+                
+                const result = await response.json();
+                
+                // Check if email verification is required
+                if (result.requires_verification) {
+                    showVerificationMessage(result.email);
+                } else if (result.access_token) {
+                    // Backwards compatible: immediate login for old flow
+                    localStorage.setItem('authToken', result.access_token);
+                    showSuccess('Account created successfully! Redirecting...');
+                    setTimeout(() => {
+                        window.location.replace('/dashboard');
+                    }, 1000);
+                }
+                
+            } catch (error) {
+                showError('Network error. Please try again.');
+            }
+        }
+        
+        function showVerificationMessage(email) {
+            // Hide the form
+            document.getElementById('registerForm').style.display = 'none';
+            
+            // Create verification message
+            const rightPanel = document.querySelector('.right-panel');
+            const verificationDiv = document.createElement('div');
+            verificationDiv.id = 'verificationMessage';
+            verificationDiv.innerHTML = `
+                <div style="text-align: center; padding: 20px;">
+                    <div style="width: 80px; height: 80px; margin: 0 auto 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                    </div>
+                    
+                    <h2 style="font-size: 28px; margin-bottom: 16px; color: #1a1d29;">Check Your Email</h2>
+                    
+                    <p style="font-size: 16px; color: #6b7280; margin-bottom: 24px; line-height: 1.6;">
+                        We've sent a verification link to<br>
+                        <strong style="color: #1a1d29;">${email}</strong>
+                    </p>
+                    
+                    <div style="background: #f9fafb; border-radius: 12px; padding: 24px; margin-bottom: 24px; text-align: left;">
+                        <h3 style="font-size: 14px; font-weight: 600; color: #1a1d29; margin-bottom: 12px;">Next Steps:</h3>
+                        <ol style="padding-left: 20px; color: #6b7280; line-height: 1.8;">
+                            <li>Check your inbox (and spam folder)</li>
+                            <li>Click the verification link in the email</li>
+                            <li>Return here to log in</li>
+                        </ol>
+                    </div>
+                    
+                    <button onclick="resetToLogin()" class="btn" style="width: 100%; margin-top: 16px;">
+                        Go to Login
+                    </button>
+                </div>
+            `;
+            
+            rightPanel.appendChild(verificationDiv);
+        }
+        
+        function resetToLogin() {
+            // Remove verification message
+            const verificationMsg = document.getElementById('verificationMessage');
+            if (verificationMsg) {
+                verificationMsg.remove();
+            }
+            
+            // Show register form again
+            document.getElementById('registerForm').style.display = 'block';
+            
+            // Switch to login tab
+            switchTab('login');
+        }
+
+        function showError(message) {
+            const errorEl = document.getElementById('error');
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+        }
+
+        function showSuccess(message) {
+            const successEl = document.getElementById('success');
+            successEl.textContent = message;
+            successEl.style.display = 'block';
+        }
+
+        function hideMessages() {
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('success').style.display = 'none';
+        }
+
+        function hideModalMessages() {
+            document.getElementById('modalError').style.display = 'none';
+            document.getElementById('modalSuccess').style.display = 'none';
+        }
+
+        function showModalError(message) {
+            const errorEl = document.getElementById('modalError');
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+        }
+
+        function showModalSuccess(message) {
+            const successEl = document.getElementById('modalSuccess');
+            successEl.textContent = message;
+            successEl.style.display = 'block';
+        }
+
+        function openForgotPasswordModal(e) {
+            e.preventDefault();
+            document.getElementById('forgotPasswordModal').classList.add('active');
+            document.getElementById('resetEmail').value = '';
+            hideModalMessages();
+        }
+
+        function closeForgotPasswordModal() {
+            document.getElementById('forgotPasswordModal').classList.remove('active');
+            hideModalMessages();
+        }
+
+        // Close modal on outside click
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('forgotPasswordModal');
+            if (e.target === modal) {
+                closeForgotPasswordModal();
+            }
+        });
+
+        async function handleForgotPassword(e) {
+            e.preventDefault();
+            hideModalMessages();
+            
+            const email = document.getElementById('resetEmail').value;
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth/forgot-password`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Failed to send reset link');
+                }
+                
+                showModalSuccess('Password reset instructions sent! Check your email.');
+                
+                // Close modal after 3 seconds
+                setTimeout(() => {
+                    closeForgotPasswordModal();
+                }, 3000);
+                
+            } catch (error) {
+                // Even if endpoint doesn't exist, show a helpful message
+                if (error.message.includes('404')) {
+                    showModalSuccess('If an account exists with this email, you will receive password reset instructions shortly.');
+                    setTimeout(() => {
+                        closeForgotPasswordModal();
+                    }, 3000);
+                } else {
+                    showModalError(error.message || 'Failed to send reset link. Please contact support@mepdetect.com');
+                }
+            }
+        }
+
+        // Check URL hash to open correct tab
+        window.addEventListener('DOMContentLoaded', function() {
+            initGoogleSignIn();
+
+            const hash = window.location.hash;
+            if (hash === '#register') {
+                // Switch to register tab
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.form').forEach(f => f.classList.remove('active'));
+                
+                document.querySelectorAll('.tab')[1].classList.add('active'); // Register tab
+                document.getElementById('registerForm').classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>
