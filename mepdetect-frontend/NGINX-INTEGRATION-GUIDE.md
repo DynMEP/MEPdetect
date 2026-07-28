@@ -44,7 +44,7 @@ Nginx (Host) :80, :443
 
 ```bash
 # Upload Docker files to server
-cd /opt/MEPdetector
+cd /opt/mepdetect
 docker-compose up -d --build
 
 # Verify container is running
@@ -186,7 +186,7 @@ open https://mepdetect.com
 
 ```
 Your Server:
-├── /opt/MEPdetector/
+├── /opt/mepdetect/
 │   ├── docker-compose.yml              ← MEPdetect container config
 │   ├── Dockerfile
 │   ├── nginx.conf                      ← Container's nginx config
@@ -270,13 +270,13 @@ openssl s_client -connect mepdetect.com:443 -servername mepdetect.com < /dev/nul
 docker logs -f mepdetect-landing
 
 # Restart container
-docker-compose -f /opt/MEPdetector/docker-compose.yml restart
+docker-compose -f /opt/mepdetect/docker-compose.yml restart
 
 # Stop container
-docker-compose -f /opt/MEPdetector/docker-compose.yml down
+docker-compose -f /opt/mepdetect/docker-compose.yml down
 
 # Update HTML (no rebuild)
-docker cp /opt/MEPdetector/mepdetect-landing-page.html \
+docker cp /opt/mepdetect/mepdetect-landing-page.html \
     mepdetect-landing:/usr/share/nginx/html/index.html
 docker exec mepdetect-landing nginx -s reload
 ```
@@ -448,7 +448,7 @@ Your existing setup is already secure! MEPdetect follows the same pattern:
 sudo apt update && sudo apt upgrade -y
 
 # Update Docker images
-cd /opt/MEPdetector
+cd /opt/mepdetect
 docker-compose pull
 docker-compose up -d
 ```
@@ -512,7 +512,7 @@ location / {
 
 **Deploy MEPdetect:**
 ```bash
-cd /opt/MEPdetector
+cd /opt/mepdetect
 docker-compose up -d --build
 sudo cp nginx-host-config.conf /etc/nginx/conf.d/mepdetect.conf
 sudo nginx -t && sudo systemctl reload nginx

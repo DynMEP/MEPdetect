@@ -4,7 +4,7 @@
 
 ```bash
 # 1. Navigate to directory
-cd /opt/MEPdetector
+cd /opt/mepdetect
 
 # 2. Deploy (one command!)
 docker-compose up -d --build
@@ -23,7 +23,7 @@ docker ps | grep mepdetect-landing
 - [x] Docker installed (`docker --version`)
 - [x] Docker Compose installed (`docker-compose --version`)
 - [x] Port 8080 available
-- [x] Files uploaded to `/opt/MEPdetector/`:
+- [x] Files uploaded to `/opt/mepdetect/`:
   - Dockerfile
   - docker-compose.yml
   - nginx.conf

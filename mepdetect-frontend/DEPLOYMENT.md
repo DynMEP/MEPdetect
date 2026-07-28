@@ -2,7 +2,7 @@
 
 ## 📦 Your Current Server Setup
 
-Based on your server at `/opt/MEPdetector`, you have:
+Based on your server at `/opt/mepdetect`, you have:
 - Multiple Docker containers running (Bitcoin, MariaDB, Redis, Flask apps)
 - Ports in use: 5000, 5001, 6000, 6001, 6379, 6380, 3307, 3308, 8333, 18333
 - All using Gunicorn for Python apps
@@ -15,9 +15,9 @@ Based on your server at `/opt/MEPdetector`, you have:
 
 ### Step 1: Upload Files to Server
 
-Upload these files to `/opt/MEPdetector/`:
+Upload these files to `/opt/mepdetect/`:
 ```
-/opt/MEPdetector/
+/opt/mepdetect/
 ├── Dockerfile
 ├── docker-compose.yml
 ├── nginx.conf
@@ -32,17 +32,17 @@ Upload these files to `/opt/MEPdetector/`:
 ```bash
 # From your local machine
 scp Dockerfile docker-compose.yml nginx.conf mepdetect-landing-page.html \
-    root@YOUR_SERVER_IP:/opt/MEPdetector/
+    root@YOUR_SERVER_IP:/opt/mepdetect/
 
 # If using deploy script and Makefile
 scp deploy.sh Makefile README.md QUICKSTART.md \
-    root@YOUR_SERVER_IP:/opt/MEPdetector/
+    root@YOUR_SERVER_IP:/opt/mepdetect/
 ```
 
 **Using SFTP:**
 ```bash
 sftp root@YOUR_SERVER_IP
-cd /opt/MEPdetector
+cd /opt/mepdetect
 put Dockerfile docker-compose.yml nginx.conf mepdetect-landing-page.html
 exit
 ```
@@ -53,7 +53,7 @@ exit
 
 ```bash
 ssh root@YOUR_SERVER_IP
-cd /opt/MEPdetector
+cd /opt/mepdetect
 ```
 
 ---
@@ -62,7 +62,7 @@ cd /opt/MEPdetector
 
 **Option A: Using Docker Compose (Recommended)**
 ```bash
-cd /opt/MEPdetector
+cd /opt/mepdetect
 docker-compose up -d --build
 ```
 
@@ -463,7 +463,7 @@ For production:
 
 **Final command to deploy:**
 ```bash
-cd /opt/MEPdetector
+cd /opt/mepdetect
 docker-compose up -d --build
 ```
 

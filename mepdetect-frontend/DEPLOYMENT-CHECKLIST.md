@@ -44,7 +44,7 @@ echo "Backup created!"
 From your local machine:
 ```bash
 # Upload Docker files
-scp -r mepdetect-docker/* root@YOUR_SERVER_IP:/opt/MEPdetector/
+scp -r mepdetect-docker/* root@YOUR_SERVER_IP:/opt/mepdetect/
 ```
 
 ### ☐ 4. Deploy Container
@@ -54,7 +54,7 @@ scp -r mepdetect-docker/* root@YOUR_SERVER_IP:/opt/MEPdetector/
 ssh root@YOUR_SERVER_IP
 
 # Deploy
-cd /opt/MEPdetector
+cd /opt/mepdetect
 docker-compose up -d --build
 
 # Wait 10 seconds
@@ -86,7 +86,7 @@ curl http://localhost:8090/health
 
 ```bash
 # Copy config file
-sudo cp /opt/MEPdetector/nginx-host-config.conf /etc/nginx/conf.d/mepdetect.conf
+sudo cp /opt/mepdetect/nginx-host-config.conf /etc/nginx/conf.d/mepdetect.conf
 
 # Or create manually
 sudo nano /etc/nginx/conf.d/mepdetect.conf

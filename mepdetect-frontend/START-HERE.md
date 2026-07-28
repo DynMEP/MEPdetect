@@ -95,7 +95,7 @@ Your server is running:
 
 1. **Deploy Container** (5 min)
    ```bash
-   cd /opt/MEPdetector
+   cd /opt/mepdetect
    docker-compose up -d --build
    ```
 
@@ -180,13 +180,13 @@ Your current ports:
 
 ### Upload Files:
 ```bash
-scp -r mepdetect-docker/* root@YOUR_SERVER:/opt/MEPdetector/
+scp -r mepdetect-docker/* root@YOUR_SERVER:/opt/mepdetect/
 ```
 
 ### Deploy Container:
 ```bash
 ssh root@YOUR_SERVER
-cd /opt/MEPdetector
+cd /opt/mepdetect
 docker-compose up -d --build
 ```
 

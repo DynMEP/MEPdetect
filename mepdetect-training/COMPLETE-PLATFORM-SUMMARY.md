@@ -33,7 +33,7 @@
 
 ```
 Your Server:
-├── /opt/MEPdetector/                    # Frontend
+├── /opt/mepdetect/                    # Frontend
 │   ├── docker-compose.yml (port 8090)
 │   ├── mepdetect-landing-page.html
 │   └── [configs]
@@ -434,7 +434,7 @@ A **complete, production-ready SaaS platform** for AI-powered MEP symbol detecti
 - Troubleshooting docs
 
 ### Community
-- YOLOplan GitHub: https://github.com/DynMEP/YOLOplan
+- MEPdetect GitHub: https://github.com/DynMEP/MEPdetect
 - Ultralytics Docs: https://docs.ultralytics.com
 
 ### Tools

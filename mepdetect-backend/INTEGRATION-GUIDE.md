@@ -124,7 +124,7 @@ Nginx :80, :443 (SSL termination)
 
 ### Method 1: Update HTML directly (Quick)
 
-Edit `/opt/MEPdetector/mepdetect-landing-page.html`:
+Edit `/opt/mepdetect/mepdetect-landing-page.html`:
 
 ```html
 <script>
@@ -268,7 +268,7 @@ document.getElementById('file-input').addEventListener('change', handleFileUploa
 
 ```bash
 # Copy updated HTML to container
-docker cp /opt/MEPdetector/mepdetect-landing-page.html \
+docker cp /opt/mepdetect/mepdetect-landing-page.html \
     mepdetect-landing:/usr/share/nginx/html/index.html
 
 # Reload nginx in container
@@ -537,7 +537,7 @@ When everything is working, you should see:
 
 - Backend API: https://api.mepdetect.com/api/docs
 - Frontend: https://mepdetect.com
-- GitHub: [Issues](https://github.com/DynMEP/YOLOplan/issues)
+- GitHub: [Issues](https://github.com/DynMEP/MEPdetect/issues)
 
 ---
 

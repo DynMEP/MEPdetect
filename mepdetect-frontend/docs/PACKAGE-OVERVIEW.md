@@ -30,15 +30,15 @@ This is your complete, production-ready package for launching **mepdetect.com**.
 
 ## 🚀 Quick Deploy (3 Commands)
 
-For your server at `/opt/MEPdetector`:
+For your server at `/opt/mepdetect`:
 
 ```bash
-# 1. Upload all files from mepdetect-docker/ to /opt/MEPdetector/
-scp -r mepdetect-docker/* root@YOUR_SERVER:/opt/MEPdetector/
+# 1. Upload all files from mepdetect-docker/ to /opt/mepdetect/
+scp -r mepdetect-docker/* root@YOUR_SERVER:/opt/mepdetect/
 
 # 2. SSH into server and deploy
 ssh root@YOUR_SERVER
-cd /opt/MEPdetector
+cd /opt/mepdetect
 docker-compose up -d --build
 
 # 3. Done! Access your site
@@ -172,7 +172,7 @@ Your new landing page:
 
 **Deploy**:
 ```bash
-cd /opt/MEPdetector
+cd /opt/mepdetect
 docker-compose up -d --build
 ```
 
@@ -472,7 +472,7 @@ Your MEPdetect landing page is **production-ready**. It's:
 
 **Ready to deploy?**
 ```bash
-cd /opt/MEPdetector
+cd /opt/mepdetect
 docker-compose up -d --build
 ```
 
