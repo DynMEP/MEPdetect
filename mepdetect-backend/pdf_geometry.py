@@ -317,6 +317,12 @@ def ocr_tags_near(
     if image is None:
         return []
 
+    # ultralytics replaces cv2.imread with a version that always returns a
+    # channel axis, so a grayscale read comes back as (H, W, 1) in any process
+    # that has loaded the detection model. Reduce it before measuring.
+    if image.ndim == 3:
+        image = image[:, :, 0]
+
     height, width = image.shape
     found: List[Dict] = []
 

@@ -3,7 +3,11 @@ MEPdetect Backend API - STANDALONE VERSION
 Works independently, optional database logging
 """
 
-from fastapi import FastAPI, File, UploadFile, HTTPException, BackgroundTasks, Header
+from fastapi import (
+    BackgroundTasks, Depends, FastAPI, File, Form, Header, HTTPException,
+    Request, UploadFile,
+)
+from dataclasses import dataclass
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
@@ -314,22 +318,97 @@ async def list_models():
 # Detection Endpoints
 # ============================================================================
 
+@dataclass
+class DetectionSettings:
+    """Everything about a detection job except the drawing itself."""
+
+    confidence: float = 0.25
+    dpi: int = 400
+    save_annotated: bool = True
+    trace_circuits: bool = False
+    export_formats: str = "json,csv,excel"
+    model_id: Optional[str] = None
+    ref_points: Optional[str] = None
+    real_distance: Optional[float] = None
+    units: str = "feet"
+
+
+def _as_bool(text: str) -> bool:
+    """A query string carries booleans as text; anything else reads as false."""
+
+    return str(text).strip().lower() in {"1", "true", "yes", "on"}
+
+
+async def detection_settings(
+    request: Request,
+    confidence: Optional[float] = Form(None),
+    dpi: Optional[int] = Form(None),
+    save_annotated: Optional[bool] = Form(None),
+    trace_circuits: Optional[bool] = Form(None),
+    export_formats: Optional[str] = Form(None),
+    model_id: Optional[str] = Form(None),
+    ref_points: Optional[str] = Form(None),
+    real_distance: Optional[float] = Form(None),
+    units: Optional[str] = Form(None),
+) -> DetectionSettings:
+    """
+    Job settings, taken from the multipart body or from the query string.
+
+    The upload is multipart, so sending the settings as form fields is the
+    natural thing to reach for; they used to bind as query parameters only,
+    which meant a form field was dropped without a word and the job quietly
+    ran with the defaults. Both are read now, the form first, so neither way
+    of calling the endpoint can silently do nothing.
+    """
+
+    query = request.query_params
+    defaults = DetectionSettings()
+
+    def pick(value, name, cast):
+        if value is not None:
+            return value
+        raw = query.get(name)
+        if raw is None:
+            return getattr(defaults, name)
+        try:
+            return cast(raw)
+        except (TypeError, ValueError):
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid value for '{name}': {raw!r}",
+            )
+
+    return DetectionSettings(
+        confidence=pick(confidence, "confidence", float),
+        dpi=pick(dpi, "dpi", int),
+        save_annotated=pick(save_annotated, "save_annotated", _as_bool),
+        trace_circuits=pick(trace_circuits, "trace_circuits", _as_bool),
+        export_formats=pick(export_formats, "export_formats", str),
+        model_id=pick(model_id, "model_id", str),
+        ref_points=pick(ref_points, "ref_points", str),
+        real_distance=pick(real_distance, "real_distance", float),
+        units=pick(units, "units", str),
+    )
+
+
 @app.post("/api/detect", response_model=JobStatus)
 async def detect_symbols(
     background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
-    confidence: float = 0.25,
-    dpi: int = 400,
-    save_annotated: bool = True,
-    trace_circuits: bool = False,
-    export_formats: str = "json,csv,excel",
-    model_id: Optional[str] = None,
-    ref_points: Optional[str] = None,
-    real_distance: Optional[float] = None,
-    units: str = "feet",
+    settings: DetectionSettings = Depends(detection_settings),
     authorization: Optional[str] = Header(None)
 ):
     """Upload drawing and detect symbols"""
+
+    confidence = settings.confidence
+    dpi = settings.dpi
+    save_annotated = settings.save_annotated
+    trace_circuits = settings.trace_circuits
+    export_formats = settings.export_formats
+    model_id = settings.model_id
+    ref_points = settings.ref_points
+    real_distance = settings.real_distance
+    units = settings.units
 
     # Get user ID (optional)
     user_id = get_user_id_from_token(authorization)
@@ -396,18 +475,20 @@ async def detect_symbols(
 async def detect_batch(
     background_tasks: BackgroundTasks,
     files: List[UploadFile] = File(...),
-    confidence: float = 0.25,
-    dpi: int = 400,
-    save_annotated: bool = True,
-    trace_circuits: bool = False,
-    export_formats: str = "json,csv,excel",
-    model_id: Optional[str] = None,
-    ref_points: Optional[str] = None,
-    real_distance: Optional[float] = None,
-    units: str = "feet",
+    settings: DetectionSettings = Depends(detection_settings),
     authorization: Optional[str] = Header(None)
 ):
     """Batch detection - upload multiple files"""
+
+    confidence = settings.confidence
+    dpi = settings.dpi
+    save_annotated = settings.save_annotated
+    trace_circuits = settings.trace_circuits
+    export_formats = settings.export_formats
+    model_id = settings.model_id
+    ref_points = settings.ref_points
+    real_distance = settings.real_distance
+    units = settings.units
 
     user_id = get_user_id_from_token(authorization)
 

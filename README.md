@@ -109,14 +109,15 @@ Useful parameters on `/api/detect`:
 | `real_distance` | — | Real distance between those points |
 | `units` | `feet` | Unit the distance is stated in |
 
-The file is uploaded as multipart; everything else goes in the query string.
-Passing these as form fields instead is silently ignored — the job runs with
-the defaults and reports no error — so keep them in the URL.
+These are read from the multipart body or from the query string, whichever the
+client finds convenient; if both carry the same setting, the form field wins. A
+value that cannot be parsed is rejected with a 400 rather than quietly falling
+back to its default.
 
 Detect and trace a sheet, calibrated so lengths come back in feet:
 
 ```bash
-curl -F file=@plan.pdf "http://localhost:8091/api/detect?trace_circuits=true&export_formats=netlist,dxf,pdf&ref_points=100,200,1100,200&real_distance=50"
+curl -F file=@plan.pdf -F trace_circuits=true -F export_formats=netlist,dxf,pdf -F ref_points=100,200,1100,200 -F real_distance=50 http://localhost:8091/api/detect
 ```
 
 ## Tracing a sheet without the API
