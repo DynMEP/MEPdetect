@@ -37,22 +37,111 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
-            <span class="eyebrow">MEP takeoff automation</span>
-            <h1>Stop counting symbols by hand.</h1>
-            <p class="subheadline">Get a takeoff you can check against the drawing</p>
-            <p class="description">MEPdetect finds and counts the symbols on electrical, HVAC and plumbing sheets, traces the circuits on vector PDFs, and exports to Excel, CSV or JSON. Every detection comes back boxed and labeled on the sheet — so you verify the count rather than trust it.</p>
+            <div class="hero-copy">
+                <span class="eyebrow">MEP takeoff automation</span>
+                <h1>Stop counting symbols by hand.</h1>
+                <p class="subheadline">Get a takeoff you can check against the drawing</p>
+                <p class="description">MEPdetect finds and counts the symbols on electrical, HVAC and plumbing sheets, traces the circuits on vector PDFs, and exports to Excel, CSV or JSON. Every detection comes back boxed and labeled on the sheet — so you verify the count rather than trust it.</p>
 
-            <div class="cta-buttons">
-                <a href="#demo" class="btn btn-primary">Try It on Your Drawing</a>
-                <a href="/login#register" class="btn btn-secondary">Create a Free Account</a>
+                <div class="cta-buttons">
+                    <a href="#demo" class="btn btn-primary">Try It on Your Drawing</a>
+                    <a href="/login#register" class="btn btn-secondary">Create a Free Account</a>
+                </div>
+
+                <div class="trust-badges">
+                    <p>Built by a licensed electrical engineer, for MEP estimators</p>
+                    <div class="badge-icons">
+                        <span>✓ Free plan, no card</span>
+                        <span>✓ 14-day Pro trial</span>
+                        <span>✓ Cancel anytime</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="trust-badges">
-                <p>Built by a licensed electrical engineer, for MEP estimators</p>
-                <div class="badge-icons">
-                    <span>✓ Free plan, no card</span>
-                    <span>✓ 14-day Pro trial</span>
-                    <span>✓ Cancel anytime</span>
+            <div class="hero-visual" aria-hidden="true">
+                <div class="mock-window">
+                    <div class="mock-titlebar">
+                        <span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span>
+                        <span class="mock-title">E-101_lighting_power.pdf</span>
+                        <span class="mock-chip">Detection complete</span>
+                    </div>
+                    <div class="mock-body">
+                        <div class="mock-sheet">
+                            <svg viewBox="0 0 320 230" xmlns="http://www.w3.org/2000/svg" role="img">
+                                <rect width="320" height="230" fill="#f4f6fa"/>
+                                <g stroke="#dbe2ec" stroke-width="1">
+                                    <path d="M0 46h320M0 92h320M0 138h320M0 184h320"/>
+                                    <path d="M53 0v230M107 0v230M160 0v230M213 0v230M267 0v230"/>
+                                </g>
+                                <!-- walls -->
+                                <g stroke="#334155" stroke-width="2" fill="none">
+                                    <rect x="24" y="22" width="272" height="186"/>
+                                    <path d="M150 22v90M150 112h146M96 208v-60M96 148H24"/>
+                                </g>
+                                <!-- wiring -->
+                                <g stroke="#94a3b8" stroke-width="1.2" fill="none" stroke-dasharray="1 3">
+                                    <path d="M60 60c30-18 60 12 90 -4M212 60c20 24 48 20 62 40M70 180c34 8 60-16 96 0"/>
+                                </g>
+                                <!-- symbols -->
+                                <g stroke="#1e293b" stroke-width="1.6" fill="none">
+                                    <circle cx="60" cy="62" r="7"/>
+                                    <path d="M53 58l14 8M53 66l14-8"/>
+                                    <circle cx="212" cy="58" r="7"/>
+                                    <path d="M205 54l14 8M205 62l14-8"/>
+                                    <circle cx="70" cy="180" r="7"/>
+                                    <path d="M63 176l14 8M63 184l14-8"/>
+                                    <circle cx="248" cy="160" r="8"/>
+                                    <path d="M242 154l12 12M242 166l12-12"/>
+                                    <rect x="272" y="86" width="12" height="22" fill="#1e293b"/>
+                                </g>
+                                <text x="180" y="190" font-family="monospace" font-size="9" fill="#475569">S</text>
+                                <circle cx="184" cy="186" r="7" stroke="#1e293b" stroke-width="1.6" fill="none"/>
+                                <!-- detection boxes -->
+                                <g stroke="#3d6bff" stroke-width="1.4" fill="none" stroke-dasharray="4 3">
+                                    <rect x="48" y="50" width="24" height="24"/>
+                                    <rect x="200" y="46" width="24" height="24"/>
+                                    <rect x="58" y="168" width="24" height="24"/>
+                                </g>
+                                <g stroke="#22d3ee" stroke-width="1.4" fill="none" stroke-dasharray="4 3">
+                                    <rect x="236" y="148" width="24" height="24"/>
+                                    <rect x="172" y="174" width="24" height="24"/>
+                                    <rect x="266" y="80" width="24" height="34"/>
+                                </g>
+                                <g font-family="monospace" font-size="7.5">
+                                    <rect x="48" y="41" width="52" height="9" rx="1.5" fill="#3d6bff"/>
+                                    <text x="51" y="48" fill="#fff">receptacle</text>
+                                    <rect x="200" y="37" width="52" height="9" rx="1.5" fill="#3d6bff"/>
+                                    <text x="203" y="44" fill="#fff">receptacle</text>
+                                    <rect x="236" y="139" width="36" height="9" rx="1.5" fill="#0ea5c4"/>
+                                    <text x="239" y="146" fill="#fff">light</text>
+                                    <rect x="172" y="165" width="40" height="9" rx="1.5" fill="#0ea5c4"/>
+                                    <text x="175" y="172" fill="#fff">switch</text>
+                                    <rect x="266" y="71" width="38" height="9" rx="1.5" fill="#0ea5c4"/>
+                                    <text x="269" y="78" fill="#fff">panel</text>
+                                </g>
+                            </svg>
+                        </div>
+                        <aside class="mock-results">
+                            <div class="mock-results-title">Symbol counts</div>
+                            <div class="mock-row">
+                                <div class="mock-row-top"><span>Duplex receptacle</span><strong>46</strong></div>
+                                <div class="mock-bar"><i style="width: 88%"></i></div>
+                            </div>
+                            <div class="mock-row">
+                                <div class="mock-row-top"><span>Downlight</span><strong>32</strong></div>
+                                <div class="mock-bar"><i style="width: 62%"></i></div>
+                            </div>
+                            <div class="mock-row">
+                                <div class="mock-row-top"><span>Switch, 1-pole</span><strong>21</strong></div>
+                                <div class="mock-bar"><i style="width: 41%"></i></div>
+                            </div>
+                            <div class="mock-row">
+                                <div class="mock-row-top"><span>Panelboard</span><strong>2</strong></div>
+                                <div class="mock-bar"><i style="width: 6%"></i></div>
+                            </div>
+                            <div class="mock-note">Annotated sheet + netlist CSV ready to download</div>
+                        </aside>
+                    </div>
                 </div>
             </div>
         </div>
@@ -68,42 +157,42 @@
 
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">🎯</div>
+                    <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg></div>
                     <h3>Detection You Can Audit</h3>
                     <p>YOLO11 object detection picks out outlets, switches, panels, HVAC equipment and plumbing fixtures. Each one comes back with a confidence score and its box drawn on the sheet, so a count you doubt takes a couple of minutes to check.</p>
                     <p class="feature-benefit">→ Verify the takeoff, don't just trust it</p>
                 </div>
 
                 <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
+                    <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h8l-1 8 11-13h-8l1-7z"/></svg></div>
                     <h3>Fast Enough to Use Mid-Bid</h3>
                     <p>A sheet goes from upload to counted in seconds. Send up to 50 files in one batch job, processed back to back, and collect the results together.</p>
                     <p class="feature-benefit">→ Spend the hours pricing, not counting</p>
                 </div>
 
                 <div class="feature-card">
-                    <div class="feature-icon">🔧</div>
+                    <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3"/><path d="M1 14h6M9 8h6M17 16h6"/></svg></div>
                     <h3>Trained on Your Drawings</h3>
                     <p>Label examples on your own sheets and the model learns your office's symbols and your clients' standards — specialty equipment, non-standard fixtures, the blocks your library actually uses.</p>
                     <p class="feature-benefit">→ Fits how your drawings look, not a generic set</p>
                 </div>
 
                 <div class="feature-card">
-                    <div class="feature-icon">📊</div>
+                    <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg></div>
                     <h3>Exports That Land in Your Spreadsheet</h3>
                     <p>Excel, CSV and JSON: counts per symbol type, coordinates and confidence per detection, plus the annotated sheet. Plain, stable columns your estimating template can read without rework.</p>
                     <p class="feature-benefit">→ No retyping, no copy-paste</p>
                 </div>
 
                 <div class="feature-card">
-                    <div class="feature-icon">🔌</div>
+                    <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2.2"/><circle cx="19" cy="6" r="2.2"/><circle cx="12" cy="18" r="2.2"/><path d="M7 7.5 10.5 16M17 7.5 13.5 16M7.2 6h9.6"/></svg></div>
                     <h3>Circuit Tracing &amp; Netlists</h3>
                     <p>On a vector PDF, MEPdetect reads the drawing's own line work: it isolates the pen the conductors are plotted with, follows the runs, marks junction nodes, finds the homerun arrowheads and reads the circuit designation beside them. Sheets that annotate circuits instead of drawing them work too. Out comes a netlist CSV and a traced overlay to check against the sheet.</p>
                     <p class="feature-benefit">→ Go beyond counting, to connectivity</p>
                 </div>
 
                 <div class="feature-card">
-                    <div class="feature-icon">📁</div>
+                    <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div>
                     <h3>The Formats You Already Send Out</h3>
                     <p>PDF, including multi-page plan sets, plus JPG, PNG, TIFF and BMP. Vector PDFs give the best results and are the only ones circuit tracing can read. Working from DWG or DXF? Plot to PDF first.</p>
                     <p class="feature-benefit">→ No conversion step in your way</p>
@@ -152,7 +241,7 @@
 
             <div class="demo-panel">
                 <div class="demo-upload" data-action="upload">
-                    <div class="demo-upload-icon">📄</div>
+                    <div class="demo-upload-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg></div>
                     <h3>Drop an electrical, HVAC or plumbing sheet here</h3>
                     <p>PDF, JPG, PNG or TIFF — up to 50 MB. Processed in seconds.</p>
                     <button class="btn btn-primary" style="pointer-events: none;">Run a Live Detection</button>
@@ -376,7 +465,7 @@
     <input type="file" id="file-input" accept=".pdf,.jpg,.jpeg,.png,.bmp,.tiff" style="display: none;">
 
     <!-- Results Section (Hidden by default) -->
-    <section id="results-section" style="display: none; padding: 60px 0; background: #f3f4f6;">
+    <section id="results-section" style="display: none;">
         <!-- Results will be injected here by JavaScript -->
     </section>
 
@@ -461,12 +550,14 @@
         function showLoading() {
             const resultsSection = document.getElementById('results-section');
             resultsSection.innerHTML = `
-                <div style="max-width: 900px; margin: 0 auto; padding: 3rem; background: white; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
-                    <div style="text-align: center; padding: 2rem;">
-                        <div style="width: 60px; height: 60px; border: 5px solid #f3f4f6; border-top: 5px solid #2563eb; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 2rem;"></div>
-                        <p id="status-text" style="font-size: 20px; color: #374151; margin-bottom: 1rem;">Uploading file...</p>
-                        <div style="width: 100%; background: #f3f4f6; border-radius: 12px; overflow: hidden; height: 40px;">
-                            <div id="progress-bar" style="height: 100%; width: 0%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); transition: width 0.3s ease; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 16px;">0%</div>
+                <div class="container">
+                    <div class="result-panel">
+                        <div class="result-loading">
+                            <div class="result-spinner"></div>
+                            <p id="status-text" class="result-status">Uploading file...</p>
+                            <div class="result-progress">
+                                <div id="progress-bar" class="result-progress-fill"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -479,96 +570,89 @@
             const text = document.getElementById('status-text');
             const bar = document.getElementById('progress-bar');
             if (text) text.textContent = message;
-            if (bar) {
-                bar.style.width = percent + '%';
-                bar.textContent = percent + '%';
-            }
+            if (bar) bar.style.width = percent + '%';
         }
 
         function showResults(result) {
             const circuits = result.circuit_summary;
             const circuitsHTML = !circuits ? '' : `
-                    <div style="margin-bottom: 2rem;">
-                        <h3 style="color: #1f2937; margin-bottom: 1rem; font-size: 24px;">Circuit Tracing</h3>
-                        <table style="width: 100%; border-collapse: collapse;">
-                            <tbody>
-                                ${[
-                                    ['Circuits traced', circuits.circuits],
-                                    ['Conductor runs (nets)', circuits.nets],
-                                    ['Junction nodes', circuits.nodes],
-                                    ['Homeruns', circuits.homeruns],
-                                    ['Symbols on a circuit', circuits.connected_symbols],
-                                    ['Symbols with no wiring found', circuits.unconnected_symbols]
-                                ].map(([label, value]) => `
-                                    <tr style="border-bottom: 1px solid #e5e7eb;">
-                                        <td style="padding: 1rem;">${label}</td>
-                                        <td style="padding: 1rem;"><strong>${value ?? 0}</strong></td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>`;
+                    <h3>Circuit Tracing</h3>
+                    <table class="result-table">
+                        <tbody>
+                            ${[
+                                ['Circuits traced', circuits.circuits],
+                                ['Conductor runs (nets)', circuits.nets],
+                                ['Junction nodes', circuits.nodes],
+                                ['Homeruns', circuits.homeruns],
+                                ['Symbols on a circuit', circuits.connected_symbols],
+                                ['Symbols with no wiring found', circuits.unconnected_symbols]
+                            ].map(([label, value]) => `
+                                <tr>
+                                    <td>${label}</td>
+                                    <td><strong>${value ?? 0}</strong></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>`;
 
             const netlistButtons = !circuits ? '' : `
-                            <button onclick="downloadResult('netlist')" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; transition: transform 0.3s;">🔌 Download Netlist</button>
-                            <button onclick="downloadResult('netlist_overlay')" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #667eea 0%, #059669 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; transition: transform 0.3s;">🗺️ Download Traced Overlay</button>`;
+                        <button onclick="downloadResult('netlist')" class="btn-download">Download Netlist</button>
+                        <button onclick="downloadResult('netlist_overlay')" class="btn-download">Download Traced Overlay</button>`;
 
             const symbolsHTML = Object.entries(result.class_counts || {})
                 .map(([name, count]) => `
-                    <tr style="border-bottom: 1px solid #e5e7eb;">
-                        <td style="padding: 1rem;">${name}</td>
-                        <td style="padding: 1rem;"><strong>${count}</strong></td>
+                    <tr>
+                        <td>${name}</td>
+                        <td><strong>${count}</strong></td>
                     </tr>
                 `).join('');
 
             const resultsSection = document.getElementById('results-section');
             resultsSection.innerHTML = `
-                <div style="max-width: 900px; margin: 0 auto; padding: 3rem; background: white; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
-                    <h2 style="text-align: center; color: #1f2937; font-size: 36px; margin-bottom: 2rem;">🎉 Detection Complete!</h2>
+                <div class="container">
+                    <div class="result-panel">
+                        <h2>Detection complete</h2>
 
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
-                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 12px; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
-                            <div style="font-size: 3rem; font-weight: bold; margin-bottom: 0.5rem;">${result.total_detections || 0}</div>
-                            <div style="font-size: 1rem; opacity: 0.95;">Total Symbols</div>
+                        <div class="result-stats">
+                            <div class="result-stat">
+                                <div class="result-stat-value">${result.total_detections || 0}</div>
+                                <div class="result-stat-label">Total Symbols</div>
+                            </div>
+                            <div class="result-stat">
+                                <div class="result-stat-value">${((result.confidence_avg || 0) * 100).toFixed(1)}%</div>
+                                <div class="result-stat-label">Confidence</div>
+                            </div>
+                            <div class="result-stat">
+                                <div class="result-stat-value">${(result.processing_time || 0).toFixed(1)}s</div>
+                                <div class="result-stat-label">Time</div>
+                            </div>
                         </div>
-                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 12px; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
-                            <div style="font-size: 3rem; font-weight: bold; margin-bottom: 0.5rem;">${((result.confidence_avg || 0) * 100).toFixed(1)}%</div>
-                            <div style="font-size: 1rem; opacity: 0.95;">Confidence</div>
-                        </div>
-                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 12px; text-align: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
-                            <div style="font-size: 3rem; font-weight: bold; margin-bottom: 0.5rem;">${(result.processing_time || 0).toFixed(1)}s</div>
-                            <div style="font-size: 1rem; opacity: 0.95;">Time</div>
-                        </div>
-                    </div>
 
-                    <div style="margin-bottom: 2rem;">
-                        <h3 style="color: #1f2937; margin-bottom: 1rem; font-size: 24px;">Symbol Breakdown</h3>
-                        <table style="width: 100%; border-collapse: collapse;">
-                            <thead style="background: #f3f4f6;">
+                        <h3>Symbol Breakdown</h3>
+                        <table class="result-table">
+                            <thead>
                                 <tr>
-                                    <th style="padding: 1rem; text-align: left; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Symbol Type</th>
-                                    <th style="padding: 1rem; text-align: left; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Count</th>
+                                    <th>Symbol Type</th>
+                                    <th>Count</th>
                                 </tr>
                             </thead>
-                            <tbody>${symbolsHTML || '<tr><td colspan="2" style="padding: 1rem;">No symbols detected</td></tr>'}</tbody>
+                            <tbody>${symbolsHTML || '<tr><td colspan="2">No symbols detected</td></tr>'}</tbody>
                         </table>
-                    </div>
 
-                    ${circuitsHTML}
+                        ${circuitsHTML}
 
-                    <div style="margin-bottom: 2rem;">
-                        <h3 style="color: #1f2937; margin-bottom: 1rem; font-size: 24px;">Download Results</h3>
-                        <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
-                            <button onclick="downloadResult('json')" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; transition: transform 0.3s;">📄 Download JSON</button>
-                            <button onclick="downloadResult('csv')" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; transition: transform 0.3s;">📊 Download CSV</button>
-                            <button onclick="downloadResult('excel')" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; transition: transform 0.3s;">📈 Download Excel</button>
-                            <button onclick="downloadResult('annotated')" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #667eea 0%, #059669 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; transition: transform 0.3s;">🖼️ Download Annotated Images</button>${netlistButtons}
+                        <h3>Download Results</h3>
+                        <div class="result-actions">
+                            <button onclick="downloadResult('json')" class="btn-download">Download JSON</button>
+                            <button onclick="downloadResult('csv')" class="btn-download">Download CSV</button>
+                            <button onclick="downloadResult('excel')" class="btn-download">Download Excel</button>
+                            <button onclick="downloadResult('annotated')" class="btn-download">Download Annotated Images</button>${netlistButtons}
                         </div>
-                    </div>
 
-                    <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-top: 2rem;">
-                        <button onclick="resetUpload()" style="padding: 0.75rem 1.5rem; background: #f3f4f6; color: #1f2937; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600;">← Process Another Drawing</button>
-                        <a href="https://train.mepdetect.com" target="_blank" style="padding: 0.75rem 1.5rem; background: #f3f4f6; color: #1f2937; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; text-decoration: none; display: inline-block;">🎓 Train Custom Model</a>
+                        <div class="result-actions">
+                            <button onclick="resetUpload()" class="btn-muted">← Process Another Drawing</button>
+                            <a href="https://train.mepdetect.com" target="_blank" class="btn-muted">Train Custom Model</a>
+                        </div>
                     </div>
                 </div>
             `;
@@ -578,11 +662,11 @@
         function showError(message) {
             const resultsSection = document.getElementById('results-section');
             resultsSection.innerHTML = `
-                <div style="max-width: 900px; margin: 0 auto; padding: 3rem; background: white; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
-                    <div style="text-align: center; padding: 2rem;">
-                        <h2 style="color: #dc2626; margin-bottom: 1rem; font-size: 32px;">❌ Error</h2>
-                        <p style="color: #dc2626; font-size: 1.2rem; margin-bottom: 2rem;">${message}</p>
-                        <button onclick="resetUpload()" style="padding: 0.75rem 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: 600;">Try Again</button>
+                <div class="container">
+                    <div class="result-panel" style="text-align: center;">
+                        <h2 class="result-error-title">Something went wrong</h2>
+                        <p class="result-error-msg">${message}</p>
+                        <button onclick="resetUpload()" class="btn-muted">Try Again</button>
                     </div>
                 </div>
             `;
@@ -640,11 +724,6 @@
                     // Links with actual URLs (like /login.html) will work normally
                 });
             });
-
-            // Add spinner animation
-            const style = document.createElement('style');
-            style.textContent = '@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }';
-            document.head.appendChild(style);
 
             console.log('✅ MEPdetect integrated!');
             console.log('📡 Detection API:', API_DETECTION);

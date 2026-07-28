@@ -10,114 +10,18 @@
     <link rel="stylesheet" href="/css/app.css">
     <script src="/assets/branding.js"></script>
     <script src="/js/apply-branding.js" defer></script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; }
-        
-        .sidebar { width: 250px; height: 100vh; background: #1a1d29; position: fixed; padding: 20px; color: white; }
-        .logo { font-size: 24px; font-weight: bold; margin-bottom: 40px; color: #00d4ff; }
-        .nav-item { padding: 12px 16px; margin: 8px 0; border-radius: 8px; cursor: pointer; transition: 0.3s; }
-        .nav-item:hover, .nav-item.active { background: #2a2d3a; }
-        
-        .main { margin-left: 250px; padding: 30px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .header h1 { font-size: 28px; color: #1a1d29; }
-        .user-menu { display: flex; align-items: center; gap: 15px; }
-        .avatar { width: 40px; height: 40px; border-radius: 50%; background: #00d4ff; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
-        
-        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .card { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .card-title { font-size: 14px; color: #6b7280; margin-bottom: 8px; }
-        .card-value { font-size: 32px; font-weight: bold; color: #1a1d29; }
-        .card-subtitle { font-size: 12px; color: #9ca3af; margin-top: 4px; }
-        
-        .section { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .section-title { font-size: 20px; font-weight: 600; margin-bottom: 20px; color: #1a1d29; }
-        
-        .api-key-box { background: #f9fafb; padding: 16px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin: 20px 0; }
-        .api-key { font-family: monospace; font-size: 14px; color: #4b5563; }
-        
-        .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; transition: 0.3s; }
-        .btn-primary { background: #00d4ff; color: white; }
-        .btn-primary:hover { background: #00b8e6; }
-        .btn-secondary { background: #e5e7eb; color: #4b5563; }
-        .btn-secondary:hover { background: #d1d5db; }
-        
-        .table { width: 100%; border-collapse: collapse; }
-        .table th { text-align: left; padding: 12px; background: #f9fafb; font-weight: 500; font-size: 14px; color: #6b7280; }
-        .table td { padding: 12px; border-bottom: 1px solid #f3f4f6; font-size: 14px; }
-        
-        .badge { padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 500; }
-        .badge-success { background: #d1fae5; color: #065f46; }
-        .badge-warning { background: #fef3c7; color: #92400e; }
-        .badge-danger { background: #fee2e2; color: #991b1b; }
-        
-        .progress-bar { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; margin-top: 8px; }
-        .progress-fill { height: 100%; background: #00d4ff; transition: width 0.3s; }
-        
-        .plan-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
-        .plan-card { border: 2px solid #e5e7eb; padding: 24px; border-radius: 12px; transition: 0.3s; }
-        .plan-card:hover { border-color: #00d4ff; transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0,212,255,0.15); }
-        .plan-card.current { border-color: #00d4ff; background: #f0fcff; }
-        .plan-price { font-size: 36px; font-weight: bold; color: #1a1d29; margin: 16px 0; }
-        .plan-features { list-style: none; margin: 20px 0; }
-        .plan-features li { padding: 8px 0; color: #4b5563; }
-        .plan-features li:before { content: "✓ "; color: #10b981; font-weight: bold; margin-right: 8px; }
-        
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: #374151; }
-        .form-group input { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; }
-        .form-group input:focus { outline: none; border-color: #00d4ff; }
-        .form-group textarea { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; resize: vertical; }
-        .form-group textarea:focus { outline: none; border-color: #00d4ff; }
-        
-        .alert { padding: 16px; border-radius: 8px; margin-bottom: 20px; }
-        .alert-info { background: #dbeafe; color: #1e40af; border-left: 4px solid #3b82f6; }
-        .alert-success { background: #d1fae5; color: #065f46; border-left: 4px solid #10b981; }
-        .alert-warning { background: #fef3c7; color: #92400e; border-left: 4px solid #f59e0b; }
-        
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
-        .modal-content { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
-        .status-badge {
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-        
-        .status-new,
-        .status-read {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-        
-        .status-replied {
-            background: #d1fae5;
-            color: #065f46;
-        }
-        
-        .status-closed {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-        
-        .btn-sm {
-            padding: 6px 12px;
-            font-size: 12px;
-        }
-    </style>
 </head>
 <body class="app-page">
     <div class="sidebar">
         <div data-mep-brand></div>
-        <div class="nav-item active" onclick="showSection('dashboard')">📊 Dashboard</div>
-        <div class="nav-item" onclick="showSection('usage')">📈 Usage</div>
-        <div class="nav-item" onclick="showSection('billing')">💳 Billing</div>
-        <div class="nav-item" onclick="showSection('api')">🔑 API Keys</div>
-        <div class="nav-item" onclick="showSection('detection')">📊 Detection</div>
-        <div class="nav-item" onclick="showSection('settings')">⚙️ Settings</div>
-        <div class="nav-item" onclick="showSection('support')">📧 Support</div>
-        <div class="nav-item" onclick="logout()">🚪 Logout</div>
+        <div class="nav-item active" onclick="showSection('dashboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg><span class="nav-text">Dashboard</span></div>
+        <div class="nav-item" onclick="showSection('usage')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-6 3 4 5-8"/></svg><span class="nav-text">Usage</span></div>
+        <div class="nav-item" onclick="showSection('billing')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg><span class="nav-text">Billing</span></div>
+        <div class="nav-item" onclick="showSection('api')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M10.9 12.1 21 2M15 8l3 3M18 5l2 2"/></svg><span class="nav-text">API Keys</span></div>
+        <div class="nav-item" onclick="showSection('detection')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg><span class="nav-text">Detection</span></div>
+        <div class="nav-item" onclick="showSection('settings')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.7l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.7-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.7.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.7 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.7.3h.1a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5h.1a1.6 1.6 0 0 0 1.7-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.7v.1a1.6 1.6 0 0 0 1.5 1h.1a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg><span class="nav-text">Settings</span></div>
+        <div class="nav-item" onclick="showSection('support')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg><span class="nav-text">Support</span></div>
+        <div class="nav-item" onclick="logout()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg><span class="nav-text">Logout</span></div>
     </div>
 
     <div class="main">
@@ -148,7 +52,7 @@
                 <div class="card">
                     <div class="card-title">Current Plan</div>
                     <div class="card-value" id="currentPlan">-</div>
-                    <div class="card-subtitle"><a href="#" onclick="showSection('billing')" style="color: #00d4ff;">Upgrade</a></div>
+                    <div class="card-subtitle"><a href="#" onclick="showSection('billing')" style="color: #3d6bff;">Upgrade</a></div>
                 </div>
             </div>
 
@@ -245,11 +149,11 @@
                     <div style="padding: 24px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                             <div>
-                                <h2 id="currentPlanName" style="margin: 0 0 8px 0; color: #1a1d29;">Loading...</h2>
+                                <h2 id="currentPlanName" style="margin: 0 0 8px 0; color: #0b1220;">Loading...</h2>
                                 <p id="currentPlanDescription" style="margin: 0; color: #6b7280; font-size: 14px;">Loading plan details...</p>
                             </div>
                             <div style="text-align: right;">
-                                <div id="currentPlanPrice" style="font-size: 32px; font-weight: 700; color: #00d4ff;">$0</div>
+                                <div id="currentPlanPrice" style="font-size: 32px; font-weight: 700; color: #3d6bff;">$0</div>
                                 <div id="currentPlanPeriod" style="font-size: 14px; color: #6b7280;">per month</div>
                             </div>
                         </div>
@@ -262,10 +166,10 @@
                             <div style="margin-bottom: 20px;">
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                                     <span style="color: #6b7280; font-weight: 500;">Drawing Detections</span>
-                                    <span id="billingDrawingsUsage" style="font-weight: 600; color: #1a1d29;">0 / 0</span>
+                                    <span id="billingDrawingsUsage" style="font-weight: 600; color: #0b1220;">0 / 0</span>
                                 </div>
                                 <div style="background: #e5e7eb; height: 8px; border-radius: 4px; overflow: hidden;">
-                                    <div id="billingDrawingsBar" style="background: linear-gradient(90deg, #00d4ff, #0099ff); height: 100%; width: 0%; transition: width 0.3s;"></div>
+                                    <div id="billingDrawingsBar" style="background: linear-gradient(90deg, #3d6bff, #22d3ee); height: 100%; width: 0%; transition: width 0.3s;"></div>
                                 </div>
                                 <div id="billingDrawingsWarning" style="margin-top: 8px; padding: 8px 12px; background: #fef3c7; border-left: 3px solid #f59e0b; border-radius: 4px; display: none;">
                                     <span style="color: #92400e; font-size: 13px; font-weight: 500;">⚠️ You're approaching your limit</span>
@@ -276,7 +180,7 @@
                             <div style="padding: 12px; background: #f9fafb; border-radius: 8px; margin-bottom: 12px;">
                                 <div style="display: flex; justify-content: space-between; align-items: center;">
                                     <span style="color: #6b7280; font-size: 14px;">Total Symbols Detected</span>
-                                    <span id="billingTotalSymbols" style="font-weight: 700; color: #00d4ff; font-size: 18px;">0</span>
+                                    <span id="billingTotalSymbols" style="font-weight: 700; color: #3d6bff; font-size: 18px;">0</span>
                                 </div>
                             </div>
                         </div>
@@ -353,7 +257,7 @@
                     <div class="card">
                         <div class="card-title">Current Plan</div>
                         <div class="card-value" id="detectionPlan">-</div>
-                        <div class="card-subtitle"><a href="#" onclick="showSection('billing')" style="color: #00d4ff;">Upgrade Plan</a></div>
+                        <div class="card-subtitle"><a href="#" onclick="showSection('billing')" style="color: #3d6bff;">Upgrade Plan</a></div>
                     </div>
                 </div>
         
@@ -387,7 +291,7 @@
                      onclick="document.getElementById('test-detect-file').click()">
                     <input type="file" id="test-detect-file" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
                     <div style="font-size: 48px; margin-bottom: 16px;">📄</div>
-                    <h3 style="margin-bottom: 8px; font-size: 18px; color: #1a1d29;">Upload Drawing</h3>
+                    <h3 style="margin-bottom: 8px; font-size: 18px; color: #0b1220;">Upload Drawing</h3>
                     <p style="color: #6b7280; margin-bottom: 20px;">
                         Drag & drop or click to upload<br>
                         PDF, JPG, PNG supported
@@ -433,10 +337,10 @@
                     <div style="background: #f9fafb; border-radius: 8px; padding: 20px;">
                         <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                             <span id="test-detect-progress-text" style="font-weight: 500;">Processing...</span>
-                            <span id="test-detect-progress-percent" style="font-weight: 600; color: #00d4ff;">0%</span>
+                            <span id="test-detect-progress-percent" style="font-weight: 600; color: #3d6bff;">0%</span>
                         </div>
                         <div style="background: #e5e7eb; height: 8px; border-radius: 4px; overflow: hidden;">
-                            <div id="test-detect-progress-bar" style="background: #00d4ff; height: 100%; width: 0%; transition: width 0.3s;"></div>
+                            <div id="test-detect-progress-bar" style="background: #3d6bff; height: 100%; width: 0%; transition: width 0.3s;"></div>
                         </div>
                     </div>
                 </div>
@@ -552,17 +456,17 @@
                             <h3 style="margin-bottom: 15px;">📚 Resources</h3>
                             <ul style="list-style: none; padding: 0;">
                                 <li style="padding: 8px 0;">
-                                    <a href="/docs" style="color: #00d4ff; text-decoration: none;">
+                                    <a href="/docs" style="color: #3d6bff; text-decoration: none;">
                                         📖 Documentation
                                     </a>
                                 </li>
                                 <li style="padding: 8px 0;">
-                                    <a href="/faq" style="color: #00d4ff; text-decoration: none;">
+                                    <a href="/faq" style="color: #3d6bff; text-decoration: none;">
                                         ❓ FAQ
                                     </a>
                                 </li>
                                 <li style="padding: 8px 0;">
-                                    <a href="/tutorials" style="color: #00d4ff; text-decoration: none;">
+                                    <a href="/tutorials" style="color: #3d6bff; text-decoration: none;">
                                         🎥 Video Tutorials
                                     </a>
                                 </li>
@@ -624,7 +528,7 @@
                 
                 <div id="threadReplySection" style="display: none;">
                     <strong style="display: block; margin-bottom: 8px;">Support Reply:</strong>
-                    <div id="threadReply" style="background: #f0f9ff; padding: 20px; border-left: 4px solid #00d4ff; border-radius: 4px; white-space: pre-wrap;"></div>
+                    <div id="threadReply" style="background: #eaf0ff; padding: 20px; border-left: 4px solid #3d6bff; border-radius: 4px; white-space: pre-wrap;"></div>
                     <div style="font-size: 12px; color: #6b7280; margin-top: 8px;">
                         Replied on <span id="threadReplyDate"></span>
                     </div>
@@ -965,7 +869,7 @@
                     warning.querySelector('span').textContent = '⚠️ You\'re approaching your limit (' + Math.round(usagePercent) + '% used)';
                 } else {
                     // Good - blue
-                    bar.style.background = 'linear-gradient(90deg, #00d4ff, #0099ff)';
+                    bar.style.background = 'linear-gradient(90deg, #3d6bff, #22d3ee)';
                     warning.style.display = 'none';
                 }
                 
@@ -1031,13 +935,13 @@
                 // Price display
                 let priceHTML = '';
                 if (isEnterprise) {
-                    priceHTML = '<span style="font-size: 56px; font-weight: 700; color: #1a1d29; line-height: 1;">Custom</span>';
+                    priceHTML = '<span style="font-size: 56px; font-weight: 700; color: #0b1220; line-height: 1;">Custom</span>';
                 } else if (isFree) {
-                    priceHTML = '<span style="font-size: 56px; font-weight: 700; color: #1a1d29; line-height: 1;">Free</span>';
+                    priceHTML = '<span style="font-size: 56px; font-weight: 700; color: #0b1220; line-height: 1;">Free</span>';
                 } else {
                     priceHTML = `
                         <span style="font-size: 24px; font-weight: 600; color: #374151;">$</span>
-                        <span style="font-size: 56px; font-weight: 700; color: #1a1d29; line-height: 1;">${Math.floor(plan.price)}</span>
+                        <span style="font-size: 56px; font-weight: 700; color: #0b1220; line-height: 1;">${Math.floor(plan.price)}</span>
                         <span style="font-size: 16px; color: #6b7280; margin-left: 8px;">/mo</span>
                     `;
                 }
@@ -1496,7 +1400,7 @@
                             ['Unwired symbols', circuits.unconnected_symbols]
                         ].map(([label, value]) => `
                             <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 14px; text-align: center;">
-                                <div style="font-size: 22px; font-weight: bold; color: #1a1d29;">${value ?? 0}</div>
+                                <div style="font-size: 22px; font-weight: bold; color: #0b1220;">${value ?? 0}</div>
                                 <div style="margin-top: 4px; color: #6b7280; font-size: 13px;">${label}</div>
                             </div>
                         `).join('')}
@@ -1508,11 +1412,11 @@
 
             const resultsDiv = document.getElementById('test-detect-results');
             resultsDiv.innerHTML = `
-                <div style="background: #f0fcff; border: 1px solid #00d4ff; border-radius: 12px; padding: 24px; margin-top: 24px;">
-                    <h3 style="margin-bottom: 24px; color: #1a1d29; font-size: 24px;">🎉 Detection Complete!</h3>
+                <div style="background: #eaf0ff; border: 1px solid #3d6bff; border-radius: 12px; padding: 24px; margin-top: 24px;">
+                    <h3 style="margin-bottom: 24px; color: #0b1220; font-size: 24px;">Detection complete</h3>
                     
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 24px;">
-                        <div style="background: #00d4ff; color: white; padding: 24px; border-radius: 8px; text-align: center;">
+                        <div style="background: #3d6bff; color: white; padding: 24px; border-radius: 8px; text-align: center;">
                             <div style="font-size: 32px; font-weight: bold;">${result.total_detections || 0}</div>
                             <div style="margin-top: 8px;">Symbols</div>
                         </div>

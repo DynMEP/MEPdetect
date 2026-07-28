@@ -16,19 +16,23 @@
             justify-content: center;
             padding: 2rem 1.25rem;
             text-align: center;
-            background: var(--mep-paper);
+            background:
+                radial-gradient(48rem 28rem at 80% -12%, rgba(61, 107, 255, 0.18), transparent 60%),
+                var(--mep-dark);
             background-image:
-                linear-gradient(rgba(20, 18, 16, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(20, 18, 16, 0.03) 1px, transparent 1px);
-            background-size: 20px 20px;
+                linear-gradient(rgba(148, 163, 184, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(148, 163, 184, 0.05) 1px, transparent 1px),
+                radial-gradient(48rem 28rem at 80% -12%, rgba(61, 107, 255, 0.18), transparent 60%);
+            background-size: 40px 40px, 40px 40px, 100% 100%;
+            background-color: var(--mep-dark);
         }
         .error-card {
             max-width: 520px;
             width: 100%;
             background: var(--mep-paper-bright);
-            border: 1px solid var(--mep-border);
+            border: 1px solid var(--mep-dark-border-strong);
             border-radius: var(--mep-radius-lg);
-            box-shadow: var(--mep-shadow);
+            box-shadow: 0 40px 100px rgba(2, 6, 16, 0.7);
             padding: 2.5rem 2rem;
         }
         .error-card [data-mep-brand] {

@@ -1,29 +1,48 @@
-/* MEPdetect design system — warm industrial / blueprint, not generic SaaS */
+/* MEPdetect design system — modern dark-tech (public site) / clean light (app) */
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-    --mep-ink: #141210;
-    --mep-ink-soft: #2c2824;
-    --mep-paper: #f5f0e8;
-    --mep-paper-bright: #fcf9f4;
-    --mep-stone: #6b635a;
-    --mep-stone-light: #9a9288;
-    --mep-border: #ddd5c8;
-    --mep-border-strong: #c4b9a8;
-    --mep-accent: #c44b1a;
-    --mep-accent-hover: #a33d14;
-    --mep-accent-soft: #f3e6dc;
-    --mep-teal: #1a5c56;
-    --mep-teal-soft: #d4ebe8;
-    --mep-success: #2d6a4f;
-    --mep-danger: #9b2c2c;
-    --mep-warning: #b45309;
-    --mep-radius: 6px;
-    --mep-radius-lg: 10px;
-    --mep-shadow: 0 1px 0 var(--mep-border), 0 12px 32px rgba(20, 18, 16, 0.08);
-    --mep-font: 'DM Sans', system-ui, sans-serif;
-    --mep-display: 'Fraunces', Georgia, serif;
+    /* Light surfaces (app, cards) */
+    --mep-ink: #0b1220;
+    --mep-ink-soft: #1e293b;
+    --mep-paper: #f1f5f9;
+    --mep-paper-bright: #ffffff;
+    --mep-stone: #64748b;
+    --mep-stone-light: #94a3b8;
+    --mep-border: #e2e8f0;
+    --mep-border-strong: #cbd5e1;
+
+    /* Accent — electric blue + cyan */
+    --mep-accent: #3d6bff;
+    --mep-accent-hover: #2c53e0;
+    --mep-accent-soft: #eaf0ff;
+    --mep-teal: #0891b2;
+    --mep-teal-soft: #e0f4fa;
+    --mep-gradient: linear-gradient(135deg, #3d6bff 0%, #22d3ee 100%);
+
+    /* Dark surfaces (public site, sidebars) */
+    --mep-dark: #070b14;
+    --mep-dark-raised: #0c1424;
+    --mep-dark-panel: #101a2e;
+    --mep-dark-border: rgba(148, 163, 184, 0.14);
+    --mep-dark-border-strong: rgba(148, 163, 184, 0.28);
+    --mep-dark-text: #e7ecf5;
+    --mep-dark-muted: rgba(231, 236, 245, 0.62);
+
+    --mep-success: #059669;
+    --mep-danger: #dc2626;
+    --mep-warning: #d97706;
+
+    --mep-radius: 8px;
+    --mep-radius-lg: 14px;
+    --mep-shadow: 0 1px 2px rgba(15, 23, 42, 0.05), 0 8px 24px rgba(15, 23, 42, 0.08);
+    --mep-shadow-lg: 0 2px 4px rgba(15, 23, 42, 0.06), 0 20px 48px rgba(15, 23, 42, 0.14);
+    --mep-glow: 0 8px 28px rgba(61, 107, 255, 0.35);
+
+    --mep-font: 'Inter', system-ui, -apple-system, sans-serif;
+    --mep-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+    --mep-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
     --mep-max: 1160px;
     --mep-sidebar: 248px;
 }
@@ -44,12 +63,17 @@ body {
     color: var(--mep-ink-soft);
     background: var(--mep-paper);
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
 }
 
 .container {
     max-width: var(--mep-max);
     margin: 0 auto;
-    padding: 0 1.25rem;
+    padding: 0 1.5rem;
+}
+
+::selection {
+    background: rgba(61, 107, 255, 0.25);
 }
 
 /* Branding (filled by apply-branding.js) */
@@ -70,7 +94,7 @@ body {
 .mep-brand-wordmark {
     font-family: var(--mep-display);
     font-weight: 700;
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     letter-spacing: -0.02em;
     color: var(--mep-ink);
 }
@@ -85,26 +109,33 @@ body {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
+    padding: 0.7rem 1.4rem;
     font-family: var(--mep-font);
     font-size: 0.9375rem;
     font-weight: 600;
+    line-height: 1.4;
     text-decoration: none;
     border-radius: var(--mep-radius);
-    border: 2px solid transparent;
+    border: 1px solid transparent;
     cursor: pointer;
-    transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s;
+    transition: background 0.18s, color 0.18s, border-color 0.18s, box-shadow 0.18s, transform 0.18s;
+}
+
+.btn:active {
+    transform: translateY(1px);
 }
 
 .btn-primary {
     background: var(--mep-accent);
     color: #fff;
-    border-color: var(--mep-accent);
+    border-color: transparent;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
 .btn-primary:hover {
     background: var(--mep-accent-hover);
-    border-color: var(--mep-accent-hover);
+    box-shadow: var(--mep-glow);
+    color: #fff;
 }
 
 .btn-secondary {
@@ -114,8 +145,9 @@ body {
 }
 
 .btn-secondary:hover {
-    border-color: var(--mep-ink);
-    background: var(--mep-paper-bright);
+    border-color: var(--mep-accent);
+    color: var(--mep-accent);
+    background: var(--mep-accent-soft);
 }
 
 .btn-ghost {
@@ -126,6 +158,7 @@ body {
 
 .btn-ghost:hover {
     color: var(--mep-accent);
+    background: var(--mep-accent-soft);
 }
 
 /* Forms */
@@ -134,8 +167,8 @@ body {
     font-size: 0.8125rem;
     font-weight: 600;
     color: var(--mep-ink-soft);
-    margin-bottom: 0.35rem;
-    letter-spacing: 0.02em;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.01em;
 }
 
 .input,
@@ -146,7 +179,7 @@ body {
     padding: 0.65rem 0.85rem;
     font-family: var(--mep-font);
     font-size: 0.9375rem;
-    border: 1px solid var(--mep-border);
+    border: 1px solid var(--mep-border-strong);
     border-radius: var(--mep-radius);
     background: var(--mep-paper-bright);
     color: var(--mep-ink);
@@ -155,10 +188,11 @@ body {
 
 .input:focus,
 .form-group input:focus,
-.form-group textarea:focus {
+.form-group textarea:focus,
+.form-group select:focus {
     outline: none;
-    border-color: var(--mep-teal);
-    box-shadow: 0 0 0 3px var(--mep-teal-soft);
+    border-color: var(--mep-accent);
+    box-shadow: 0 0 0 3px rgba(61, 107, 255, 0.18);
 }
 
 .form-group {
@@ -167,21 +201,21 @@ body {
 
 .error,
 .alert-danger {
-    background: #fce8e8;
+    background: #fef2f2;
     color: var(--mep-danger);
     padding: 0.75rem 1rem;
     border-radius: var(--mep-radius);
-    border: 1px solid #e8b4b4;
+    border: 1px solid #fecaca;
     font-size: 0.875rem;
 }
 
 .success,
 .alert-success {
-    background: #e8f5ee;
+    background: #ecfdf5;
     color: var(--mep-success);
     padding: 0.75rem 1rem;
     border-radius: var(--mep-radius);
-    border: 1px solid #a7d4bc;
+    border: 1px solid #a7f3d0;
     font-size: 0.875rem;
 }
 
