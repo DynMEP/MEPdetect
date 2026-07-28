@@ -110,9 +110,9 @@ Useful parameters on `/api/detect`:
 | `units` | `feet` | Unit the distance is stated in |
 
 These are read from the multipart body or from the query string, whichever the
-client finds convenient; if both carry the same setting, the form field wins. A
-value that cannot be parsed is rejected with a 400 rather than quietly falling
-back to its default.
+client finds convenient, and both are listed at `/api/docs`; if both carry the
+same setting, the form field wins. A value that cannot be parsed is rejected
+with a 422 rather than quietly falling back to its default.
 
 Detect and trace a sheet, calibrated so lengths come back in feet:
 

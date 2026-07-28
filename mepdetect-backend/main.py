@@ -5,7 +5,7 @@ Works independently, optional database logging
 
 from fastapi import (
     BackgroundTasks, Depends, FastAPI, File, Form, Header, HTTPException,
-    Request, UploadFile,
+    Query, UploadFile,
 )
 from dataclasses import dataclass
 from fastapi.responses import FileResponse, JSONResponse
@@ -333,23 +333,42 @@ class DetectionSettings:
     units: str = "feet"
 
 
-def _as_bool(text: str) -> bool:
-    """A query string carries booleans as text; anything else reads as false."""
-
-    return str(text).strip().lower() in {"1", "true", "yes", "on"}
+# Each setting is declared twice, once against the multipart body and once
+# against the query string under the same public name, so both ways of calling
+# the endpoint are parsed and validated by FastAPI and both show up in the
+# generated OpenAPI document. The descriptions live here to be stated once.
+_SETTING_HELP = {
+    "confidence": "Minimum detection confidence, between 0 and 1.",
+    "dpi": "Resolution PDF pages are rendered at before detection.",
+    "save_annotated": "Write an annotated copy of each sheet.",
+    "trace_circuits": "Trace the conductors and build the netlist.",
+    "export_formats": "Comma separated: json, csv, excel, netlist, dxf, pdf.",
+    "model_id": "Detection model to run; omit for the configured default.",
+    "ref_points": "Scale calibration: 'x1,y1,x2,y2' in rendered pixels.",
+    "real_distance": "Real distance between the two ref_points.",
+    "units": "Unit real_distance is stated in, e.g. feet or meters.",
+}
 
 
 async def detection_settings(
-    request: Request,
-    confidence: Optional[float] = Form(None),
-    dpi: Optional[int] = Form(None),
-    save_annotated: Optional[bool] = Form(None),
-    trace_circuits: Optional[bool] = Form(None),
-    export_formats: Optional[str] = Form(None),
-    model_id: Optional[str] = Form(None),
-    ref_points: Optional[str] = Form(None),
-    real_distance: Optional[float] = Form(None),
-    units: Optional[str] = Form(None),
+    confidence: Optional[float] = Form(None, description=_SETTING_HELP["confidence"]),
+    dpi: Optional[int] = Form(None, description=_SETTING_HELP["dpi"]),
+    save_annotated: Optional[bool] = Form(None, description=_SETTING_HELP["save_annotated"]),
+    trace_circuits: Optional[bool] = Form(None, description=_SETTING_HELP["trace_circuits"]),
+    export_formats: Optional[str] = Form(None, description=_SETTING_HELP["export_formats"]),
+    model_id: Optional[str] = Form(None, description=_SETTING_HELP["model_id"]),
+    ref_points: Optional[str] = Form(None, description=_SETTING_HELP["ref_points"]),
+    real_distance: Optional[float] = Form(None, description=_SETTING_HELP["real_distance"]),
+    units: Optional[str] = Form(None, description=_SETTING_HELP["units"]),
+    q_confidence: Optional[float] = Query(None, alias="confidence", description=_SETTING_HELP["confidence"]),
+    q_dpi: Optional[int] = Query(None, alias="dpi", description=_SETTING_HELP["dpi"]),
+    q_save_annotated: Optional[bool] = Query(None, alias="save_annotated", description=_SETTING_HELP["save_annotated"]),
+    q_trace_circuits: Optional[bool] = Query(None, alias="trace_circuits", description=_SETTING_HELP["trace_circuits"]),
+    q_export_formats: Optional[str] = Query(None, alias="export_formats", description=_SETTING_HELP["export_formats"]),
+    q_model_id: Optional[str] = Query(None, alias="model_id", description=_SETTING_HELP["model_id"]),
+    q_ref_points: Optional[str] = Query(None, alias="ref_points", description=_SETTING_HELP["ref_points"]),
+    q_real_distance: Optional[float] = Query(None, alias="real_distance", description=_SETTING_HELP["real_distance"]),
+    q_units: Optional[str] = Query(None, alias="units", description=_SETTING_HELP["units"]),
 ) -> DetectionSettings:
     """
     Job settings, taken from the multipart body or from the query string.
@@ -361,33 +380,24 @@ async def detection_settings(
     of calling the endpoint can silently do nothing.
     """
 
-    query = request.query_params
     defaults = DetectionSettings()
 
-    def pick(value, name, cast):
-        if value is not None:
-            return value
-        raw = query.get(name)
-        if raw is None:
-            return getattr(defaults, name)
-        try:
-            return cast(raw)
-        except (TypeError, ValueError):
-            raise HTTPException(
-                status_code=400,
-                detail=f"Invalid value for '{name}': {raw!r}",
-            )
+    def pick(form_value, query_value, name):
+        for value in (form_value, query_value):
+            if value is not None:
+                return value
+        return getattr(defaults, name)
 
     return DetectionSettings(
-        confidence=pick(confidence, "confidence", float),
-        dpi=pick(dpi, "dpi", int),
-        save_annotated=pick(save_annotated, "save_annotated", _as_bool),
-        trace_circuits=pick(trace_circuits, "trace_circuits", _as_bool),
-        export_formats=pick(export_formats, "export_formats", str),
-        model_id=pick(model_id, "model_id", str),
-        ref_points=pick(ref_points, "ref_points", str),
-        real_distance=pick(real_distance, "real_distance", float),
-        units=pick(units, "units", str),
+        confidence=pick(confidence, q_confidence, "confidence"),
+        dpi=pick(dpi, q_dpi, "dpi"),
+        save_annotated=pick(save_annotated, q_save_annotated, "save_annotated"),
+        trace_circuits=pick(trace_circuits, q_trace_circuits, "trace_circuits"),
+        export_formats=pick(export_formats, q_export_formats, "export_formats"),
+        model_id=pick(model_id, q_model_id, "model_id"),
+        ref_points=pick(ref_points, q_ref_points, "ref_points"),
+        real_distance=pick(real_distance, q_real_distance, "real_distance"),
+        units=pick(units, q_units, "units"),
     )
 
 

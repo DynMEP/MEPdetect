@@ -96,16 +96,28 @@ def test_defaults_when_nothing_is_sent(client):
 
 @pytest.mark.parametrize("text,expected", [
     ("true", True), ("True", True), ("1", True), ("yes", True), ("on", True),
-    ("false", False), ("0", False), ("no", False), ("", False),
+    ("false", False), ("False", False), ("0", False), ("no", False),
+    ("off", False),
 ])
 def test_query_booleans_read_as_written(client, text, expected):
     body = client.post(f"/detect?trace_circuits={text}", files=UPLOAD).json()
     assert body["trace_circuits"] is expected
 
 
-def test_unparseable_query_value_is_rejected(client):
-    """A typo used to fall through to the default; it is an error now."""
+def test_valueless_boolean_is_rejected(client):
+    """'?trace_circuits=' states nothing; guessing at it would be worse."""
 
-    response = client.post("/detect?dpi=abc", files=UPLOAD)
-    assert response.status_code == 400
-    assert "dpi" in response.json()["detail"]
+    response = client.post("/detect?trace_circuits=", files=UPLOAD)
+    assert response.status_code == 422
+
+
+@pytest.mark.parametrize("request_kwargs", [
+    {"params": {"dpi": "abc"}},
+    {"data": {"dpi": "abc"}},
+])
+def test_unparseable_value_is_rejected(client, request_kwargs):
+    """A typo used to fall through to the default; FastAPI rejects it now."""
+
+    response = client.post("/detect", files=UPLOAD, **request_kwargs)
+    assert response.status_code == 422
+    assert "dpi" in str(response.json()["detail"])
