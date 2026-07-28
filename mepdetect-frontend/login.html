@@ -7,7 +7,7 @@
     <title>Login - MEPdetect</title>
     
     <!-- Google reCAPTCHA v3 -->
-    <script src="https://www.google.com/recaptcha/api.js?render=YOUR_RECAPTCHA_SITE_KEY"></script>
+    <script src="https://www.google.com/recaptcha/api.js?render=__RECAPTCHA_SITE_KEY__"></script>
     <!-- Google Identity Services (Sign in with Google) -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <link rel="stylesheet" href="/css/mepdetect.css">
@@ -245,7 +245,7 @@
             
             try {
                 // Get reCAPTCHA token
-                const recaptchaToken = await grecaptcha.execute('YOUR_RECAPTCHA_SITE_KEY', {action: 'login'});
+                const recaptchaToken = await grecaptcha.execute('__RECAPTCHA_SITE_KEY__', {action: 'login'});
                 
                 const data = {
                     email: formData.get('email'),
@@ -290,7 +290,7 @@
             
             try {
                 // Get reCAPTCHA token
-                const recaptchaToken = await grecaptcha.execute('YOUR_RECAPTCHA_SITE_KEY', {action: 'register'});
+                const recaptchaToken = await grecaptcha.execute('__RECAPTCHA_SITE_KEY__', {action: 'register'});
                 
                 const data = {
                     email: formData.get('email'),

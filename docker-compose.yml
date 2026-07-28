@@ -193,6 +193,9 @@ services:
       start_period: 10s
     environment:
       - TZ=UTC
+      # Public by design: it ships to every browser. Injected into the served
+      # pages at container start, so no deployment's key lives in the source.
+      - RECAPTCHA_SITE_KEY=${RECAPTCHA_SITE_KEY:-}
       - RECAPTCHA_SECRET_KEY=${RECAPTCHA_SECRET_KEY:-}
       - RECAPTCHA_MIN_SCORE=${RECAPTCHA_MIN_SCORE:-0.5}
       - RECAPTCHA_ENABLED=${RECAPTCHA_ENABLED:-true}

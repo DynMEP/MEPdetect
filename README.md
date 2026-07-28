@@ -71,11 +71,21 @@ cp mepdetect-user-api/.env.example mepdetect-user-api/.env
 
 Fill in at least `POSTGRES_PASSWORD` — it is the only variable with no default,
 and Postgres will not start without it. Generate the session secrets with
-`openssl rand -hex 32`. Then:
+`openssl rand -hex 32`. If you want the login page's reCAPTCHA to work, set
+`RECAPTCHA_SITE_KEY` and `RECAPTCHA_SECRET_KEY` from your own Google
+credentials; the site key is injected into the served pages when the
+`landing-page` container starts, so no deployment's key sits in this source.
+Leaving it unset logs a warning and serves the rest of the site normally.
+
+Then:
 
 ```bash
 ./deploy.sh
 ```
+
+`deploy.sh` is the only entry point: it checks the environment, builds, and
+waits for every service's healthcheck, printing the offending container's logs
+and exiting non-zero if one never comes up.
 
 The landing page comes up on <http://localhost:8090>, and the detection API
 documents itself at <http://localhost:8091/api/docs>.

@@ -31,6 +31,13 @@ COPY css/ /usr/share/nginx/html/css/
 COPY js/ /usr/share/nginx/html/js/
 COPY assets/ /usr/share/nginx/html/assets/
 
+# Substitute the reCAPTCHA site key at start-up. nginx's entrypoint runs the
+# executable scripts in this directory before the server accepts requests, so
+# pages are served with the key already in place. chmod here rather than rely
+# on the checked-in file mode, which does not survive every platform.
+COPY docker-entrypoint.d/ /docker-entrypoint.d/
+RUN chmod +x /docker-entrypoint.d/*.sh
+
 # Set proper permissions
 RUN chown -R nginx:nginx /usr/share/nginx/html && \
     chmod -R 755 /usr/share/nginx/html
