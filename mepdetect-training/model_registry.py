@@ -325,7 +325,9 @@ class ModelRegistry:
                     result['model_info']['has_model'] = True
                 if 'epoch' in model:
                     result['model_info']['epoch'] = model['epoch']
-                if 'best_fitness' in model:
+                if model.get('best_fitness') is not None:
+                    # ultralytics 8.4 deja best_fitness a None en best.pt tras
+                    # el strip del optimizador; float(None) rompía la subida
                     result['model_info']['best_fitness'] = float(model['best_fitness'])
                 
                 result['valid'] = True
