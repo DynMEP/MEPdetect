@@ -39,6 +39,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# API key auth. The trained weights are private IP: without this, anyone who
+# finds the public URL can download them (/api/models/{id}/download), upload
+# models or delete them. Set TRAINING_API_KEY in the environment to require an
+# X-API-Key header on every /api/* route; if unset, behavior is unchanged
+# (local/dev use). /health stays open for the docker healthcheck.
+TRAINING_API_KEY = os.environ.get("TRAINING_API_KEY", "")
+
+from starlette.requests import Request as _Request
+
+
+@app.middleware("http")
+async def _require_api_key(request: _Request, call_next):
+    if TRAINING_API_KEY and request.url.path.startswith("/api"):
+        if request.headers.get("x-api-key") != TRAINING_API_KEY:
+            return JSONResponse(status_code=401, content={"detail": "API key required"})
+    return await call_next(request)
+
 # Initialize components
 training_engine = TrainingEngine()
 dataset_manager = DatasetManager()
