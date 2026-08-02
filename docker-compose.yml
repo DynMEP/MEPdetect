@@ -162,6 +162,8 @@ services:
       - MAX_DATASET_SIZE=${MAX_DATASET_SIZE:-1000}
       - WORKERS=${TRAINING_WORKERS:-4}
       - TIMEOUT=${TRAINING_TIMEOUT:-3600}
+      # Clave para proteger la API de training (pesos privados); ver .env
+      - TRAINING_API_KEY=${TRAINING_API_KEY:-}
     networks:
       - mepdetect-network
     healthcheck:
