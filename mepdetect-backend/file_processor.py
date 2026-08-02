@@ -18,7 +18,8 @@ class FileProcessor:
     def __init__(
         self,
         noise_threshold: float = 3.0,
-        max_denoise_megapixels: float = 12.0
+        max_denoise_megapixels: float = 12.0,
+        sharpen_below_focus: float = 200.0
     ):
         """
         Initialize file processor
@@ -30,6 +31,11 @@ class FileProcessor:
             max_denoise_megapixels: Above this size, denoise with a bounded
                 filter instead of the non-local-means one, whose cost grows
                 with the pixel count and reaches minutes on a plotted sheet.
+            sharpen_below_focus: Laplacian variance below which an image is
+                blurry enough to be worth sharpening. Crisp line work measures
+                in the hundreds or thousands; sharpening it anyway costs
+                detections (measured on a plan tile: 20 symbols found, 9 after
+                the sharpen that used to run unconditionally here).
         """
         self.supported_image_formats = {'.jpg', '.jpeg', '.png', '.bmp', '.tiff', '.tif'}
         self.supported_doc_formats = {'.pdf'}
@@ -37,6 +43,7 @@ class FileProcessor:
         self.supported_cad_formats = {'.dwg', '.dxf'}
         self.noise_threshold = noise_threshold
         self.max_denoise_megapixels = max_denoise_megapixels
+        self.sharpen_below_focus = sharpen_below_focus
     
     
     async def process_file(self, file_path: Path, dpi: int = 400) -> List[Path]:
@@ -184,11 +191,42 @@ class FileProcessor:
         if noise >= self.noise_threshold:
             img = self._denoise(img, noise)
 
-        # Sharpen
-        kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
-        img = cv2.filter2D(img, -1, kernel)
+        # Sharpen, but only what is actually blurry. This kernel run over
+        # already-crisp line work halos every stroke and pushes the image off
+        # the distribution the detector was trained on: measured on a plan
+        # tile, 20 symbols detected before it and 9 after.
+        if self._estimate_focus(gray) < self.sharpen_below_focus:
+            kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
+            img = cv2.filter2D(img, -1, kernel)
 
         return img
+
+
+    def _estimate_focus(self, gray: np.ndarray, sample: int = 1024) -> float:
+        """
+        Estimate how sharp the image is, as the variance of its Laplacian.
+
+        Blurred edges spread the second derivative out and lower the variance;
+        crisp ones concentrate it. Measured on a central sample, like the noise
+        estimate, so the cost does not grow with the sheet size.
+
+        Args:
+            gray: Grayscale image
+            sample: Side of the square sampled from the middle of the image
+
+        Returns:
+            Variance of the Laplacian; higher means sharper
+        """
+
+        height, width = gray.shape[:2]
+        y = max(0, (height - sample) // 2)
+        x = max(0, (width - sample) // 2)
+        patch = gray[y:y + sample, x:x + sample]
+
+        if patch.size == 0:
+            return float("inf")  # nothing to measure: do not sharpen
+
+        return float(cv2.Laplacian(patch, cv2.CV_64F).var())
 
 
     def _estimate_noise(self, gray: np.ndarray, sample: int = 1024) -> float:

@@ -232,13 +232,23 @@ def log_detection_to_db(
     finally:
         db.close()
 
-# Database connection for getting default model
+# Database connection for getting default model.
+#
+# Prefer DATABASE_URL: it is what compose actually injects, and the piecewise
+# DB_* variables are not set anywhere. Their defaults pointed at a host that
+# does not exist on the compose network ("mepdetect-postgres" instead of
+# "postgres"), so every lookup failed with "could not translate host name" and
+# the default model silently fell back to yolo11s (COCO) — detections on real
+# drawings came back empty.
 def get_db_connection():
+    database_url = os.getenv("DATABASE_URL")
+    if database_url:
+        return psycopg2.connect(database_url)
     return psycopg2.connect(
-        host=os.getenv("DB_HOST", "mepdetect-postgres"),
+        host=os.getenv("DB_HOST", "postgres"),
         database=os.getenv("DB_NAME", "mepdetect"),
         user=os.getenv("DB_USER", "mepdetect"),
-        password=os.getenv("DB_PASSWORD", "your_password")
+        password=os.getenv("DB_PASSWORD", ""),
     )
 
 def get_default_model_path():
