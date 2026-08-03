@@ -1506,13 +1506,19 @@
                         const option = document.createElement('option');
                         option.value = model.model_id;
 
-                        // Format: ModelName (X classes, mAP: XX.X%)
-                        const mAP = model.metrics && model.metrics.mAP50 ?
-                            (model.metrics.mAP50 * 100).toFixed(1) : '?';
+                        // Short enough to read in the closed dropdown. A part
+                        // that is missing is left out instead of rendering as
+                        // "0 classes" or "mAP: ?%".
+                        const bits = [];
                         const numClasses = model.num_classes || (model.classes || []).length;
+                        if (numClasses) bits.push(`${numClasses} cls`);
+                        if (model.metrics && model.metrics.mAP50) {
+                            bits.push(`mAP ${(model.metrics.mAP50 * 100).toFixed(0)}%`);
+                        }
 
-                        option.textContent = `${model.name} (${numClasses} classes, mAP: ${mAP}%)`
-                            + (model.is_default ? ' — default' : '');
+                        option.textContent = (model.is_default ? '★ ' : '') + model.name
+                            + (bits.length ? ` · ${bits.join(' · ')}` : '');
+                        option.title = model.description || '';
                         if (model.is_default) option.selected = true;
                         modelSelect.appendChild(option);
                     });
