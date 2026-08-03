@@ -5,6 +5,7 @@ Manages trained models and versioning
 
 from pathlib import Path
 from typing import List, Dict, Optional
+import os
 import shutil
 import json
 from datetime import datetime
@@ -71,6 +72,8 @@ class ModelRegistry:
         
         # Save registry
         self._save_registry()
+        
+        self._register_in_db(model_info)
         
         print(f"💾 Saved model: {model_id}")
         print(f"📊 mAP50: {metrics.get('mAP50', 0):.3f}")
@@ -160,9 +163,63 @@ class ModelRegistry:
     
     def _save_registry(self):
         """Save registry to disk"""
-        
+
         with open(self.registry_file, 'w') as f:
             json.dump(self.models, f, indent=2)
+
+
+    def _register_in_db(self, model_info: Dict):
+        """
+        Mirror the model into the `models` table of the database.
+
+        registry.json is this service's own bookkeeping; the detection backend
+        reads the database instead, both to list models and to resolve the
+        default. Without this every upload needed a hand-written INSERT before
+        the model showed up anywhere, and a forgotten one left the picker
+        claiming the model had no classes.
+
+        A failure here does not fail the upload: the weights and registry.json
+        are already written, and the row can be added later.
+        """
+
+        database_url = os.getenv("DATABASE_URL")
+        if not database_url:
+            print("ℹ️  DATABASE_URL not set: model saved to registry.json only")
+            return
+
+        try:
+            import psycopg2
+
+            with psycopg2.connect(database_url) as conn:
+                with conn.cursor() as cursor:
+                    cursor.execute("""
+                        INSERT INTO models (name, display_name, description, file_path,
+                                            file_size, model_type, is_active, is_public,
+                                            accuracy_metrics, supported_classes)
+                        VALUES (%s, %s, %s, %s, %s, %s, true, false, %s::jsonb, %s::jsonb)
+                        ON CONFLICT (name) DO UPDATE SET
+                            display_name = EXCLUDED.display_name,
+                            description = EXCLUDED.description,
+                            file_path = EXCLUDED.file_path,
+                            file_size = EXCLUDED.file_size,
+                            accuracy_metrics = EXCLUDED.accuracy_metrics,
+                            supported_classes = EXCLUDED.supported_classes,
+                            is_active = true,
+                            updated_at = now()
+                    """, (
+                        model_info['model_id'],
+                        model_info.get('name') or model_info['model_id'],
+                        model_info.get('description', ''),
+                        model_info['path'],
+                        int(Path(model_info['path']).stat().st_size),
+                        model_info.get('model_type', 'yolo11'),
+                        json.dumps(model_info.get('metrics', {})),
+                        json.dumps(model_info.get('classes', [])),
+                    ))
+            print(f"🗄️  Registered in database: {model_info['model_id']}")
+        except Exception as e:
+            print(f"⚠️  Could not register in database ({e}); "
+                  f"the model is usable but will not appear in the picker")
     
     
     async def get_best_model(self, metric: str = 'mAP50') -> Optional[Dict]:
@@ -265,6 +322,8 @@ class ModelRegistry:
         
         # Save registry
         self._save_registry()
+        
+        self._register_in_db(model_info)
         
         print(f"📤 Uploaded model: {name} ({model_id})")
         print(f"📦 Size: {model_info['size_mb']:.1f} MB")
