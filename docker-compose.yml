@@ -121,9 +121,9 @@ services:
       - DEFAULT_DPI=${DEFAULT_DPI:-400}
       - MAX_UPLOAD_SIZE=${MAX_UPLOAD_SIZE:-50MB}
       - MAX_BATCH_SIZE=${MAX_BATCH_SIZE:-50}
-      # Los pools de torch y OpenMP se dimensionan con los nucleos del HOST
-      # (20 aqui), no con la cuota del contenedor: sin esto se crean 20
-      # hilos para 8 CPUs y pelean entre si. Mantener igual a cpus.
+      # torch and OpenMP size their thread pools from the HOST core count
+      # (20 here), not from the container's quota: without this they spawn
+      # 20 threads for 8 CPUs and fight over them. Keep equal to cpus.
       - OMP_NUM_THREADS=${DETECTION_CPUS:-8}
       - TIMEOUT=${DETECTION_TIMEOUT:-300}
     networks:
@@ -165,7 +165,7 @@ services:
       - MAX_DATASET_SIZE=${MAX_DATASET_SIZE:-1000}
       - OMP_NUM_THREADS=${TRAINING_CPUS:-4}
       - TIMEOUT=${TRAINING_TIMEOUT:-3600}
-      # Clave para proteger la API de training (pesos privados); ver .env
+      # Key protecting the training API (the weights are private); see .env
       - TRAINING_API_KEY=${TRAINING_API_KEY:-}
     networks:
       - mepdetect-network
