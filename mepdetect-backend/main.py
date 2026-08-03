@@ -17,6 +17,7 @@ import asyncio
 import os
 import tempfile
 import shutil
+import threading
 from datetime import datetime
 import json
 import uuid
@@ -776,7 +777,36 @@ def collect_overlay_files(overlays: List[str], output_dir: Path, job_id: str) ->
     return str(zip_path)
 
 
-async def process_detection_job(
+# A detection is CPU-bound end to end -- rasterising the PDF, YOLO inference,
+# writing the exports -- and the chain below is `async def` without ever
+# awaiting real I/O. Registered directly as a BackgroundTask it therefore ran
+# *on* the event loop and stalled the whole worker for the length of the job:
+# /health, job polling and any further upload queued behind it, and clients
+# (Cloudflare cuts at ~100s) closed the connection before their response was
+# written. Starlette runs plain `def` background tasks in a worker thread, so
+# these wrappers hand each job its own loop off the main one.
+#
+# The container is sized for one detection at a time (8 CPUs / 6 GB, with
+# OMP_NUM_THREADS matched to the quota), so jobs still run one by one -- but
+# they now queue behind the semaphore instead of behind the event loop, which
+# leaves the API responsive throughout.
+MAX_CONCURRENT_JOBS = 1
+_job_slots = threading.Semaphore(MAX_CONCURRENT_JOBS)
+
+
+def process_detection_job(*args, **kwargs):
+    """Background entry point for a single-file detection."""
+    with _job_slots:
+        asyncio.run(_detection_job(*args, **kwargs))
+
+
+def process_batch_job(*args, **kwargs):
+    """Background entry point for a batch detection."""
+    with _job_slots:
+        asyncio.run(_batch_job(*args, **kwargs))
+
+
+async def _detection_job(
     job_id: str,
     file_path: Path,
     confidence: float,
@@ -950,7 +980,7 @@ async def process_detection_job(
         raise
 
 
-async def process_batch_job(
+async def _batch_job(
     job_id: str,
     file_paths: List[Path],
     confidence: float,

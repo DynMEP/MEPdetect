@@ -9,8 +9,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import List, Dict, Optional
 import uvicorn
+import asyncio
 import os
 import shutil
+import threading
 from datetime import datetime
 import json
 import uuid
@@ -946,7 +948,27 @@ async def get_annotation_tools():
 # Background Processing
 # ============================================================================
 
-async def run_training(job_id: str, config: TrainingConfig):
+# Training is CPU-bound for its whole run and the chain below is `async def`
+# without ever awaiting real I/O, so as a BackgroundTask it ran *on* the event
+# loop and stalled the worker for the length of the job -- minutes to hours.
+# /health, status polling and /api/training/{id}/stop were all unanswerable
+# exactly while a training was in flight, which is the only time they matter.
+# Starlette runs plain `def` background tasks in a worker thread, so this
+# wrapper hands the job its own loop off the main one.
+#
+# One at a time, matching the container's 4 CPUs / 3 GB: jobs queue on the
+# semaphore now instead of on the event loop, leaving the API responsive.
+MAX_CONCURRENT_TRAININGS = 1
+_training_slots = threading.Semaphore(MAX_CONCURRENT_TRAININGS)
+
+
+def run_training(*args, **kwargs):
+    """Background entry point for a training job."""
+    with _training_slots:
+        asyncio.run(_training_job(*args, **kwargs))
+
+
+async def _training_job(job_id: str, config: TrainingConfig):
     """Run training job in background"""
     
     try:
