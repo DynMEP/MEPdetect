@@ -312,15 +312,59 @@ async def health_check():
 
 @app.get("/api/models")
 async def list_models():
-    """List available detection models"""
+    """
+    List the models a detection job can be pointed at.
+
+    Served from the registry table, which is the same source used to resolve
+    the default, so the picker and the engine cannot disagree. Falls back to
+    listing the weights directory when the table is unavailable — that listing
+    has no display names or metrics, but it is better than an empty picker.
+    """
+
     models = []
-    if MODELS_DIR.exists():
-        for model_file in MODELS_DIR.glob("*.pt"):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
+        cursor.execute("""
+            SELECT name, display_name, description, file_path,
+                   is_default, accuracy_metrics, supported_classes
+            FROM models
+            WHERE is_active = true
+            ORDER BY is_default DESC, display_name
+        """)
+        rows = cursor.fetchall()
+        cursor.close()
+        conn.close()
+
+        for row in rows:
+            if not os.path.exists(row['file_path']):
+                continue  # registered but the weights are gone
+            classes = row['supported_classes'] or []
             models.append({
-                "name": model_file.stem,
-                "size_mb": model_file.stat().st_size / (1024 * 1024),
-                "path": str(model_file)
+                "model_id": row['name'],
+                "name": row['display_name'] or row['name'],
+                "description": row['description'],
+                "is_default": bool(row['is_default']),
+                "num_classes": len(classes),
+                "classes": classes,
+                "metrics": row['accuracy_metrics'] or {},
+                "size_mb": os.path.getsize(row['file_path']) / (1024 * 1024),
             })
+    except Exception as e:
+        print(f"Could not read the model registry, falling back to disk: {e}")
+
+    if not models and MODELS_DIR.exists():
+        for model_file in sorted(MODELS_DIR.glob("*.pt")):
+            models.append({
+                "model_id": model_file.stem,
+                "name": model_file.stem,
+                "is_default": False,
+                "num_classes": 0,
+                "classes": [],
+                "metrics": {},
+                "size_mb": model_file.stat().st_size / (1024 * 1024),
+            })
+
     return {"models": models}
 
 

@@ -324,7 +324,7 @@
                     <div class="form-group">
                         <label>Detection Model</label>
                         <select id="test-model">
-                            <option value="default">Default YOLO11s</option>
+                            <option value="default">Loading models…</option>
                         </select>
                         <button onclick="loadDetectionModels()" style="margin-top: 8px; padding: 6px 12px; background: #e5e7eb; color: #374151; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; width: 100%;">
                             🔄 Refresh Models
@@ -1490,34 +1490,39 @@
         async function loadDetectionModels() {
             try {
                 console.log('🔄 Loading trained models...');
-                
-                // Get trained models from Training API
-                const response = await fetch(`${TRAINING_API}/api/models`);
+
+                // From the Detection API, not the Training one: training is
+                // behind an API key -- the weights are private -- and the key
+                // cannot live in a page anyone can read. Detection serves the
+                // same registry it uses to resolve the default anyway.
+                const response = await fetch(`${DETECTION_API}/api/models`);
                 const data = await response.json();
-                
+
                 const modelSelect = document.getElementById('test-model');
-                
-                // Clear existing options except default
-                modelSelect.innerHTML = '<option value="default">Default YOLO11s</option>';
-                
-                // Add trained models
+                modelSelect.innerHTML = '';
+
                 if (data.models && data.models.length > 0) {
                     data.models.forEach(model => {
                         const option = document.createElement('option');
                         option.value = model.model_id;
-                        
-                        // Format: ModelName (Classes: X, mAP: XX.X%)
-                        const mAP = model.metrics && model.metrics.mAP50 ? 
+
+                        // Format: ModelName (X classes, mAP: XX.X%)
+                        const mAP = model.metrics && model.metrics.mAP50 ?
                             (model.metrics.mAP50 * 100).toFixed(1) : '?';
-                        const numClasses = model.num_classes || model.classes.length;
-                        
-                        option.textContent = `${model.name} (${numClasses} classes, mAP: ${mAP}%)`;
+                        const numClasses = model.num_classes || (model.classes || []).length;
+
+                        option.textContent = `${model.name} (${numClasses} classes, mAP: ${mAP}%)`
+                            + (model.is_default ? ' — default' : '');
+                        if (model.is_default) option.selected = true;
                         modelSelect.appendChild(option);
                     });
-                    
-                    console.log(`✅ Loaded ${data.models.length} trained model(s)`);
+
+                    console.log(`✅ Loaded ${data.models.length} model(s)`);
                 } else {
-                    console.log('ℹ️ No trained models available');
+                    // Nothing registered: let the server pick, do not name a
+                    // model the picker cannot confirm is there.
+                    modelSelect.innerHTML = '<option value="default">Server default</option>';
+                    console.log('ℹ️ No models registered');
                 }
                 
             } catch (error) {
